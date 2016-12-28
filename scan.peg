@@ -1,0 +1,35 @@
+package main
+
+type Parser Peg {
+	s Scan
+	// parserが自動生成するフィールド変数と区別するために
+	// 敢えて埋め込みを行っていない。
+}
+
+root <- expression EOT /
+	expression <.+> {p.s.Err(begin)} EOT /
+	<.+> {p.s.Err(begin)} EOT
+
+EOT <- !.
+
+	expression <- literal literal*
+
+	literal <- <&'0' [0-9]+> {
+	// p,begin,end,text を使用する場合はruleを<…>で囲む。
+	// '0'で始まる数字列
+	fmt.Printf("line %d(%d) KIND:ZeroNUMBER \"%s\"\n", p.s.line, begin - p.s.lineHead, text)
+	} /
+	<[0-9]+>   { // 数字列
+	fmt.Printf("line %d(%d) KIND:NUMBER \"%s\"\n", p.s.line, begin - p.s.lineHead, text)
+    } /
+	<[[A-Z]]+> { // 大小英字列
+	fmt.Printf("line %d(%d) KIND:IDENT \"%s\"\n", p.s.line, begin - p.s.lineHead, text)
+	} /
+	' '+       {  } /
+	<'\n'>     { // 改行時処理
+	p.s.line++;
+	p.s.lineHead = begin + 1
+	} /
+	<[^0-9a-zA-Z \n]+>  { // その他文字
+	fmt.Printf("line %d(%d) KIND:OTHER \"%s\"\n", p.s.line, begin - p.s.lineHead, text)
+}
