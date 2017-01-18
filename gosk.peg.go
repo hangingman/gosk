@@ -18,6 +18,7 @@ const (
 	ruletext
 	ruleline
 	ruletoken
+	rulelabel_line
 	ruleEOT
 	rulePegText
 	ruleAction0
@@ -25,6 +26,8 @@ const (
 	ruleAction2
 	ruleAction3
 	ruleAction4
+	ruleAction5
+	ruleAction6
 )
 
 var rul3s = [...]string{
@@ -33,6 +36,7 @@ var rul3s = [...]string{
 	"text",
 	"line",
 	"token",
+	"label_line",
 	"EOT",
 	"PegText",
 	"Action0",
@@ -40,6 +44,8 @@ var rul3s = [...]string{
 	"Action2",
 	"Action3",
 	"Action4",
+	"Action5",
+	"Action6",
 }
 
 type token32 struct {
@@ -156,7 +162,7 @@ type Parser struct {
 
 	Buffer string
 	buffer []rune
-	rules  [12]func() bool
+	rules  [15]func() bool
 	parse  func(rule ...int) error
 	reset  func()
 	Pretty bool
@@ -256,7 +262,7 @@ func (p *Parser) Execute() {
 
 			p.s.line++
 			p.s.lineHead = begin + 1
-			fmt.Printf("line %d COMMENT\t%s", p.s.line, text)
+			fmt.Printf("line %04d COMMENT\t%s", p.s.line, text)
 
 		case ruleAction3:
 
@@ -265,7 +271,13 @@ func (p *Parser) Execute() {
 
 		case ruleAction4:
 
-			fmt.Printf("line %d TOKEN  \t%s\n", p.s.line, text)
+		case ruleAction5:
+
+			fmt.Printf("line %04d TOKEN  \t%s\n", p.s.line, text)
+
+		case ruleAction6:
+
+			fmt.Printf("line %04d LABEL  \t%s\n", p.s.line, text)
 
 		}
 	}
@@ -324,6 +336,14 @@ func (p *Parser) Init() {
 
 	/*matchChar := func(c byte) bool {
 		if buffer[position] == c {
+			position++
+			return true
+		}
+		return false
+	}*/
+
+	/*matchRange := func(lower byte, upper byte) bool {
+		if c := buffer[position]; c >= lower && c <= upper {
 			position++
 			return true
 		}
@@ -506,38 +526,51 @@ func (p *Parser) Init() {
 			position, tokenIndex = position15, tokenIndex15
 			return false
 		},
-		/* 3 token <- <(<(!'\n' .)*> Action4)> */
+		/* 3 token <- <((label_line Action4) / (<(!'\n' .)*> Action5))> */
 		func() bool {
 			position25, tokenIndex25 := position, tokenIndex
 			{
 				position26 := position
 				{
-					position27 := position
-				l28:
-					{
-						position29, tokenIndex29 := position, tokenIndex
-						{
-							position30, tokenIndex30 := position, tokenIndex
-							if buffer[position] != rune('\n') {
-								goto l30
-							}
-							position++
-							goto l29
-						l30:
-							position, tokenIndex = position30, tokenIndex30
-						}
-						if !matchDot() {
-							goto l29
-						}
+					position27, tokenIndex27 := position, tokenIndex
+					if !_rules[rulelabel_line]() {
 						goto l28
-					l29:
-						position, tokenIndex = position29, tokenIndex29
 					}
-					add(rulePegText, position27)
+					if !_rules[ruleAction4]() {
+						goto l28
+					}
+					goto l27
+				l28:
+					position, tokenIndex = position27, tokenIndex27
+					{
+						position29 := position
+					l30:
+						{
+							position31, tokenIndex31 := position, tokenIndex
+							{
+								position32, tokenIndex32 := position, tokenIndex
+								if buffer[position] != rune('\n') {
+									goto l32
+								}
+								position++
+								goto l31
+							l32:
+								position, tokenIndex = position32, tokenIndex32
+							}
+							if !matchDot() {
+								goto l31
+							}
+							goto l30
+						l31:
+							position, tokenIndex = position31, tokenIndex31
+						}
+						add(rulePegText, position29)
+					}
+					if !_rules[ruleAction5]() {
+						goto l25
+					}
 				}
-				if !_rules[ruleAction4]() {
-					goto l25
-				}
+			l27:
 				add(ruletoken, position26)
 			}
 			return true
@@ -545,46 +578,102 @@ func (p *Parser) Init() {
 			position, tokenIndex = position25, tokenIndex25
 			return false
 		},
-		/* 4 EOT <- <!.> */
+		/* 4 label_line <- <(<(([a-z] / [A-Z])* ':')> ' '* Action6)> */
 		func() bool {
-			position31, tokenIndex31 := position, tokenIndex
+			position33, tokenIndex33 := position, tokenIndex
 			{
-				position32 := position
+				position34 := position
 				{
-					position33, tokenIndex33 := position, tokenIndex
-					if !matchDot() {
+					position35 := position
+				l36:
+					{
+						position37, tokenIndex37 := position, tokenIndex
+						{
+							position38, tokenIndex38 := position, tokenIndex
+							if c := buffer[position]; c < rune('a') || c > rune('z') {
+								goto l39
+							}
+							position++
+							goto l38
+						l39:
+							position, tokenIndex = position38, tokenIndex38
+							if c := buffer[position]; c < rune('A') || c > rune('Z') {
+								goto l37
+							}
+							position++
+						}
+					l38:
+						goto l36
+					l37:
+						position, tokenIndex = position37, tokenIndex37
+					}
+					if buffer[position] != rune(':') {
 						goto l33
 					}
-					goto l31
-				l33:
-					position, tokenIndex = position33, tokenIndex33
+					position++
+					add(rulePegText, position35)
 				}
-				add(ruleEOT, position32)
+			l40:
+				{
+					position41, tokenIndex41 := position, tokenIndex
+					if buffer[position] != rune(' ') {
+						goto l41
+					}
+					position++
+					goto l40
+				l41:
+					position, tokenIndex = position41, tokenIndex41
+				}
+				if !_rules[ruleAction6]() {
+					goto l33
+				}
+				add(rulelabel_line, position34)
 			}
 			return true
-		l31:
-			position, tokenIndex = position31, tokenIndex31
+		l33:
+			position, tokenIndex = position33, tokenIndex33
+			return false
+		},
+		/* 5 EOT <- <!.> */
+		func() bool {
+			position42, tokenIndex42 := position, tokenIndex
+			{
+				position43 := position
+				{
+					position44, tokenIndex44 := position, tokenIndex
+					if !matchDot() {
+						goto l44
+					}
+					goto l42
+				l44:
+					position, tokenIndex = position44, tokenIndex44
+				}
+				add(ruleEOT, position43)
+			}
+			return true
+		l42:
+			position, tokenIndex = position42, tokenIndex42
 			return false
 		},
 		nil,
-		/* 7 Action0 <- <{p.s.Err(begin)}> */
+		/* 8 Action0 <- <{p.s.Err(begin)}> */
 		func() bool {
 			{
 				add(ruleAction0, position)
 			}
 			return true
 		},
-		/* 8 Action1 <- <{p.s.Err(begin)}> */
+		/* 9 Action1 <- <{p.s.Err(begin)}> */
 		func() bool {
 			{
 				add(ruleAction1, position)
 			}
 			return true
 		},
-		/* 9 Action2 <- <{
+		/* 10 Action2 <- <{
 			p.s.line++;
 			p.s.lineHead = begin + 1
-			fmt.Printf("line %d COMMENT\t%s", p.s.line, text)
+			fmt.Printf("line %04d COMMENT\t%s", p.s.line, text)
 		}> */
 		func() bool {
 			{
@@ -592,7 +681,7 @@ func (p *Parser) Init() {
 			}
 			return true
 		},
-		/* 10 Action3 <- <{
+		/* 11 Action3 <- <{
 			p.s.line++;
 			p.s.lineHead = begin + 1
 		}> */
@@ -602,12 +691,29 @@ func (p *Parser) Init() {
 			}
 			return true
 		},
-		/* 11 Action4 <- <{
-			fmt.Printf("line %d TOKEN  \t%s\n", p.s.line, text)
+		/* 12 Action4 <- <{
 		}> */
 		func() bool {
 			{
 				add(ruleAction4, position)
+			}
+			return true
+		},
+		/* 13 Action5 <- <{
+			fmt.Printf("line %04d TOKEN  \t%s\n", p.s.line, text)
+		}> */
+		func() bool {
+			{
+				add(ruleAction5, position)
+			}
+			return true
+		},
+		/* 14 Action6 <- <{
+			fmt.Printf("line %04d LABEL  \t%s\n", p.s.line, text)
+		}> */
+		func() bool {
+			{
+				add(ruleAction6, position)
 			}
 			return true
 		},

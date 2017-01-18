@@ -15,15 +15,21 @@ text <- line line*
 line <- <&';' [^\n]* '\n'> {
 	p.s.line++;
 	p.s.lineHead = begin + 1
-	fmt.Printf("line %d COMMENT\t%s", p.s.line, text)
+	fmt.Printf("line %04d COMMENT\t%s", p.s.line, text)
 } / <token '\n'> {
 	p.s.line++;
 	p.s.lineHead = begin + 1
 }
 
 # アセンブラの定義されてる行(スペース+ニーモニック)
-token <- <[^\n]*> {
-	fmt.Printf("line %d TOKEN  \t%s\n", p.s.line, text)
+token <- label_line {
+} / <[^\n]*> {
+	fmt.Printf("line %04d TOKEN  \t%s\n", p.s.line, text)
+}
+
+# ラベル
+label_line <- <[a-zA-Z]*':'> ' '* {
+	fmt.Printf("line %04d LABEL  \t%s\n", p.s.line, text)
 }
 
 EOT <- !.
