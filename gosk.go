@@ -22,10 +22,10 @@ func (self *Scan) Err(s int) {
 }
 
 func main() {
-        if len(os.Args) != 2 {
+	if len(os.Args) != 2 {
 		fmt.Println("usage:  [--help | --version] source [object/binary] [list]")
 		os.Exit(0)
-        }
+	}
 	var buf []byte
 	var err error
 
