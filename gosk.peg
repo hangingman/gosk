@@ -12,30 +12,32 @@ root <- text EOT                   / # 正しいテキスト
 text <- line line*
 
 # コメント行と通常の行
-line <- <&';' [^\n]* '\n'> {
+line <- < &';' [^\n]* _ EOL > {
 	p.s.line++;
 	p.s.lineHead = begin + 1
 	fmt.Printf("line %04d COMMENT\t%s", p.s.line, text)
-} / <token '\n'> {
+} / label {
+} / < [^\n]* _ EOL > {
 	p.s.line++;
 	p.s.lineHead = begin + 1
 }
 
-# アセンブラの定義されてる行(スペース+ニーモニック)
-token <- label_line {
-} / nimonic_line {
-} / <[^\n]*> {
-	fmt.Printf("line %04d TOKEN  \t%s\n", p.s.line, text)
+
+
+
+label      <- < ident ':' _ EOL > {
+	fmt.Printf("line %04d LABEL\t%s", p.s.line, text)
 }
 
-# ニーモニックが書いてある行
-nimonic_line <- ' '* <&[a-zA-Z]* ' '* [^\n]+> {
-	fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
-}
-
-# ラベル
-label_line <- <[a-zA-Z]*':'> ' '* {
-	fmt.Printf("line %04d LABEL  \t%s\n", p.s.line, text)
-}
-
-EOT <- !.
+expression <- sign term (term_op term)*                # 数式
+sign	   <- [-+]? _								   # 符号
+term_op	   <- [-+] _								   # 項の演算子
+term	   <- factor (factor_op factor)*			   # 項
+factor_op  <- [*/] _								   # 因数の演算子
+factor	   <- ident / number / '(' _ expression ')' _  # 因数
+ident	   <- [a-zA-Z] [a-zA-Z0-9]* _				   # 変数
+number	   <- [0-9]+ _								   # 即値
+__		   <- ![a-zA-Z0-9_] _						   # キーワードの間の空白文字
+_		   <- [ \t]*								   # 0回以上の空白文字の繰り返し
+EOL		   <- '\r\n' / '\n'							   # 改行コード
+EOT		   <- !.									   # テキストの終わり
