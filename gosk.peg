@@ -15,9 +15,15 @@ text <- line line*
 line <- <&';' [^\n]* '\n'> {
 	p.s.line++;
 	p.s.lineHead = begin + 1
-	fmt.Printf("line %d (%d) COMMENTS\t%s", p.s.line, begin - p.s.lineHead, text)
-} / <[^\n]* '\n'> {
-	fmt.Printf("line %d (%d) OTHER\t%s", p.s.line, begin - p.s.lineHead, text)
+	fmt.Printf("line %d COMMENT\t%s", p.s.line, text)
+} / <token '\n'> {
+	p.s.line++;
+	p.s.lineHead = begin + 1
+}
+
+# アセンブラの定義されてる行(スペース+ニーモニック)
+token <- <[^\n]*> {
+	fmt.Printf("line %d TOKEN  \t%s\n", p.s.line, text)
 }
 
 EOT <- !.
