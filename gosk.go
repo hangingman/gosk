@@ -12,7 +12,7 @@ type Scan struct {
 }
 
 func (self *Scan) Init() {
-	self.line = 1     // 現在の行
+	self.line = 0     // 現在の行
 	self.lineHead = 0 // 行の先頭文字位置
 }
 

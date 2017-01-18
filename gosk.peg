@@ -11,22 +11,33 @@ root <- text EOT                   / # 正しいテキスト
 # 複数行のテキスト
 text <- line line*
 
-# コメント行と通常の行
-line <- < &';' [^\n]* _ EOL > {
-	p.s.line++;
-	p.s.lineHead = begin + 1
-	fmt.Printf("line %04d COMMENT\t%s", p.s.line, text)
-} / label {
-} / < [^\n]* _ EOL > {
+line <- comments   EOL /
+	 	blanks     EOL /
+		label      EOL /
+		< [^\n]+ _ EOL > {
 	p.s.line++;
 	p.s.lineHead = begin + 1
 }
 
+# コメント
+comments <- < _ ';' [^\n]* _ > {
+	p.s.line++;
+	p.s.lineHead = begin + 1
+	fmt.Printf("line %04d COMMENT\t%s\n", p.s.line, text)
+}
 
+# 空行
+blanks <- < _ > {
+	p.s.line++;
+	p.s.lineHead = begin + 1
+	fmt.Printf("line %04d BLANK  \t%s\n", p.s.line, text)
+}
 
-
-label      <- < ident ':' _ EOL > {
-	fmt.Printf("line %04d LABEL\t%s", p.s.line, text)
+# ラベル
+label <- < ident ':' _ > {
+	p.s.line++;
+	p.s.lineHead = begin + 1
+	fmt.Printf("line %04d LABEL  \t%s\n", p.s.line, text)
 }
 
 expression <- sign term (term_op term)*                # 数式
