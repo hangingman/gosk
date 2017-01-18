@@ -23,8 +23,14 @@ line <- <&';' [^\n]* '\n'> {
 
 # アセンブラの定義されてる行(スペース+ニーモニック)
 token <- label_line {
+} / nimonic_line {
 } / <[^\n]*> {
 	fmt.Printf("line %04d TOKEN  \t%s\n", p.s.line, text)
+}
+
+# ニーモニックが書いてある行
+nimonic_line <- ' '* <&[a-zA-Z]* ' '* [^\n]+> {
+	fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
 }
 
 # ラベル
