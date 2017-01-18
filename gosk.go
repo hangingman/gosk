@@ -1,9 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
+	"io/ioutil"
 )
 
 type Scan struct {
@@ -22,34 +22,23 @@ func (self *Scan) Err(s int) {
 }
 
 func main() {
-        var fp *os.File
-        var err error
-
-        if len(os.Args) < 2 {
-                fp  = os.Stdin
-        } else {
-                fp, err = os.Open(os.Args[1])
-                if err != nil {
-			panic(err)
-                }
-                defer fp.Close()
+        if len(os.Args) != 2 {
+		fmt.Println("usage:  [--help | --version] source [object/binary] [list]")
+		os.Exit(0)
         }
+	var buf []byte
+	var err error
 
-	scanner := bufio.NewScanner(fp)
-	for scanner.Scan() {
-		if err := scanner.Err(); err != nil {
-			panic(err)
-		}
-		// 解析対象文字の設定
-		parser := &Parser{Buffer: scanner.Text()}
-		parser.Init()                // parser初期化
-		parser.s.Init()              // SCAN構造体初期化
-		err := parser.Parse()        // 解析
+	buf,err = ioutil.ReadFile(os.Args[1])
+	parser := &Parser{Buffer: string(buf)}
+	parser.Init()
+	parser.s.Init()
 
-		if err != nil {
-			fmt.Println(err)
-		} else {
-			parser.Execute() // アクション処理
-		}
+	err = parser.Parse()
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		parser.Execute()
 	}
 }
