@@ -14,9 +14,18 @@ text <- line line*
 line <- comments   EOL /
 	 	blanks     EOL /
 		label      EOL /
+		nim_params EOL /
 		< [^\n]+ _ EOL > {
 	p.s.line++;
 	p.s.lineHead = begin + 1
+	fmt.Printf("line %04d OTHERS \t%s", p.s.line, text)
+}
+
+# ニーモニックとパラメーター
+nim_params <- < _ ident _ ident _ > {
+	p.s.line++;
+	p.s.lineHead = begin + 1
+	fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
 }
 
 # コメント
