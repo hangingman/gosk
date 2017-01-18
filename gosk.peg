@@ -69,7 +69,7 @@ dst        <- ( ident / immediate / memory / quoted )  # 送り先
 src		   <- ( ident / immediate / memory / quoted )  # 送り元
 
 memory     <- "[" ( ident / hex ) "]"                  # メモリ '[SI]' や '[0x0ff0]'
-immediate  <- hex / number                             # 即値 '0x55' や '66' など
+immediate  <- hex / number / expression                # 即値 '0x55' や '66' など + 数式
 quoted     <- '"' [^"]+ '"'                            # テキスト "HARIBOTE" など
 comment    <- (';' [^\n]*)?                            # トークンの内部のコメント
 

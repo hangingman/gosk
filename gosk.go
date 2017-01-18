@@ -18,7 +18,6 @@ func (self *Scan) Init() {
 
 func (self *Scan) Err(s int) {
 	fmt.Printf("\n!!error!!%d\n", s)
-
 }
 
 func main() {
