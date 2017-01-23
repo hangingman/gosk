@@ -17,5 +17,7 @@ set(SOURCE_FILES
   ${gosk_SOURCE_DIR}/src/gosk.go
 )
 
-add_executable(gosk ${SOURCE_FILES})
+add_custom_target(gosk
+  COMMAND go build -o ${gosk_SOURCE_DIR}/gosk ${SOURCE_FILES}
+)
 add_dependencies(gosk gosk_peg_go)
