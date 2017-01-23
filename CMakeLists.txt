@@ -5,12 +5,17 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/)
 project(gosk Go)
 
 # peg file
-add_custom_target(gosk_peg_go peg src/gosk.peg)
+set(gosk_peg ${gosk_SOURCE_DIR}/src/gosk.peg)
+
+add_custom_target(gosk_peg_go
+  COMMAND peg ${gosk_peg}
+)
 
 # gosk
 set(SOURCE_FILES
-    src/gosk.peg.go)
-    src/gosk.go)
+  ${gosk_SOURCE_DIR}/src/gosk.peg.go
+  ${gosk_SOURCE_DIR}/src/gosk.go
+)
 
 add_executable(gosk ${SOURCE_FILES})
 add_dependencies(gosk gosk_peg_go)

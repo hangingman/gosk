@@ -23,4 +23,7 @@ _testmain.go
 *.test
 *.prof
 
+# cmake
+build/
+
 gosk
