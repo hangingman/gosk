@@ -1562,9 +1562,9 @@ func (p *Parser) Init() {
 			return true
 		},
 		/* 32 Action2 <- <{
-			p.s.line++;
-			p.s.lineHead = begin + 1
-			fmt.Printf("line %04d OTHERS \t%s", p.s.line, text)
+		 p.s.line++;
+		 p.s.lineHead = begin + 1
+		 fmt.Printf("line %04d OTHERS \t%s", p.s.line, text)
 		}> */
 		func() bool {
 			{
@@ -1573,9 +1573,9 @@ func (p *Parser) Init() {
 			return true
 		},
 		/* 33 Action3 <- <{
-			p.s.line++;
-			p.s.lineHead = begin + 1
-			fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
+		 p.s.line++;
+		 p.s.lineHead = begin + 1
+		 fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
 		}> */
 		func() bool {
 			{
@@ -1584,9 +1584,9 @@ func (p *Parser) Init() {
 			return true
 		},
 		/* 34 Action4 <- <{
-			p.s.line++;
-			p.s.lineHead = begin + 1
-			fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
+		 p.s.line++;
+		 p.s.lineHead = begin + 1
+		 fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
 		}> */
 		func() bool {
 			{
@@ -1595,9 +1595,9 @@ func (p *Parser) Init() {
 			return true
 		},
 		/* 35 Action5 <- <{
-			p.s.line++;
-			p.s.lineHead = begin + 1
-			fmt.Printf("line %04d NIM & OP\t%s\n", p.s.line, text)
+		 p.s.line++;
+		 p.s.lineHead = begin + 1
+		 fmt.Printf("line %04d NIM & OP\t%s\n", p.s.line, text)
 		}> */
 		func() bool {
 			{
@@ -1606,9 +1606,9 @@ func (p *Parser) Init() {
 			return true
 		},
 		/* 36 Action6 <- <{
-			p.s.line++;
-			p.s.lineHead = begin + 1
-			fmt.Printf("line %04d COMMENT\t%s\n", p.s.line, text)
+		 p.s.line++;
+		 p.s.lineHead = begin + 1
+		 fmt.Printf("line %04d COMMENT\t%s\n", p.s.line, text)
 		}> */
 		func() bool {
 			{
@@ -1617,9 +1617,9 @@ func (p *Parser) Init() {
 			return true
 		},
 		/* 37 Action7 <- <{
-			p.s.line++;
-			p.s.lineHead = begin + 1
-			fmt.Printf("line %04d BLANK  \t%s\n", p.s.line, text)
+		 p.s.line++;
+		 p.s.lineHead = begin + 1
+		 fmt.Printf("line %04d BLANK  \t%s\n", p.s.line, text)
 		}> */
 		func() bool {
 			{
@@ -1628,9 +1628,9 @@ func (p *Parser) Init() {
 			return true
 		},
 		/* 38 Action8 <- <{
-			p.s.line++;
-			p.s.lineHead = begin + 1
-			fmt.Printf("line %04d LABEL  \t%s\n", p.s.line, text)
+		 p.s.line++;
+		 p.s.lineHead = begin + 1
+		 fmt.Printf("line %04d LABEL  \t%s\n", p.s.line, text)
 		}> */
 		func() bool {
 			{
