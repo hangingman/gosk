@@ -2,10 +2,9 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"text/scanner"
-	//"os"
-	//"strings"
+	"strings"
 )
 
 type Expression interface{}
@@ -72,4 +71,11 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 func (l *Lexer) Error(e string) {
 	panic(e)
+}
+
+func nimParams(line int, text string) {
+	l := new(Lexer)
+	l.Init(strings.NewReader(text))
+	yyParse(l)
+	fmt.Printf("line %04d %#v\n", line, l.result)
 }

@@ -323,6 +323,7 @@ func (p *Parser) Execute() {
 			p.s.line++
 			p.s.lineHead = begin + 1
 			fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
+			nimParams(p.s.line, text)
 
 		case ruleAction5:
 
@@ -1587,6 +1588,7 @@ func (p *Parser) Init() {
 		 p.s.line++;
 		 p.s.lineHead = begin + 1
 		 fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
+		 nimParams(p.s.line, text)
 		}> */
 		func() bool {
 			{

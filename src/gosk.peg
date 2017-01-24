@@ -35,6 +35,7 @@ nim_params <- < _ ident _ src _ comment > {
  p.s.line++;
  p.s.lineHead = begin + 1
  fmt.Printf("line %04d NIMONIC\t%s\n", p.s.line, text)
+ nimParams(p.s.line, text)
 }
 
 # ニーモニックとオペランド

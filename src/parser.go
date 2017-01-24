@@ -4,10 +4,10 @@ package main
 import __yyfmt__ "fmt"
 
 //line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:2
-import ( //"fmt"
+import (
+	"fmt"
+	"strings"
 	"text/scanner"
-	//"os"
-	//"strings"
 )
 
 type Expression interface{}
@@ -25,7 +25,7 @@ type BinOpExpr struct {
 	right    Expression
 }
 
-//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:27
+//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:26
 type yySymType struct {
 	yys   int
 	token Token
@@ -47,7 +47,7 @@ const yyEofCode = 1
 const yyErrCode = 2
 const yyInitialStackSize = 16
 
-//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:57
+//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:56
 
 type Lexer struct {
 	scanner.Scanner
@@ -65,6 +65,13 @@ func (l *Lexer) Lex(lval *yySymType) int {
 
 func (l *Lexer) Error(e string) {
 	panic(e)
+}
+
+func nimParams(line int, text string) {
+	l := new(Lexer)
+	l.Init(strings.NewReader(text))
+	yyParse(l)
+	fmt.Printf("line %04d %#v\n", line, l.result)
 }
 
 //line yacctab:1
@@ -465,20 +472,20 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:42
+		//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:41
 		{
 			yyVAL.expr = yyDollar[1].expr
 			yylex.(*Lexer).result = yyVAL.expr
 		}
 	case 2:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:49
+		//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:48
 		{
 			yyVAL.expr = NumExpr{literal: yyDollar[1].token.literal}
 		}
 	case 3:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:53
+		//line C:/msys64/home/Hiroyuki.Nagata/git/gosk/src/parser.go.y:52
 		{
 			yyVAL.expr = BinOpExpr{left: yyDollar[1].expr, operator: '+', right: yyDollar[3].expr}
 		}
