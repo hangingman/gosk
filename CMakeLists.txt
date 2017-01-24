@@ -11,8 +11,13 @@ add_custom_target(gosk_peg_go
   COMMAND peg ${gosk_peg}
 )
 
+add_custom_target(gosk_yacc
+  COMMAND go tool yacc -o ${gosk_SOURCE_DIR}/src/parser.go ${gosk_SOURCE_DIR}/src/parser.go.y
+)
+
 # gosk
 set(SOURCE_FILES
+  ${gosk_SOURCE_DIR}/src/parser.go
   ${gosk_SOURCE_DIR}/src/gosk.peg.go
   ${gosk_SOURCE_DIR}/src/gosk.go
 )
@@ -28,3 +33,4 @@ add_custom_target(gosk
 )
 
 add_dependencies(gosk gosk_peg_go)
+add_dependencies(gosk gosk_yacc)
