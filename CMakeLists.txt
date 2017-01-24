@@ -17,7 +17,14 @@ set(SOURCE_FILES
   ${gosk_SOURCE_DIR}/src/gosk.go
 )
 
+if(MSYS)
+  set(gosk_BIN ${gosk_SOURCE_DIR}/gosk.exe)
+else()
+  set(gosk_BIN ${gosk_SOURCE_DIR}/gosk)
+endif()
+
 add_custom_target(gosk
-  COMMAND go build -o ${gosk_SOURCE_DIR}/gosk ${SOURCE_FILES}
+  COMMAND go build -o ${gosk_BIN} ${SOURCE_FILES}
 )
+
 add_dependencies(gosk gosk_peg_go)

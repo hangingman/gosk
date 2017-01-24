@@ -11,7 +11,7 @@ $ go get github.com/pointlander/peg               # only first time
 $ git clone https://github.com/HobbyOSs/gosk.git  # clone
 $ cd gosk
 $ mkdir build
-$ cmake -G Ninja ..
-$ ninja
+$ cmake ..                                        # create Makefiles
+$ make gosk
 $ ./gosk xxx.nas                                  # read nask file
 ```
