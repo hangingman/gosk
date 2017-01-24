@@ -26,4 +26,7 @@ _testmain.go
 # cmake
 build/
 
+# peg & yacc
+*.peg.go
+parser.go
 gosk
