@@ -34,6 +34,7 @@ const (
 	RBRACE    = "}"
 	LBRACKET  = "["
 	RBRACKET  = "]"
+	DOUBLE_QT = "\""
 	EQU       = "EQU"
 	GLOBAL    = "GLOBAL"
 )
