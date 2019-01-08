@@ -26,20 +26,21 @@ const (
 	COLON     = ":"
 	SEMICOLON = ";"
 	SHARP     = "#"
+	LT        = "<"
+	GT        = ">"
 	LPAREN    = "("
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
 	LBRACKET  = "["
 	RBRACKET  = "]"
-	LT        = "<"
-	GT        = ">"
-	EQ        = "=="
-	NOTEQ     = "!="
+	EQU       = "EQU"
+	GLOBAL    = "GLOBAL"
 )
 
 var keywords = map[string]TokenType{
 	"EQU": EQU,
+	"GLOBAL": GLOBAL
 }
 
 func LookupIndent(ident string) TokenType {
