@@ -7,11 +7,11 @@ GOGET=$(GOCMD) get
 
 BIN=gosk
 
-all: test build
+all: dep test build
 
 build:
 	$(GOBUILD) -o ${BIN} -v
-test:
+test: dep
 	$(GOTEST) -v ./...
 clean:
 	$(GOCLEAN)
@@ -22,6 +22,9 @@ fmt:
 	for go_file in `find . -name \*.go`; do \
 		go fmt $${go_file}; \
 	done
+
+dep:
+	$(GOGET) github.com/stretchr/testify
 
 emacs:
 	$(GOGET) github.com/rogpeppe/godef

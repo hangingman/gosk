@@ -40,7 +40,7 @@ const (
 
 var keywords = map[string]TokenType{
 	"EQU": EQU,
-	"GLOBAL": GLOBAL
+	"GLOBAL": GLOBAL,
 }
 
 func LookupIndent(ident string) TokenType {

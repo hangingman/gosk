@@ -4,7 +4,7 @@ import "github.com/hangingman/gosk/token"
 
 // Lexer は入力された文字列に対する現状の検査状況を保持します
 type Lexer struct {
-	input        string // 入力
+	input        []rune // 入力
 	position     int    // 現在の文字の位置
 	readPosition int    // これから読み込む位置
 	ch           rune   // 現在検査中の文字
@@ -12,7 +12,7 @@ type Lexer struct {
 
 // New は与えられた文字列に対するトークンを返します
 func New(input string) *Lexer {
-	l := &Lexer{input: input}
+	l := &Lexer{input: []rune(input)}
 	l.readChar()
 	return l
 }
@@ -42,7 +42,7 @@ func (l *Lexer) readIdentifier() string {
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	return l.input[position:l.position]
+	return string(l.input[position:l.position])
 }
 
 // isLetter は入力バイトが英字＋アンダーバーであればtrueを返す
@@ -130,7 +130,7 @@ func (l *Lexer) readNumber() string {
 	for isDigit(l.ch) {
 		l.readChar()
 	}
-	return l.input[position:l.position]
+	return string(l.input[position:l.position])
 }
 
 func isDigit(ch rune) bool {
