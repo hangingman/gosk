@@ -1,0 +1,10 @@
+language: go
+
+go:
+  - "1.10"
+
+install:
+ - go get github.com/hangingman/gosk
+
+script:
+ - make

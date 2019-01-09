@@ -2,7 +2,6 @@ package ast
 
 import (
 	"bytes"
-	"github.com/hangingman/gosk/token"
 )
 
 type Node interface {
