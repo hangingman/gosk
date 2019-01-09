@@ -11,7 +11,7 @@ all: dep test build
 
 build:
 	$(GOBUILD) -o ${BIN} -v
-test: dep
+test:
 	$(GOTEST) -v ./...
 clean:
 	$(GOCLEAN)
