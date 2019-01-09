@@ -55,40 +55,40 @@ msg:
 	tests := []LexerTest{
 		// [INSTRSET "i486p"]
 		{token.LBRACKET, "["},
-		{token.IDENT, "INSTRSET"},
+		{token.SETTING, "INSTRSET"},
 		{token.STR_LIT, "\"i486p\""},
 		{token.RBRACKET, "]"},
 		// [BITS 32]
 		{token.LBRACKET, "["},
-		{token.IDENT, "BITS"},
+		{token.SETTING, "BITS"},
 		{token.INT, "32"},
 		{token.RBRACKET, "]"},
 		// MOV		EDX,2
-		{token.IDENT, "MOV"},
+		{token.OPCODE, "MOV"},
 		{token.IDENT, "EDX"},
 		{token.COMMA, ","},
 		{token.INT, "2"},
 		// MOV		EBX,msg
-		{token.IDENT, "MOV"},
+		{token.OPCODE, "MOV"},
 		{token.IDENT, "EBX"},
 		{token.COMMA, ","},
 		{token.IDENT, "msg"},
 		// INT		0x40
-		{token.IDENT, "INT"},
+		{token.OPCODE, "INT"},
 		{token.HEX_LIT, "0x40"},
 		// MOV		EDX,4
-		{token.IDENT, "MOV"},
+		{token.OPCODE, "MOV"},
 		{token.IDENT, "EDX"},
 		{token.COMMA, ","},
 		{token.INT, "4"},
 		// INT		0x40
-		{token.IDENT, "INT"},
+		{token.OPCODE, "INT"},
 		{token.HEX_LIT, "0x40"},
 		// msg:
 		{token.IDENT, "msg"},
 		{token.COLON, ":"},
 		// DB	"hello",0
-		{token.IDENT, "DB"},
+		{token.OPCODE, "DB"},
 		{token.STR_LIT, "\"hello\""},
 		{token.COMMA, ","},
 		{token.INT, "0"},
