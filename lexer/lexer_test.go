@@ -14,10 +14,10 @@ type LexerTest struct {
 
 func testLexerParsedTokens(t *testing.T, tok token.Token, tt *LexerTest, idx int) {
 
-	assert.Equal(t, tok.Type, tt.expectedType,
+	assert.Equal(t, tt.expectedType, tok.Type,
 		fmt.Sprintf("tests[%d] - tokentype wrong. expected=%q, got=%q", idx, tt.expectedType, tok.Type))
 
-	assert.Equal(t, tok.Literal, tt.expectedLiteral,
+	assert.Equal(t, tt.expectedLiteral, tok.Literal,
 		fmt.Sprintf("tests[%d] - literal wrong. expected=%q, got=%q", idx, tt.expectedLiteral, tok.Literal))
 }
 
@@ -58,11 +58,7 @@ msg:
 		// [INSTRSET "i486p"]
 		{token.LBRACKET, "["},
 		{token.IDENT, "INSTRSET"},
-		{token.DOUBLE_QT, "\""},
-		{token.IDENT, "i"},
-		{token.INT, "486"},
-		{token.IDENT, "p"},
-		{token.DOUBLE_QT, "\""},
+		{token.STR_LIT, "\"i486p\""},
 		{token.RBRACKET, "]"},
 		// [BITS 32]
 		{token.LBRACKET, "["},
@@ -99,9 +95,7 @@ msg:
 		{token.COLON, ":"},
 		// DB	"hello",0
 		{token.IDENT, "DB"},
-		{token.DOUBLE_QT, "\""},
-		{token.IDENT, "hello"},
-		{token.DOUBLE_QT, "\""},
+		{token.STR_LIT, "\"hello\""},
 		{token.COMMA, ","},
 		{token.INT, "0"},
 		// EOF!

@@ -1,6 +1,8 @@
 package lexer
 
-import "github.com/hangingman/gosk/token"
+import (
+	"github.com/hangingman/gosk/token"
+)
 
 // Lexer は入力された文字列に対する現状の検査状況を保持します
 type Lexer struct {
@@ -101,7 +103,8 @@ func (l *Lexer) NextToken() token.Token {
 	case ']':
 		tok = newToken(token.RBRACKET, l.ch)
 	case '"':
-		tok = newToken(token.DOUBLE_QT, l.ch)
+		tok.Type = token.STR_LIT
+		tok.Literal = l.readDoubleQuotedString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -127,6 +130,16 @@ func (l *Lexer) skipUntilNextLF() {
 	for !(l.ch == '\n' || l.ch == '\r' || l.ch == 0) {
 		l.readChar()
 	}
+}
+
+func (l *Lexer) readDoubleQuotedString() string {
+	position := l.position
+
+	l.readChar() // l.ch を " の次へ
+	for !(l.ch == '"' || l.ch == 0) {
+		l.readChar()
+	}
+	return string(l.input[position : l.position+1])
 }
 
 func (l *Lexer) skipWhitespaceWithLF() {
