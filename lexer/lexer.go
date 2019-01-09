@@ -113,6 +113,10 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIndent(tok.Literal)
 			return tok
+		} else if isHexNotation(l.ch, l.peekChar()) {
+			tok.Type = token.HEX_LIT
+			tok.Literal = l.readHex()
+			return tok
 		} else if isDigit(l.ch) {
 			tok.Type = token.INT
 			tok.Literal = l.readNumber()
@@ -154,6 +158,26 @@ func (l *Lexer) readNumber() string {
 		l.readChar()
 	}
 	return string(l.input[position:l.position])
+}
+
+func (l *Lexer) readHex() string {
+	position := l.position
+
+	l.readChar()
+	l.readChar() // l.ch を 0x の次へ
+
+	for isDigit(l.ch) || isHexAlpha(l.ch) {
+		l.readChar()
+	}
+	return string(l.input[position:l.position])
+}
+
+func isHexNotation(ch1 rune, ch2 rune) bool {
+	return ch1 == '0' && ch2 == 'x'
+}
+
+func isHexAlpha(ch rune) bool {
+	return ('a' <= ch && ch <= 'f') || ('A' <= ch && ch <= 'F')
 }
 
 func isDigit(ch rune) bool {

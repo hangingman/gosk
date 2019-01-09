@@ -27,9 +27,7 @@ func TestCommentLines(t *testing.T) {
 	tests := []LexerTest{
 		{token.IDENT, "VBEMODE"},
 		{token.EQU, "EQU"},
-		{token.INT, "0"},
-		{token.IDENT, "x"},
-		{token.INT, "105"},
+		{token.HEX_LIT, "0x105"},
 
 		// EOF!
 		{token.EOF, ""},
@@ -77,9 +75,7 @@ msg:
 		{token.IDENT, "msg"},
 		// INT		0x40
 		{token.IDENT, "INT"},
-		{token.INT, "0"},
-		{token.IDENT, "x"},
-		{token.INT, "40"},
+		{token.HEX_LIT, "0x40"},
 		// MOV		EDX,4
 		{token.IDENT, "MOV"},
 		{token.IDENT, "EDX"},
@@ -87,9 +83,7 @@ msg:
 		{token.INT, "4"},
 		// INT		0x40
 		{token.IDENT, "INT"},
-		{token.INT, "0"},
-		{token.IDENT, "x"},
-		{token.INT, "40"},
+		{token.HEX_LIT, "0x40"},
 		// msg:
 		{token.IDENT, "msg"},
 		{token.COLON, ":"},
