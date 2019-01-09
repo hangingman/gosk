@@ -1,17 +1,13 @@
-# Gosk
+# Gosk [![Build Status](https://travis-ci.org/hangingman/gosk.svg?branch=master)](https://travis-ci.org/hangingman/gosk)
 
 It's a play-ground
 
 ## Build & Run
 
-* You need to install Go and CMake
+* You need to install Go and Make
 
 ```
-$ go get github.com/pointlander/peg               # only first time
-$ git clone https://github.com/HobbyOSs/gosk.git  # clone
-$ cd gosk
-$ mkdir build
-$ cmake ..                                        # create Makefiles
-$ make gosk
-$ ./gosk xxx.nas                                  # read nask file
+$ go get github.com/hangingman/gosk
+$ cd $GO_HOME/github.com/hangingman/gosk
+$ make
 ```
