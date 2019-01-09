@@ -1,9 +1,47 @@
 package lexer
 
 import (
+	"fmt"
 	"github.com/hangingman/gosk/token"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+type LexerTest struct {
+	expectedType    token.TokenType
+	expectedLiteral string
+}
+
+func testLexerParsedTokens(t *testing.T, tok token.Token, tt *LexerTest, idx int) {
+
+	assert.Equal(t, tok.Type, tt.expectedType,
+		fmt.Sprintf("tests[%d] - tokentype wrong. expected=%q, got=%q", idx, tt.expectedType, tok.Type))
+
+	assert.Equal(t, tok.Literal, tt.expectedLiteral,
+		fmt.Sprintf("tests[%d] - literal wrong. expected=%q, got=%q", idx, tt.expectedLiteral, tok.Literal))
+}
+
+func TestCommentLines(t *testing.T) {
+	input := `VBEMODE	EQU		0x105			; 1024 x  768 x 8bitカラー`
+
+	tests := []LexerTest{
+		{token.IDENT, "VBEMODE"},
+		{token.EQU, "EQU"},
+		{token.INT, "0"},
+		{token.IDENT, "x"},
+		{token.INT, "105"},
+
+		// EOF!
+		{token.EOF, ""},
+	}
+
+	l := New(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+		testLexerParsedTokens(t, tok, &tt, i)
+	}
+}
 
 func TestNextToken(t *testing.T) {
 	input := `[INSTRSET "i486p"]
@@ -16,10 +54,7 @@ func TestNextToken(t *testing.T) {
 msg:
 		DB	"hello",0`
 
-	tests := []struct {
-		expectedType    token.TokenType
-		expectedLiteral string
-	}{
+	tests := []LexerTest{
 		// [INSTRSET "i486p"]
 		{token.LBRACKET, "["},
 		{token.IDENT, "INSTRSET"},
@@ -77,14 +112,6 @@ msg:
 
 	for i, tt := range tests {
 		tok := l.NextToken()
-
-		if tok.Type != tt.expectedType {
-			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q",
-				i, tt.expectedType, tok.Type)
-		}
-		if tok.Literal != tt.expectedLiteral {
-			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q",
-				i, tt.expectedLiteral, tok.Literal)
-		}
+		testLexerParsedTokens(t, tok, &tt, i)
 	}
 }

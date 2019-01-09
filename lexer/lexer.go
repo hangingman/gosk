@@ -59,7 +59,7 @@ func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
 	// 文字がスペースならば読み飛ばす
-	l.skipWhitespace()
+	l.skipWhitespaceWithLF()
 
 	switch l.ch {
 	case '=':
@@ -79,9 +79,11 @@ func (l *Lexer) NextToken() token.Token {
 	case ':':
 		tok = newToken(token.COLON, l.ch)
 	case ';':
-		tok = newToken(token.SEMICOLON, l.ch)
+		l.skipUntilNextLF() // 行コメント
+		tok = l.NextToken()
 	case '#':
-		tok = newToken(token.SHARP, l.ch)
+		l.skipUntilNextLF() // 行コメント
+		tok = l.NextToken()
 	case '<':
 		tok = newToken(token.LT, l.ch)
 	case '>':
@@ -121,7 +123,13 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
-func (l *Lexer) skipWhitespace() {
+func (l *Lexer) skipUntilNextLF() {
+	for !(l.ch == '\n' || l.ch == '\r' || l.ch == 0) {
+		l.readChar()
+	}
+}
+
+func (l *Lexer) skipWhitespaceWithLF() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
