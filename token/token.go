@@ -41,6 +41,7 @@ const (
 	SETTING   = "SETTING"
 	STR_LIT   = "STR_LIT"
 	HEX_LIT   = "HEX_LIT"
+	LABEL     = "LABEL"
 )
 
 func LookupIndent(ident string) TokenType {

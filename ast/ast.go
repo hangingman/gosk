@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"github.com/hangingman/gosk/token"
 )
 
 type Node interface {
@@ -17,6 +18,11 @@ type Statement interface {
 type Expression interface {
 	Node
 	expressionNode()
+}
+
+type Identifier struct {
+	Token token.Token
+	Value string
 }
 
 type Program struct {
@@ -39,4 +45,35 @@ func (p *Program) String() string {
 	}
 
 	return out.String()
+}
+
+// MnemonicStatement は `MOV BX, 15` のような構文を解析する
+type MnemonicStatement struct {
+	Token token.Token // OPCODE
+	Name  *Identifier
+	Value Expression
+	Line  int
+}
+
+// SettingStatement は `[FORMAT "WCOFF"]` のような構文を解析する
+type SettingStatement struct {
+	Token token.Token // SETTING
+	Name  *Identifier
+	Value Expression
+	Line  int
+}
+
+// LabelStatement は `entry:` のような構文を解析する
+type LabelStatement struct {
+	Token token.Token // LABEL
+	Name  *Identifier
+	Line  int
+}
+
+// EquStatement は `BOTPAK  EQU  0x00280000` のような構文を解析する
+type EquStatement struct {
+	Token token.Token // EQU
+	Name  *Identifier
+	Value Expression
+	Line  int
 }
