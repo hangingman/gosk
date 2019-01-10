@@ -15,8 +15,7 @@ test:
 	$(GOTEST) -v ./...
 clean:
 	$(GOCLEAN)
-run:
-	$(GOBUILD) -o $(BIN) -v ./...
+run: build
 	./$(BIN)
 fmt:
 	for go_file in `find . -name \*.go`; do \
