@@ -111,7 +111,14 @@ func (l *Lexer) NextToken() token.Token {
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
-			tok.Type = token.LookupIndent(tok.Literal)
+			tok.Type = token.LookupIdent(tok.Literal)
+			if tok.Type == token.IDENT && l.ch == ':' {
+				// ':' で終わる識別子は基本的にラベルとみなす
+				l.readChar()
+				tok.Literal = tok.Literal + ":"
+				tok.Type = token.LABEL
+				return tok
+			}
 			return tok
 		} else if isHexNotation(l.ch, l.peekChar()) {
 			tok.Type = token.HEX_LIT

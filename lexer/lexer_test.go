@@ -13,7 +13,6 @@ type LexerTest struct {
 }
 
 func testLexerParsedTokens(t *testing.T, tok token.Token, tt *LexerTest, idx int) {
-
 	assert.Equal(t, tt.expectedType, tok.Type,
 		fmt.Sprintf("tests[%d] - tokentype wrong. expected=%q, got=%q", idx, tt.expectedType, tok.Type))
 
@@ -85,8 +84,7 @@ msg:
 		{token.OPCODE, "INT"},
 		{token.HEX_LIT, "0x40"},
 		// msg:
-		{token.IDENT, "msg"},
-		{token.COLON, ":"},
+		{token.LABEL, "msg:"},
 		// DB	"hello",0
 		{token.OPCODE, "DB"},
 		{token.STR_LIT, "\"hello\""},

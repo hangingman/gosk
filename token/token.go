@@ -44,7 +44,7 @@ const (
 	LABEL     = "LABEL"
 )
 
-func LookupIndent(ident string) TokenType {
+func LookupIdent(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}
