@@ -23,10 +23,6 @@ _testmain.go
 *.test
 *.prof
 
-# cmake
-build/
-
 # peg & yacc
 *.peg.go
-parser.go
 gosk
