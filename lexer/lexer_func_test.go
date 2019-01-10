@@ -12,7 +12,7 @@ func TestIsDigit(t *testing.T) {
 
 func TestIsLetter(t *testing.T) {
 	assert.Equal(t, isLetter('あ'), false)
-	assert.Equal(t, isLetter('0'), false)
+	assert.Equal(t, isLetter('0'), true)
 	assert.Equal(t, isLetter('a'), true)
 	assert.Equal(t, isLetter('_'), true)
 }

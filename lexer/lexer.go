@@ -44,12 +44,16 @@ func (l *Lexer) readIdentifier() string {
 	for isLetter(l.ch) {
 		l.readChar()
 	}
-	return string(l.input[position:l.position])
+	ident := string(l.input[position:l.position])
+
+	l.position--
+	l.readPosition--
+	return ident
 }
 
 // isLetter は入力バイトが英字＋アンダーバーであればtrueを返す
 func isLetter(ch rune) bool {
-	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_' || isDigit(ch)
 }
 
 func newToken(tokenType token.TokenType, ch rune) token.Token {
@@ -109,9 +113,18 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Literal = ""
 		tok.Type = token.EOF
 	default:
-		if isLetter(l.ch) {
+		if isHexNotation(l.ch, l.peekChar()) {
+			tok.Type = token.HEX_LIT
+			tok.Literal = l.readHex()
+			return tok
+		} else if isDigit(l.ch) {
+			tok.Type = token.INT
+			tok.Literal = l.readNumber()
+			return tok
+		} else if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
+			l.readChar()
 			if tok.Type == token.IDENT && l.ch == ':' {
 				// ':' で終わる識別子は基本的にラベルとみなす
 				l.readChar()
@@ -119,14 +132,6 @@ func (l *Lexer) NextToken() token.Token {
 				tok.Type = token.LABEL
 				return tok
 			}
-			return tok
-		} else if isHexNotation(l.ch, l.peekChar()) {
-			tok.Type = token.HEX_LIT
-			tok.Literal = l.readHex()
-			return tok
-		} else if isDigit(l.ch) {
-			tok.Type = token.INT
-			tok.Literal = l.readNumber()
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
