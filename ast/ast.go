@@ -55,6 +55,10 @@ type MnemonicStatement struct {
 	Line  int
 }
 
+func (s *MnemonicStatement) statementNode()       {}
+func (s *MnemonicStatement) TokenLiteral() string { return s.Token.Literal }
+func (s *MnemonicStatement) String() string       { return "MNEMONIC" }
+
 // SettingStatement は `[FORMAT "WCOFF"]` のような構文を解析する
 type SettingStatement struct {
 	Token token.Token // SETTING
@@ -63,12 +67,20 @@ type SettingStatement struct {
 	Line  int
 }
 
+func (s *SettingStatement) statementNode()       {}
+func (s *SettingStatement) TokenLiteral() string { return s.Token.Literal }
+func (s *SettingStatement) String() string       { return "SETTING" }
+
 // LabelStatement は `entry:` のような構文を解析する
 type LabelStatement struct {
 	Token token.Token // LABEL
 	Name  *Identifier
 	Line  int
 }
+
+func (s *LabelStatement) statementNode()       {}
+func (s *LabelStatement) TokenLiteral() string { return s.Token.Literal }
+func (s *LabelStatement) String() string       { return "LABEL" }
 
 // EquStatement は `BOTPAK  EQU  0x00280000` のような構文を解析する
 type EquStatement struct {
@@ -77,3 +89,7 @@ type EquStatement struct {
 	Value Expression
 	Line  int
 }
+
+func (s *EquStatement) statementNode()       {}
+func (s *EquStatement) TokenLiteral() string { return s.Token.Literal }
+func (s *EquStatement) String() string       { return "EQU" }
