@@ -3,9 +3,9 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	"github.com/hangingman/gosk/eval"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/parser"
-	"github.com/hangingman/gosk/eval"
 	"io"
 )
 
