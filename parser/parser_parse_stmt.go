@@ -71,8 +71,20 @@ func (p *Parser) parseSettingStatement() *ast.SettingStatement {
 }
 
 func (p *Parser) parseEquStatement() *ast.EquStatement {
-	stmt := &ast.EquStatement{Token: p.curToken}
+	stmt := &ast.EquStatement{
+		Name: &ast.Identifier{
+			Token: token.Token{Type: token.IDENT, Literal: string(p.curToken.Literal)},
+		},
+	}
 
-	fmt.Printf("parseEquStatement! : %s\n", stmt.String())
+	if !p.peekTokenIs(token.EQU) {
+		return nil
+	}
+	stmt.Token = token.Token{Type: token.EQU, Literal: "EQU"}
+
+	p.nextToken()
+	stmt.Name.Value = p.peekToken.Literal
+	fmt.Printf("parseEquStatement! : %s\n", stmt)
+
 	return stmt
 }

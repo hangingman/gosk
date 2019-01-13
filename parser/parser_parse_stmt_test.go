@@ -51,12 +51,17 @@ func TestParseSettingStatement(t *testing.T) {
 	assert.True(t, ok)
 	assert.NotNil(t, stmt)
 	// トークンの中身
-	assert.Equal(t, stmt.Token,
-		token.Token{Type: token.SETTING, Literal: "INSTRSET"})
+	assert.Equal(t,
+		token.Token{Type: token.SETTING, Literal: "INSTRSET"},
+		stmt.Token)
+
 	ident := stmt.Name
-	assert.Equal(t, ident.Token,
-		token.Token{Type: token.SETTING, Literal: "INSTRSET"})
-	assert.Equal(t, ident.Value, "\"i486p\"")
+	assert.Equal(t,
+		token.Token{Type: token.SETTING, Literal: "INSTRSET"},
+		ident.Token)
+	assert.Equal(t,
+		"\"i486p\"",
+		ident.Value)
 }
 
 func TestParseEquStatement(t *testing.T) {
@@ -64,5 +69,22 @@ func TestParseEquStatement(t *testing.T) {
 	l := lexer.New(input)
 	p := New(l)
 	// fmt.Println(p)
-	p.ParseProgram()
+	program := p.ParseProgram()
+	// 取得できる Statement は１つ
+	assert.Equal(t, len(program.Statements), 1)
+	stmt, ok := program.Statements[0].(*ast.EquStatement)
+	// Statement は EquStatement
+	assert.True(t, ok)
+	assert.NotNil(t, stmt)
+	// トークンの中身
+	assert.Equal(t,
+		token.Token{Type: token.EQU, Literal: "EQU"},
+		stmt.Token)
+	ident := stmt.Name
+	assert.Equal(t,
+		token.Token{Type: token.IDENT, Literal: "BOTPAK"},
+		ident.Token)
+	assert.Equal(t,
+		"0x00280000",
+		ident.Value)
 }

@@ -26,7 +26,7 @@ type Identifier struct {
 }
 
 func (i *Identifier) String() string {
-	return i.Token.Literal + " " + i.Value
+	return "{ " + i.Token.Literal + ": " + i.Value + " }"
 }
 
 type Program struct {
