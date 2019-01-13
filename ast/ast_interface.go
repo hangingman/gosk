@@ -25,6 +25,10 @@ type Identifier struct {
 	Value string
 }
 
+func (i *Identifier) String() string {
+	return i.Token.Literal + " " + i.Value
+}
+
 type Program struct {
 	Statements []Statement
 }

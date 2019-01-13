@@ -2,6 +2,7 @@ package ast
 
 import (
 	"github.com/hangingman/gosk/token"
+	"strings"
 )
 
 // MnemonicStatement は `MOV BX, 15` のような構文を解析する
@@ -20,13 +21,20 @@ func (s *MnemonicStatement) String() string       { return "MNEMONIC" }
 type SettingStatement struct {
 	Token token.Token // SETTING
 	Name  *Identifier
-	Value Expression
+	Value string
 	Line  int
 }
 
 func (s *SettingStatement) statementNode()       {}
 func (s *SettingStatement) TokenLiteral() string { return s.Token.Literal }
-func (s *SettingStatement) String() string       { return "SETTING" }
+func (s *SettingStatement) String() string {
+	return strings.Join([]string{
+		"[",
+		token.SETTING + ":",
+		s.Name.String(),
+		"]"},
+		" ")
+}
 
 // LabelStatement は `entry:` のような構文を解析する
 type LabelStatement struct {

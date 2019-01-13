@@ -39,6 +39,6 @@ func TestParseSettingStatement(t *testing.T) {
 	input := `[INSTRSET "i486p"]`
 	l := lexer.New(input)
 	p := New(l)
-	fmt.Println(p)
+	// fmt.Println(p)
 	p.ParseProgram()
 }
