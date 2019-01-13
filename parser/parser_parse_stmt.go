@@ -40,7 +40,14 @@ func (p *Parser) parseStatement() ast.Statement {
 }
 
 func (p *Parser) parseMnemonicStatement() *ast.MnemonicStatement {
-	stmt := &ast.MnemonicStatement{Token: p.curToken}
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken,
+		Name: &ast.Identifier{
+			Token: token.Token{Type: token.OPCODE, Literal: string(p.curToken.Literal)},
+			Value: p.peekToken.Literal,
+		},
+	}
+	fmt.Printf("parseMnemonicStatement! : %s\n", stmt.String())
 	return stmt
 }
 

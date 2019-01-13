@@ -8,13 +8,15 @@ import (
 type MnemonicStatement struct {
 	Token token.Token // OPCODE
 	Name  *Identifier
-	Value Expression
+	Value string
 	Line  int
 }
 
 func (s *MnemonicStatement) statementNode()       {}
 func (s *MnemonicStatement) TokenLiteral() string { return s.Token.Literal }
-func (s *MnemonicStatement) String() string       { return "MNEMONIC" }
+func (s *MnemonicStatement) String() string {
+	return "{ " + token.OPCODE + ":" + s.Name.String() + " }"
+}
 
 // SettingStatement は `[FORMAT "WCOFF"]` のような構文を解析する
 type SettingStatement struct {
