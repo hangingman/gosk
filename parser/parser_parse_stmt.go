@@ -72,5 +72,7 @@ func (p *Parser) parseSettingStatement() *ast.SettingStatement {
 
 func (p *Parser) parseEquStatement() *ast.EquStatement {
 	stmt := &ast.EquStatement{Token: p.curToken}
+
+	fmt.Printf("parseEquStatement! : %s\n", stmt.String())
 	return stmt
 }
