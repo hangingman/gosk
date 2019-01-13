@@ -33,3 +33,12 @@ func TestAsmHead(t *testing.T) {
 		}
 	}
 }
+
+func TestParseSettingStatement(t *testing.T) {
+	fmt.Println("TestParseSettingStatement")
+	input := `[INSTRSET "i486p"]`
+	l := lexer.New(input)
+	p := New(l)
+	fmt.Println(p)
+	p.ParseProgram()
+}
