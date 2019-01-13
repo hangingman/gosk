@@ -45,7 +45,11 @@ func (p *Parser) parseMnemonicStatement() *ast.MnemonicStatement {
 }
 
 func (p *Parser) parseLabelStatement() *ast.LabelStatement {
-	stmt := &ast.LabelStatement{Token: p.curToken}
+	stmt := &ast.LabelStatement{
+		Token: p.curToken,
+		Name:  p.curToken.Literal,
+	}
+	fmt.Printf("parseLabelStatement! : %s\n", stmt.String())
 	return stmt
 }
 
@@ -78,7 +82,7 @@ func (p *Parser) parseEquStatement() *ast.EquStatement {
 	stmt := &ast.EquStatement{
 		Token: token.Token{Type: token.EQU, Literal: "EQU"},
 		Name: &ast.Identifier{
-			Token: token.Token{Type: token.IDENT, Literal: string(p.curToken.Literal)},
+			Token: token.Token{Type: p.curToken.Type, Literal: string(p.curToken.Literal)},
 		},
 	}
 

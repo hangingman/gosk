@@ -29,13 +29,13 @@ func TestAsmHead(t *testing.T) {
 	// fmt.Println(input)
 	l := lexer.New(input)
 
-	for {
-		tok := l.NextToken()
-		// fmt.Printf("%s\n", tok)
-		if tok.Type == token.EOF {
-			break
-		}
-	}
+	// for {
+	// 	tok := l.NextToken()
+	// 	// fmt.Printf("%s\n", tok)
+	// 	if tok.Type == token.EOF {
+	// 		break
+	// 	}
+	// }
 
 	p := New(l)
 	program := p.ParseProgram()
@@ -93,4 +93,18 @@ func TestParseEquStatement(t *testing.T) {
 	assert.Equal(t,
 		"0x00280000",
 		ident.Value)
+}
+
+func TestParseLabelStatement(t *testing.T) {
+	input := `msg:   `
+	l := lexer.New(input)
+	p := New(l)
+	// fmt.Println(p)
+	program := p.ParseProgram()
+	// 取得できる Statement は１つ
+	assert.Equal(t, len(program.Statements), 1)
+	stmt, ok := program.Statements[0].(*ast.LabelStatement)
+	// Statement は EquStatement
+	assert.True(t, ok)
+	assert.NotNil(t, stmt)
 }

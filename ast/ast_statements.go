@@ -33,13 +33,15 @@ func (s *SettingStatement) String() string {
 // LabelStatement は `entry:` のような構文を解析する
 type LabelStatement struct {
 	Token token.Token // LABEL
-	Name  *Identifier
+	Name  string
 	Line  int
 }
 
 func (s *LabelStatement) statementNode()       {}
 func (s *LabelStatement) TokenLiteral() string { return s.Token.Literal }
-func (s *LabelStatement) String() string       { return "LABEL" }
+func (s *LabelStatement) String() string {
+	return "{ " + token.LABEL + ": \"" + s.Name + "\" }"
+}
 
 // EquStatement は `BOTPAK  EQU  0x00280000` のような構文を解析する
 type EquStatement struct {
