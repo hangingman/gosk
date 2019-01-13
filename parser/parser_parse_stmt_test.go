@@ -28,6 +28,7 @@ func TestAsmHead(t *testing.T) {
 	input := string(b)
 	// fmt.Println(input)
 	l := lexer.New(input)
+
 	for {
 		tok := l.NextToken()
 		// fmt.Printf("%s\n", tok)
@@ -35,13 +36,18 @@ func TestAsmHead(t *testing.T) {
 			break
 		}
 	}
+
+	p := New(l)
+	program := p.ParseProgram()
+	for stmt := range program.Statements {
+		fmt.Printf("%T\n", stmt)
+	}
 }
 
 func TestParseSettingStatement(t *testing.T) {
 	input := `[INSTRSET "i486p"]`
 	l := lexer.New(input)
 	p := New(l)
-
 	program := p.ParseProgram()
 
 	// 取得できる Statement は１つ

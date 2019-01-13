@@ -13,20 +13,42 @@ type LexerTest struct {
 }
 
 func testLexerParsedTokens(t *testing.T, tok token.Token, tt *LexerTest, idx int) {
-	assert.Equal(t, tt.expectedType, tok.Type,
-		fmt.Sprintf("tests[%d] - tokentype wrong. expected=%q, got=%q", idx, tt.expectedType, tok.Type))
-
 	assert.Equal(t, tt.expectedLiteral, tok.Literal,
 		fmt.Sprintf("tests[%d] - literal wrong. expected=%q, got=%q", idx, tt.expectedLiteral, tok.Literal))
+	assert.Equal(t, tt.expectedType, tok.Type,
+		fmt.Sprintf("tests[%d] - tokentype wrong. expected=%q, got=%q", idx, tt.expectedType, tok.Type))
 }
 
 func TestCommentLines(t *testing.T) {
-	input := `VBEMODE	EQU		0x105			; 1024 x  768 x 8bitカラー`
+	input := `[INSTRSET "i486p"]
+
+VBEMODE	EQU		0x105			; 1024 x  768 x 8bitカラー
+; （画面モード一覧）
+;	0x100 :  640 x  400 x 8bitカラー
+;	0x101 :  640 x  480 x 8bitカラー
+;	0x103 :  800 x  600 x 8bitカラー
+;	0x105 : 1024 x  768 x 8bitカラー
+;	0x107 : 1280 x 1024 x 8bitカラー
+
+BOTPAK	EQU		0x00280000		; bootpackのロード先
+DSKCAC	EQU		0x00100000		; ディスクキャッシュの場所`
 
 	tests := []LexerTest{
+		// [INSTRSET "i486p"]
+		{token.LBRACKET, "["},
+		{token.SETTING, "INSTRSET"},
+		{token.STR_LIT, "\"i486p\""},
+		{token.RBRACKET, "]"},
+
 		{token.IDENT, "VBEMODE"},
 		{token.EQU, "EQU"},
 		{token.HEX_LIT, "0x105"},
+		{token.IDENT, "BOTPAK"},
+		{token.EQU, "EQU"},
+		{token.HEX_LIT, "0x00280000"},
+		{token.IDENT, "DSKCAC"},
+		{token.EQU, "EQU"},
+		{token.HEX_LIT, "0x00100000"},
 
 		// EOF!
 		{token.EOF, ""},

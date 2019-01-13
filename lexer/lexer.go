@@ -41,13 +41,16 @@ func (l *Lexer) peekChar() rune {
 // readIdentifier は識別子を読み出して非英字まで読み進める
 func (l *Lexer) readIdentifier() string {
 	position := l.position
+	// fmt.Printf("[%d] = %s\n", position, string(l.input[l.position]))
 	for isLetter(l.ch) {
 		l.readChar()
+		// fmt.Printf("[%d] = %s\n", position, string(l.input[l.position]))
 	}
 	ident := string(l.input[position:l.position])
 
 	l.position--
 	l.readPosition--
+
 	return ident
 }
 
@@ -86,10 +89,10 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.COLON, l.ch)
 	case ';':
 		l.skipUntilNextLF() // 行コメント
-		tok = l.NextToken()
+		return l.NextToken()
 	case '#':
 		l.skipUntilNextLF() // 行コメント
-		tok = l.NextToken()
+		return l.NextToken()
 	case '<':
 		tok = newToken(token.LT, l.ch)
 	case '>':
@@ -116,28 +119,23 @@ func (l *Lexer) NextToken() token.Token {
 		if isHexNotation(l.ch, l.peekChar()) {
 			tok.Type = token.HEX_LIT
 			tok.Literal = l.readHex()
-			return tok
 		} else if isDigit(l.ch) {
 			tok.Type = token.INT
 			tok.Literal = l.readNumber()
-			return tok
 		} else if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdent(tok.Literal)
-			l.readChar()
+
 			if tok.Type == token.IDENT && l.ch == ':' {
 				// ':' で終わる識別子は基本的にラベルとみなす
 				l.readChar()
 				tok.Literal = tok.Literal + ":"
 				tok.Type = token.LABEL
-				return tok
 			}
-			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	}
-
 	l.readChar()
 	return tok
 }
@@ -146,6 +144,8 @@ func (l *Lexer) skipUntilNextLF() {
 	for !(l.ch == '\n' || l.ch == '\r' || l.ch == 0) {
 		l.readChar()
 	}
+	l.position--
+	l.readPosition--
 }
 
 func (l *Lexer) readDoubleQuotedString() string {
@@ -169,7 +169,10 @@ func (l *Lexer) readNumber() string {
 	for isDigit(l.ch) {
 		l.readChar()
 	}
-	return string(l.input[position:l.position])
+	number := string(l.input[position:l.position])
+	l.position--
+	l.readPosition--
+	return number
 }
 
 func (l *Lexer) readHex() string {
@@ -181,7 +184,10 @@ func (l *Lexer) readHex() string {
 	for isDigit(l.ch) || isHexAlpha(l.ch) {
 		l.readChar()
 	}
-	return string(l.input[position:l.position])
+	hex := string(l.input[position:l.position])
+	l.position--
+	l.readPosition--
+	return hex
 }
 
 func isHexNotation(ch1 rune, ch2 rune) bool {

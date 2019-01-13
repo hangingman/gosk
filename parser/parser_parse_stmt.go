@@ -25,7 +25,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 }
 
 func (p *Parser) parseStatement() ast.Statement {
-	fmt.Println("parseStatement!")
 	switch p.curToken.Type {
 	case token.OPCODE:
 		return p.parseMnemonicStatement()
@@ -71,20 +70,23 @@ func (p *Parser) parseSettingStatement() *ast.SettingStatement {
 }
 
 func (p *Parser) parseEquStatement() *ast.EquStatement {
+
+	if !(p.curTokenIs(token.IDENT) && p.peekTokenIs(token.EQU)) {
+		return nil
+	}
+
 	stmt := &ast.EquStatement{
+		Token: token.Token{Type: token.EQU, Literal: "EQU"},
 		Name: &ast.Identifier{
 			Token: token.Token{Type: token.IDENT, Literal: string(p.curToken.Literal)},
 		},
 	}
 
-	if !p.peekTokenIs(token.EQU) {
-		return nil
-	}
-	stmt.Token = token.Token{Type: token.EQU, Literal: "EQU"}
-
 	p.nextToken()
 	stmt.Name.Value = p.peekToken.Literal
 	fmt.Printf("parseEquStatement! : %s\n", stmt)
+	p.nextToken()
+	p.nextToken()
 
 	return stmt
 }
