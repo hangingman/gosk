@@ -1,10 +1,13 @@
 package eval
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/object"
+	"github.com/hangingman/gosk/token"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -78,27 +81,76 @@ func evalEquStatement(stmt *ast.EquStatement) object.Object {
 
 func evalDBStatement(stmt *ast.MnemonicStatement) object.Object {
 	toks := []string{}
+	bytes := []byte{}
 	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.HEX_LIT {
+			// 0xを取り除いて処理
+			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.STR_LIT {
+			// "を取り除いて処理
+			strLength := len(tok.Literal)
+			bs := []byte(tok.Literal[1 : strLength-1])
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.INT {
+			i, _ := strconv.ParseInt(tok.Literal, 10, 64)
+			h := fmt.Sprintf("%x", i)
+			fmt.Printf("!!! %s !!!\n", h)
+			bs, _ := hex.DecodeString(string([]rune(h)))
+			bytes = append(bytes, bs...)
+		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
-	return &object.Binary{Value: []byte{0}}
+	return &object.Binary{Value: bytes}
 }
 
 func evalDWStatement(stmt *ast.MnemonicStatement) object.Object {
 	toks := []string{}
+	bytes := []byte{}
 	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.HEX_LIT {
+			// 0xを取り除いて処理
+			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.STR_LIT {
+			// "を取り除いて処理
+			strLength := len(tok.Literal)
+			bs := []byte(tok.Literal[1 : strLength-1])
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.INT {
+			intVal, _ := strconv.Atoi(tok.Literal)
+			bs := []byte(strconv.Itoa(intVal))
+			fmt.Printf("** %d => %x\n", intVal, bs)
+			bytes = append(bytes, bs...)
+		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
-	return &object.Binary{Value: []byte{0}}
+	return &object.Binary{Value: bytes}
 }
 
 func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
 	toks := []string{}
+	bytes := []byte{}
 	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.HEX_LIT {
+			// 0xを取り除いて処理
+			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.STR_LIT {
+			// "を取り除いて処理
+			strLength := len(tok.Literal)
+			bs := []byte(tok.Literal[1 : strLength-1])
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.INT {
+			intVal, _ := strconv.Atoi(tok.Literal)
+			fmt.Printf("** %d\n", intVal)
+			bs := []byte(strconv.Itoa(intVal))
+			bytes = append(bytes, bs...)
+		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
-	return &object.Binary{Value: []byte{0}}
+	return &object.Binary{Value: bytes}
 }

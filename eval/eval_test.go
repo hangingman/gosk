@@ -4,8 +4,8 @@ import (
 	"fmt"
 	//"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/lexer"
+	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/parser"
-	//"github.com/hangingman/gosk/token"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
@@ -31,7 +31,20 @@ func TestEvalAsmHead(t *testing.T) {
 	l := lexer.New(input)
 	p := parser.New(l)
 
+	// プログラムの解析と評価
 	program := p.ParseProgram()
 	evaluated := Eval(program)
+	// リフレクションで結果をチェック
 	assert.Equal(t, "*object.ObjectArray", reflect.TypeOf(evaluated).String())
+	// キャストをやる
+	objArray, ok := evaluated.(*object.ObjectArray)
+	assert.True(t, ok)
+	assert.Equal(t, 30, len(*objArray))
+	// 結果を１つずつ見てみる
+	for _, obj := range *objArray {
+		// assert.Equal(t, "*object.Binary", reflect.TypeOf(obj).String())
+		if obj != nil {
+			fmt.Printf("%s: %x\n", reflect.TypeOf(obj), obj)
+		}
+	}
 }
