@@ -2,15 +2,21 @@ package parser
 
 import (
 	"fmt"
+	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/token"
 )
 
+type (
+	opcodeParseFn func() *ast.MnemonicStatement
+)
+
 type Parser struct {
-	l         *lexer.Lexer
-	curToken  token.Token
-	peekToken token.Token
-	errors    []string
+	l              *lexer.Lexer
+	curToken       token.Token
+	peekToken      token.Token
+	errors         []string
+	opcodeParseFns map[string]opcodeParseFn // オペコードごとに構文解析を切り替える
 }
 
 func New(l *lexer.Lexer) *Parser {
@@ -19,10 +25,18 @@ func New(l *lexer.Lexer) *Parser {
 		errors: []string{},
 	}
 
+	// オペコードの構文解析方式を格納するmap
+	p.opcodeParseFns = make(map[string]opcodeParseFn)
+	p.registerOpecode("DB", p.parseDBStatement)
+
 	// ２つトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
 	p.nextToken()
 	p.nextToken()
 	return p
+}
+
+func (p *Parser) registerOpecode(opcode string, fn opcodeParseFn) {
+	p.opcodeParseFns[opcode] = fn
 }
 
 func (p *Parser) nextToken() {
