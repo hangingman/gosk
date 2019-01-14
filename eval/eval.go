@@ -9,6 +9,8 @@ func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalStatements(node.Statements)
+	case *ast.DummyStatement:
+		return &object.Binary{Value: []byte{1, 2, 3}}
 	case *ast.MnemonicStatement:
 		return evalMnemonicStatement(node)
 	case *ast.SettingStatement:
@@ -26,14 +28,14 @@ func Eval(node ast.Node) object.Object {
 
 // evalStatements は文を評価する
 func evalStatements(stmts []ast.Statement) object.Object {
-	var result object.Object
+	results := object.ObjectArray{}
 
 	// 文を評価するが最終的にすべて文だった場合は何も返さないことになる
 	for _, stmt := range stmts {
-		result = Eval(stmt)
+		results = append(results, Eval(stmt))
 	}
 
-	return result
+	return &results
 }
 
 func evalMnemonicStatement(stmt *ast.MnemonicStatement) object.Object {

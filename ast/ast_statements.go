@@ -57,3 +57,9 @@ func (s *EquStatement) TokenLiteral() string { return s.Token.Literal }
 func (s *EquStatement) String() string {
 	return "{ " + token.EQU + ":" + s.Name.String() + " }"
 }
+
+type DummyStatement struct{}
+
+func (ds *DummyStatement) String() string       { return "dummy" }
+func (ds *DummyStatement) TokenLiteral() string { return "dummy-token-literal" }
+func (ds *DummyStatement) statementNode()       {}

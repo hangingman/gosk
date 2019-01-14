@@ -8,6 +8,7 @@ import (
 type ObjectType string
 
 const (
+	OBJ_ARRAY        = "OBJECT_ARRAY"
 	BINARY_OBJ       = "BINARY"
 	BINARY_ARRAY_OBJ = "BINARY_ARRAY"
 )
@@ -15,6 +16,22 @@ const (
 type Object interface {
 	Type() ObjectType
 	Inspect() string
+}
+
+type ObjectArray []Object
+
+func (oa *ObjectArray) Type() ObjectType {
+	return OBJ_ARRAY
+}
+
+func (oa *ObjectArray) Inspect() string {
+	result := "[ "
+	for _, obj := range *oa {
+		result += obj.Inspect()
+		result += ", "
+	}
+	result += " ]"
+	return result
 }
 
 // Binary
