@@ -30,7 +30,7 @@ func Eval(node ast.Node) object.Object {
 func evalStatements(stmts []ast.Statement) object.Object {
 	results := object.ObjectArray{}
 
-	// 文を評価するが最終的にすべて文だった場合は何も返さないことになる
+	// 文を評価して、結果としてobject.ObjectArrayを返す
 	for _, stmt := range stmts {
 		results = append(results, Eval(stmt))
 	}
@@ -39,6 +39,15 @@ func evalStatements(stmts []ast.Statement) object.Object {
 }
 
 func evalMnemonicStatement(stmt *ast.MnemonicStatement) object.Object {
+	switch stmt.Name.Token.Literal {
+	case "DB":
+		return evalDBStatement(stmt)
+	case "DW":
+		return evalDWStatement(stmt)
+	case "DD":
+		return evalDDStatement(stmt)
+	}
+
 	return nil
 }
 
@@ -52,4 +61,16 @@ func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 
 func evalEquStatement(stmt *ast.EquStatement) object.Object {
 	return nil
+}
+
+func evalDBStatement(stmt *ast.MnemonicStatement) object.Object {
+	return &object.Binary{Value: []byte{0}}
+}
+
+func evalDWStatement(stmt *ast.MnemonicStatement) object.Object {
+	return &object.Binary{Value: []byte{0}}
+}
+
+func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
+	return &object.Binary{Value: []byte{0}}
 }
