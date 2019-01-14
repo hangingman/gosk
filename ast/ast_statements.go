@@ -7,8 +7,7 @@ import (
 // MnemonicStatement は `MOV BX, 15` のような構文を解析する
 type MnemonicStatement struct {
 	Token token.Token // OPCODE
-	Name  *Identifier
-	Value string
+	Name  *IdentifierArray
 	Line  int
 }
 

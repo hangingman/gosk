@@ -3,6 +3,7 @@ package ast
 import (
 	"bytes"
 	"github.com/hangingman/gosk/token"
+	"strings"
 )
 
 type Node interface {
@@ -27,6 +28,15 @@ type Identifier struct {
 
 func (i *Identifier) String() string {
 	return "{ " + i.Token.Literal + ": " + i.Value + " }"
+}
+
+type IdentifierArray struct {
+	Token  token.Token
+	Values []string
+}
+
+func (i *IdentifierArray) String() string {
+	return "{ " + i.Token.Literal + ": " + strings.Join(i.Values, ",") + " }"
 }
 
 type Program struct {

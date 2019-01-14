@@ -28,6 +28,8 @@ func New(l *lexer.Lexer) *Parser {
 	// オペコードの構文解析方式を格納するmap
 	p.opcodeParseFns = make(map[string]opcodeParseFn)
 	p.registerOpecode("DB", p.parseDBStatement)
+	p.registerOpecode("DW", p.parseDBStatement)
+	p.registerOpecode("DD", p.parseDBStatement)
 
 	// ２つトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
 	p.nextToken()
