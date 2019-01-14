@@ -13,7 +13,7 @@ import (
 	"testing"
 )
 
-func TestAsmHead(t *testing.T) {
+func TestParseAsmHead(t *testing.T) {
 	_, filename, _, _ := runtime.Caller(0)
 	asmheadPath := path.Join(path.Dir(filename), "..", "testdata", "helloos.nas")
 	err := os.Chdir("../../")

@@ -31,12 +31,12 @@ func (i *Identifier) String() string {
 }
 
 type IdentifierArray struct {
-	Token  token.Token
+	Tokens []token.Token
 	Values []string
 }
 
 func (i *IdentifierArray) String() string {
-	return "{ " + i.Token.Literal + ": " + strings.Join(i.Values, ",") + " }"
+	return "{ " + i.Tokens[0].Literal + ": " + strings.Join(i.Values, ",") + " }"
 }
 
 type Program struct {

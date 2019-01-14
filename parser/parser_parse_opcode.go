@@ -12,18 +12,19 @@ func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 	stmt := &ast.MnemonicStatement{
 		Token: p.curToken,
 		Name: &ast.IdentifierArray{
-			Token:  token.Token{Type: token.OPCODE, Literal: string(p.curToken.Literal)},
-			Values: []string{p.peekToken.Literal},
+			Tokens: []token.Token{p.curToken},
+			Values: []string{p.curToken.Literal},
 		},
 	}
 
 	for {
-		p.nextToken()
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken)
+		stmt.Name.Values = append(stmt.Name.Values, p.peekToken.Literal)
 		if !(p.peekTokenIs(token.COMMA) || p.peekTokenIs(token.EOF)) {
 			break
 		}
 		p.nextToken()
-		stmt.Name.Values = append(stmt.Name.Values, p.peekToken.Literal)
+		p.nextToken()
 	}
 
 	// fmt.Printf("parseDBStatement! : %s\n", stmt.String())
