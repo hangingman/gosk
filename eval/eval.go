@@ -23,15 +23,42 @@ func isNotNil(x interface{}) bool {
 func int2Byte(i int) []byte {
 	return []byte{uint8(i)}
 }
+
 func int2Word(i int) []byte {
 	bs := make([]byte, 2)
 	binary.LittleEndian.PutUint16(bs, uint16(i))
 	return bs
 }
+
 func int2Dword(i int) []byte {
 	bs := make([]byte, 4)
 	binary.LittleEndian.PutUint32(bs, uint32(i))
 	return bs
+}
+
+func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Object {
+	toks := []string{}
+	bytes := []byte{}
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.HEX_LIT {
+			// 0xを取り除いて処理
+			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.STR_LIT {
+			// "を取り除いて処理
+			strLength := len(tok.Literal)
+			bs := []byte(tok.Literal[1 : strLength-1])
+			bytes = append(bytes, bs...)
+		} else if tok.Type == token.INT {
+			// Go言語のintは常にint64 -> uint8
+			int64Val, _ := strconv.Atoi(tok.Literal)
+			bs := f(int64Val)
+			bytes = append(bytes, bs...)
+		}
+		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
+	return &object.Binary{Value: bytes}
 }
 
 func Eval(node ast.Node) object.Object {
@@ -95,76 +122,13 @@ func evalEquStatement(stmt *ast.EquStatement) object.Object {
 }
 
 func evalDBStatement(stmt *ast.MnemonicStatement) object.Object {
-	toks := []string{}
-	bytes := []byte{}
-	for _, tok := range stmt.Name.Tokens {
-		if tok.Type == token.HEX_LIT {
-			// 0xを取り除いて処理
-			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
-			bytes = append(bytes, bs...)
-		} else if tok.Type == token.STR_LIT {
-			// "を取り除いて処理
-			strLength := len(tok.Literal)
-			bs := []byte(tok.Literal[1 : strLength-1])
-			bytes = append(bytes, bs...)
-		} else if tok.Type == token.INT {
-			// Go言語のintは常にint64 -> uint8
-			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := int2Byte(int64Val)
-			bytes = append(bytes, bs...)
-		}
-		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
-	}
-	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
-	return &object.Binary{Value: bytes}
+	return evalDStatements(stmt, int2Byte)
 }
 
 func evalDWStatement(stmt *ast.MnemonicStatement) object.Object {
-	toks := []string{}
-	bytes := []byte{}
-	for _, tok := range stmt.Name.Tokens {
-		if tok.Type == token.HEX_LIT {
-			// 0xを取り除いて処理
-			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
-			bytes = append(bytes, bs...)
-		} else if tok.Type == token.STR_LIT {
-			// "を取り除いて処理
-			strLength := len(tok.Literal)
-			bs := []byte(tok.Literal[1 : strLength-1])
-			bytes = append(bytes, bs...)
-		} else if tok.Type == token.INT {
-			// Go言語のintは常にint64 -> uint16(word)
-			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := int2Word(int64Val)
-			bytes = append(bytes, bs...)
-		}
-		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
-	}
-	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
-	return &object.Binary{Value: bytes}
+	return evalDStatements(stmt, int2Word)
 }
 
 func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
-	toks := []string{}
-	bytes := []byte{}
-	for _, tok := range stmt.Name.Tokens {
-		if tok.Type == token.HEX_LIT {
-			// 0xを取り除いて処理
-			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
-			bytes = append(bytes, bs...)
-		} else if tok.Type == token.STR_LIT {
-			// "を取り除いて処理
-			strLength := len(tok.Literal)
-			bs := []byte(tok.Literal[1 : strLength-1])
-			bytes = append(bytes, bs...)
-		} else if tok.Type == token.INT {
-			// Go言語のintは常にint64 -> uint32(dword)
-			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := int2Dword(int64Val)
-			bytes = append(bytes, bs...)
-		}
-		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
-	}
-	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
-	return &object.Binary{Value: bytes}
+	return evalDStatements(stmt, int2Dword)
 }
