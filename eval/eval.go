@@ -7,9 +7,14 @@ import (
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
+	"github.com/sirupsen/logrus"
 	"reflect"
 	"strconv"
 	"strings"
+)
+
+var (
+	logger = logrus.New()
 )
 
 func isNil(x interface{}) bool {
@@ -57,7 +62,8 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
-	fmt.Printf("[%s]\n", strings.Join(toks, ", "))
+
+	logger.Info(fmt.Sprintf("[%s]\n", strings.Join(toks, ", ")))
 	return &object.Binary{Value: bytes}
 }
 
@@ -76,7 +82,6 @@ func Eval(node ast.Node) object.Object {
 	case *ast.BinaryLiteral:
 		return &object.Binary{Value: node.Value}
 	}
-
 	return nil
 }
 

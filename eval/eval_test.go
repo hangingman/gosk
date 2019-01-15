@@ -5,7 +5,6 @@ import (
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/parser"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
@@ -13,10 +12,6 @@ import (
 	"reflect"
 	"runtime"
 	"testing"
-)
-
-var (
-	logger = logrus.New()
 )
 
 func TestEvalAsmHead(t *testing.T) {

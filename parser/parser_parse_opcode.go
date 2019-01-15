@@ -26,7 +26,5 @@ func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 		p.nextToken()
 		p.nextToken()
 	}
-
-	// fmt.Printf("parseDBStatement! : %s\n", stmt.String())
 	return stmt
 }

@@ -84,7 +84,6 @@ func TestParseEquStatement(t *testing.T) {
 	logger.SetOutput(os.Stdout)
 	l := lexer.New(input, logger)
 	p := New(l)
-	// fmt.Println(p)
 	program := p.ParseProgram()
 	// 取得できる Statement は１つ
 	assert.Equal(t, len(program.Statements), 1)
@@ -111,7 +110,6 @@ func TestParseLabelStatement(t *testing.T) {
 	logger.SetOutput(os.Stdout)
 	l := lexer.New(input, logger)
 	p := New(l)
-	// fmt.Println(p)
 	program := p.ParseProgram()
 	// 取得できる Statement は１つ
 	assert.Equal(t, len(program.Statements), 1)
