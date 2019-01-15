@@ -65,8 +65,6 @@ func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalStatements(node.Statements)
-	case *ast.DummyStatement:
-		return &object.Binary{Value: []byte{1, 2, 3}}
 	case *ast.MnemonicStatement:
 		return evalMnemonicStatement(node)
 	case *ast.SettingStatement:

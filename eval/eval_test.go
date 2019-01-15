@@ -50,7 +50,7 @@ func TestEvalAsmHead(t *testing.T) {
 	for _, obj := range *objArray {
 		if obj != nil {
 			assert.Equal(t, "*object.Binary", reflect.TypeOf(obj).String())
-			fmt.Printf("%s: %x\n", reflect.TypeOf(obj), obj)
+			// fmt.Printf("%s: %x\n", reflect.TypeOf(obj), obj)
 		}
 	}
 }

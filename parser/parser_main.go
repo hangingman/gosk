@@ -5,6 +5,7 @@ import (
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/token"
+	"github.com/sirupsen/logrus"
 )
 
 type (
@@ -16,6 +17,7 @@ type Parser struct {
 	curToken       token.Token
 	peekToken      token.Token
 	errors         []string
+	Logger         *logrus.Logger
 	opcodeParseFns map[string]opcodeParseFn // オペコードごとに構文解析を切り替える
 }
 
@@ -23,6 +25,7 @@ func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
 		l:      l,
 		errors: []string{},
+		Logger: l.Logger,
 	}
 
 	// オペコードの構文解析方式を格納するmap

@@ -11,14 +11,14 @@ type Lexer struct {
 	position     int    // 現在の文字の位置
 	readPosition int    // これから読み込む位置
 	ch           rune   // 現在検査中の文字
-	logger       *logrus.Logger
+	Logger       *logrus.Logger
 }
 
 // New は与えられた文字列に対するトークンを返します
 func New(input string, logger *logrus.Logger) *Lexer {
 	l := &Lexer{
 		input:  []rune(input),
-		logger: logger,
+		Logger: logger,
 	}
 	l.readChar()
 	return l
@@ -46,10 +46,10 @@ func (l *Lexer) peekChar() rune {
 // readIdentifier は識別子を読み出して非英字まで読み進める
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	l.logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
+	l.Logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
 	for isLetter(l.ch) {
 		l.readChar()
-		l.logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
+		l.Logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
 	}
 	ident := string(l.input[position:l.position])
 
