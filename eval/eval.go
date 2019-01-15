@@ -1,6 +1,7 @@
 package eval
 
 import (
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"github.com/hangingman/gosk/ast"
@@ -93,10 +94,9 @@ func evalDBStatement(stmt *ast.MnemonicStatement) object.Object {
 			bs := []byte(tok.Literal[1 : strLength-1])
 			bytes = append(bytes, bs...)
 		} else if tok.Type == token.INT {
-			i, _ := strconv.ParseInt(tok.Literal, 10, 64)
-			h := fmt.Sprintf("%x", i)
-			fmt.Printf("!!! %s !!!\n", h)
-			bs, _ := hex.DecodeString(string([]rune(h)))
+			// Go言語のintは常にint64 -> uint8
+			int64Val, _ := strconv.Atoi(tok.Literal)
+			bs := []byte{uint8(int64Val)}
 			bytes = append(bytes, bs...)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
@@ -119,9 +119,10 @@ func evalDWStatement(stmt *ast.MnemonicStatement) object.Object {
 			bs := []byte(tok.Literal[1 : strLength-1])
 			bytes = append(bytes, bs...)
 		} else if tok.Type == token.INT {
-			intVal, _ := strconv.Atoi(tok.Literal)
-			bs := []byte(strconv.Itoa(intVal))
-			fmt.Printf("** %d => %x\n", intVal, bs)
+			// Go言語のintは常にint64 -> uint16(word)
+			int64Val, _ := strconv.Atoi(tok.Literal)
+			bs := make([]byte, 2)
+			binary.LittleEndian.PutUint16(bs, uint16(int64Val))
 			bytes = append(bytes, bs...)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
@@ -144,9 +145,10 @@ func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
 			bs := []byte(tok.Literal[1 : strLength-1])
 			bytes = append(bytes, bs...)
 		} else if tok.Type == token.INT {
-			intVal, _ := strconv.Atoi(tok.Literal)
-			fmt.Printf("** %d\n", intVal)
-			bs := []byte(strconv.Itoa(intVal))
+			// Go言語のintは常にint64 -> uint32(dword)
+			int64Val, _ := strconv.Atoi(tok.Literal)
+			bs := make([]byte, 4)
+			binary.LittleEndian.PutUint32(bs, uint32(int64Val))
 			bytes = append(bytes, bs...)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))

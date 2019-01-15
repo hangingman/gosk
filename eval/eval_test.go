@@ -2,7 +2,6 @@ package eval
 
 import (
 	"fmt"
-	//"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/parser"
