@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/hangingman/gosk/token"
 	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
@@ -54,7 +55,8 @@ DSKCAC	EQU		0x00100000		; ディスクキャッシュの場所`
 		{token.EOF, ""},
 	}
 
-	l := New(input)
+	logger.SetOutput(os.Stdout)
+	l := New(input, logger)
 
 	for i, tt := range tests {
 		tok := l.NextToken()
@@ -116,7 +118,7 @@ msg:
 		{token.EOF, ""},
 	}
 
-	l := New(input)
+	l := New(input, logger)
 
 	for i, tt := range tests {
 		tok := l.NextToken()

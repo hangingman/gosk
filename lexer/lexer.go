@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"github.com/hangingman/gosk/token"
+	"github.com/sirupsen/logrus"
 )
 
 // Lexer は入力された文字列に対する現状の検査状況を保持します
@@ -10,11 +11,15 @@ type Lexer struct {
 	position     int    // 現在の文字の位置
 	readPosition int    // これから読み込む位置
 	ch           rune   // 現在検査中の文字
+	logger       *logrus.Logger
 }
 
 // New は与えられた文字列に対するトークンを返します
-func New(input string) *Lexer {
-	l := &Lexer{input: []rune(input)}
+func New(input string, logger *logrus.Logger) *Lexer {
+	l := &Lexer{
+		input:  []rune(input),
+		logger: logger,
+	}
 	l.readChar()
 	return l
 }
@@ -41,10 +46,10 @@ func (l *Lexer) peekChar() rune {
 // readIdentifier は識別子を読み出して非英字まで読み進める
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	// fmt.Printf("[%d] = %s\n", position, string(l.input[l.position]))
+	l.logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
 	for isLetter(l.ch) {
 		l.readChar()
-		// fmt.Printf("[%d] = %s\n", position, string(l.input[l.position]))
+		l.logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
 	}
 	ident := string(l.input[position:l.position])
 

@@ -5,6 +5,7 @@ import (
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/parser"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
@@ -12,6 +13,10 @@ import (
 	"reflect"
 	"runtime"
 	"testing"
+)
+
+var (
+	logger = logrus.New()
 )
 
 func TestEvalAsmHead(t *testing.T) {
@@ -27,7 +32,9 @@ func TestEvalAsmHead(t *testing.T) {
 		fmt.Print(err)
 	}
 	input := string(b)
-	l := lexer.New(input)
+
+	logger.SetOutput(os.Stdout)
+	l := lexer.New(input, logger)
 	p := parser.New(l)
 
 	// プログラムの解析と評価
@@ -41,8 +48,8 @@ func TestEvalAsmHead(t *testing.T) {
 	assert.Equal(t, 30, len(*objArray))
 	// 結果を１つずつ見てみる
 	for _, obj := range *objArray {
-		// assert.Equal(t, "*object.Binary", reflect.TypeOf(obj).String())
 		if obj != nil {
+			assert.Equal(t, "*object.Binary", reflect.TypeOf(obj).String())
 			fmt.Printf("%s: %x\n", reflect.TypeOf(obj), obj)
 		}
 	}

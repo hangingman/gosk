@@ -5,12 +5,17 @@ import (
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/token"
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
 	"path"
 	"runtime"
 	"testing"
+)
+
+var (
+	logger = logrus.New()
 )
 
 func TestParseAsmHead(t *testing.T) {
@@ -27,7 +32,8 @@ func TestParseAsmHead(t *testing.T) {
 	}
 	input := string(b)
 	// fmt.Println(input)
-	l := lexer.New(input)
+	logger.SetOutput(os.Stdout)
+	l := lexer.New(input, logger)
 
 	// for {
 	// 	tok := l.NextToken()
@@ -46,7 +52,9 @@ func TestParseAsmHead(t *testing.T) {
 
 func TestParseSettingStatement(t *testing.T) {
 	input := `[INSTRSET "i486p"]`
-	l := lexer.New(input)
+
+	logger.SetOutput(os.Stdout)
+	l := lexer.New(input, logger)
 	p := New(l)
 	program := p.ParseProgram()
 
@@ -72,7 +80,9 @@ func TestParseSettingStatement(t *testing.T) {
 
 func TestParseEquStatement(t *testing.T) {
 	input := `BOTPAK	EQU		0x00280000		; bootpackのロード先`
-	l := lexer.New(input)
+
+	logger.SetOutput(os.Stdout)
+	l := lexer.New(input, logger)
 	p := New(l)
 	// fmt.Println(p)
 	program := p.ParseProgram()
@@ -97,7 +107,9 @@ func TestParseEquStatement(t *testing.T) {
 
 func TestParseLabelStatement(t *testing.T) {
 	input := `msg:   `
-	l := lexer.New(input)
+
+	logger.SetOutput(os.Stdout)
+	l := lexer.New(input, logger)
 	p := New(l)
 	// fmt.Println(p)
 	program := p.ParseProgram()

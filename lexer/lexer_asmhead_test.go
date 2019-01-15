@@ -3,11 +3,16 @@ package lexer
 import (
 	"fmt"
 	"github.com/hangingman/gosk/token"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 	"path"
 	"runtime"
 	"testing"
+)
+
+var (
+	logger = logrus.New()
 )
 
 func TestAsmHead(t *testing.T) {
@@ -24,10 +29,12 @@ func TestAsmHead(t *testing.T) {
 		fmt.Print(err)
 	}
 	input := string(b)
-	l := New(input)
+
+	logger.SetOutput(os.Stdout)
+	l := New(input, logger)
 	for {
 		tok := l.NextToken()
-		// fmt.Printf("%s\n", tok)
+		logger.Debug("%s\n", tok)
 		if tok.Type == token.EOF {
 			break
 		}
