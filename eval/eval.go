@@ -20,6 +20,20 @@ func isNotNil(x interface{}) bool {
 	return !isNil(x)
 }
 
+func int2Byte(i int) []byte {
+	return []byte{uint8(i)}
+}
+func int2Word(i int) []byte {
+	bs := make([]byte, 2)
+	binary.LittleEndian.PutUint16(bs, uint16(i))
+	return bs
+}
+func int2Dword(i int) []byte {
+	bs := make([]byte, 4)
+	binary.LittleEndian.PutUint32(bs, uint32(i))
+	return bs
+}
+
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
@@ -96,7 +110,7 @@ func evalDBStatement(stmt *ast.MnemonicStatement) object.Object {
 		} else if tok.Type == token.INT {
 			// Go言語のintは常にint64 -> uint8
 			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := []byte{uint8(int64Val)}
+			bs := int2Byte(int64Val)
 			bytes = append(bytes, bs...)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
@@ -121,8 +135,7 @@ func evalDWStatement(stmt *ast.MnemonicStatement) object.Object {
 		} else if tok.Type == token.INT {
 			// Go言語のintは常にint64 -> uint16(word)
 			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := make([]byte, 2)
-			binary.LittleEndian.PutUint16(bs, uint16(int64Val))
+			bs := int2Word(int64Val)
 			bytes = append(bytes, bs...)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
@@ -147,8 +160,7 @@ func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
 		} else if tok.Type == token.INT {
 			// Go言語のintは常にint64 -> uint32(dword)
 			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := make([]byte, 4)
-			binary.LittleEndian.PutUint32(bs, uint32(int64Val))
+			bs := int2Dword(int64Val)
 			bytes = append(bytes, bs...)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
