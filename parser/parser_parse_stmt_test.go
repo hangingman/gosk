@@ -79,12 +79,14 @@ func TestParseSettingStatement(t *testing.T) {
 }
 
 func TestParseEquStatement(t *testing.T) {
-	input := `BOTPAK	EQU		0x00280000		; bootpackのロード先`
+	input := `BOTPAK	EQU		0x00280000		; bootpackのロード先
+`
 
 	logger.SetOutput(os.Stdout)
 	l := lexer.New(input, logger)
 	p := New(l)
 	program := p.ParseProgram()
+
 	// 取得できる Statement は１つ
 	assert.Equal(t, len(program.Statements), 1)
 	stmt, ok := program.Statements[0].(*ast.EquStatement)

@@ -14,8 +14,8 @@ type (
 
 type Parser struct {
 	l              *lexer.Lexer
-	curToken       token.Token
-	peekToken      token.Token
+	curIndex       int
+	lexedTokens    []token.Token
 	errors         []string
 	Logger         *logrus.Logger
 	opcodeParseFns map[string]opcodeParseFn // オペコードごとに構文解析を切り替える
@@ -23,9 +23,11 @@ type Parser struct {
 
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
-		l:      l,
-		errors: []string{},
-		Logger: l.Logger,
+		l:           l,
+		curIndex:    0,
+		lexedTokens: make([]token.Token, 50),
+		errors:      []string{},
+		Logger:      l.Logger,
 	}
 
 	// オペコードの構文解析方式を格納するmap
@@ -34,9 +36,19 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("DW", p.parseDBStatement)
 	p.registerOpecode("DD", p.parseDBStatement)
 
-	// ２つトークンを読み込む。curTokenとpeekTokenの両方がセットされる。
-	p.nextToken()
-	p.nextToken()
+	// 初回のTokenを配列に追加
+	p.lexedTokens = append(p.lexedTokens, p.curToken())
+	// p.lexedTokens = []token.Token{p.curToken()}
+
+	// EOFまでトークンを読み込む
+	for {
+		tok := p.l.NextToken()
+		p.lexedTokens = append(p.lexedTokens, tok)
+		if tok.Type == token.EOF {
+			p.Logger.Info(fmt.Sprintf("p.curIndex max = %d", len(p.lexedTokens)))
+			break
+		}
+	}
 	return p
 }
 
@@ -44,9 +56,33 @@ func (p *Parser) registerOpecode(opcode string, fn opcodeParseFn) {
 	p.opcodeParseFns[opcode] = fn
 }
 
+func (p *Parser) maxTokenSize() int {
+	return len(p.lexedTokens)
+}
+
+func (p *Parser) curToken() token.Token {
+	if p.curIndex >= p.maxTokenSize() {
+		return token.Token{Type: token.EOF, Literal: ""}
+	}
+	return p.lexedTokens[p.curIndex]
+}
+
+func (p *Parser) peekToken() token.Token {
+	if p.curIndex+1 >= p.maxTokenSize() {
+		return token.Token{Type: token.EOF, Literal: ""}
+	}
+	return p.lexedTokens[p.curIndex+1]
+}
+
+func (p *Parser) lookAhead(n int) token.Token {
+	if p.curIndex+n < p.maxTokenSize() {
+		return p.lexedTokens[p.curIndex+n]
+	}
+	return token.Token{Type: token.ILLEGAL, Literal: ""}
+}
+
 func (p *Parser) nextToken() {
-	p.curToken = p.peekToken
-	p.peekToken = p.l.NextToken()
+	p.curIndex++
 }
 
 func (p *Parser) Errors() []string {
@@ -54,11 +90,15 @@ func (p *Parser) Errors() []string {
 }
 
 func (p *Parser) curTokenIs(t token.TokenType) bool {
-	return p.curToken.Type == t
+	return p.curToken().Type == t
 }
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {
-	return p.peekToken.Type == t
+	return p.peekToken().Type == t
+}
+
+func (p *Parser) lookAheadIs(n int, t token.TokenType) bool {
+	return p.lookAhead(n).Type == t
 }
 
 func (p *Parser) expectPeek(t token.TokenType) bool {
@@ -72,6 +112,6 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 
 func (p *Parser) peekError(t token.TokenType) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
-		t, p.peekToken.Type)
+		t, p.peekToken().Type)
 	p.errors = append(p.errors, msg)
 }

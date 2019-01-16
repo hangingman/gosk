@@ -10,16 +10,16 @@ import (
 func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 
 	stmt := &ast.MnemonicStatement{
-		Token: p.curToken,
+		Token: p.curToken(),
 		Name: &ast.IdentifierArray{
-			Tokens: []token.Token{p.curToken},
-			Values: []string{p.curToken.Literal},
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
 		},
 	}
 
 	for {
-		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken)
-		stmt.Name.Values = append(stmt.Name.Values, p.peekToken.Literal)
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
 		if !(p.peekTokenIs(token.COMMA) || p.peekTokenIs(token.EOF)) {
 			break
 		}

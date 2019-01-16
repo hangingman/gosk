@@ -24,7 +24,7 @@ func (p *Parser) ParseProgram() *ast.Program {
 }
 
 func (p *Parser) parseStatement() ast.Statement {
-	switch p.curToken.Type {
+	switch p.curToken().Type {
 	case token.OPCODE:
 		return p.parseMnemonicStatement()
 	case token.LABEL:
@@ -40,7 +40,7 @@ func (p *Parser) parseStatement() ast.Statement {
 
 func (p *Parser) parseMnemonicStatement() *ast.MnemonicStatement {
 
-	opcodeParseFn := p.opcodeParseFns[p.curToken.Literal]
+	opcodeParseFn := p.opcodeParseFns[p.curToken().Literal]
 	if opcodeParseFn == nil {
 		return nil
 	}
@@ -52,8 +52,8 @@ func (p *Parser) parseMnemonicStatement() *ast.MnemonicStatement {
 
 func (p *Parser) parseLabelStatement() *ast.LabelStatement {
 	stmt := &ast.LabelStatement{
-		Token: p.curToken,
-		Name:  p.curToken.Literal,
+		Token: p.curToken(),
+		Name:  p.curToken().Literal,
 	}
 	p.Logger.Info(stmt.String())
 	return stmt
@@ -64,10 +64,10 @@ func (p *Parser) parseSettingStatement() *ast.SettingStatement {
 	p.nextToken()
 
 	stmt := &ast.SettingStatement{
-		Token: p.curToken,
+		Token: p.curToken(),
 		Name: &ast.Identifier{
-			Token: token.Token{Type: token.SETTING, Literal: string(p.curToken.Literal)},
-			Value: p.peekToken.Literal,
+			Token: token.Token{Type: token.SETTING, Literal: string(p.curToken().Literal)},
+			Value: p.peekToken().Literal,
 		},
 	}
 
@@ -88,12 +88,12 @@ func (p *Parser) parseEquStatement() *ast.EquStatement {
 	stmt := &ast.EquStatement{
 		Token: token.Token{Type: token.EQU, Literal: "EQU"},
 		Name: &ast.Identifier{
-			Token: token.Token{Type: p.curToken.Type, Literal: string(p.curToken.Literal)},
+			Token: token.Token{Type: p.curToken().Type, Literal: string(p.curToken().Literal)},
 		},
 	}
 
 	p.nextToken()
-	stmt.Name.Value = p.peekToken.Literal
+	stmt.Name.Value = p.peekToken().Literal
 	p.Logger.Info(stmt.String())
 	p.nextToken()
 	p.nextToken()
