@@ -18,7 +18,7 @@ var (
 	logger = logrus.New()
 )
 
-func TestParseAsmHead(t *testing.T) {
+func TestParseHelloOS(t *testing.T) {
 	_, filename, _, _ := runtime.Caller(0)
 	asmheadPath := path.Join(path.Dir(filename), "..", "testdata", "helloos.nas")
 	err := os.Chdir("../../")

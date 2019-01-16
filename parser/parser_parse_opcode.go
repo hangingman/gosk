@@ -1,7 +1,6 @@
 package parser
 
 import (
-	// "fmt"
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/token"
 )
@@ -17,14 +16,27 @@ func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 		},
 	}
 
-	for {
+	//    [0]    [1]  [2]
+	// <OPCODE> <IMM> <,> ...
+	if p.lookAheadIs(2, token.COMMA) {
+		p.nextToken()
+
+		//  [0]	 [1]  [2]  [3]
+		// <IMM> <,> <IMM> <,> ...
+		for p.lookAheadIs(1, token.COMMA) {
+			stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+			stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+			p.nextToken()
+			p.nextToken()
+		}
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+	} else {
+		//    [0]    [1]
+		// <OPCODE> <IMM>
 		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
 		stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
-		if !(p.peekTokenIs(token.COMMA) || p.peekTokenIs(token.EOF)) {
-			break
-		}
-		p.nextToken()
-		p.nextToken()
 	}
+
 	return stmt
 }

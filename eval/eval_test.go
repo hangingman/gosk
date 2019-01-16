@@ -40,7 +40,7 @@ func TestEvalAsmHead(t *testing.T) {
 	// キャストをやる
 	objArray, ok := evaluated.(*object.ObjectArray)
 	assert.True(t, ok)
-	assert.Equal(t, 30, len(*objArray))
+	assert.Equal(t, 27, len(*objArray))
 	// 結果を１つずつ見てみる
 	for _, obj := range *objArray {
 		if obj != nil {
