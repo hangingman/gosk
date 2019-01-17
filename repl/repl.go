@@ -14,9 +14,17 @@ import (
 
 const PROMPT = ">> "
 
+var (
+	// ロガー
+	logger = logrus.New()
+)
+
+func init() {
+	logger.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
+}
+
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
-	logger := logrus.New()
 	logger.SetOutput(os.Stdout)
 
 	for {

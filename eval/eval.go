@@ -14,8 +14,15 @@ import (
 )
 
 var (
+	// ロガー
 	logger = logrus.New()
+	// 変数格納
+	equMap = make(map[string]token.Token)
 )
+
+func init() {
+	logger.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
+}
 
 func isNil(x interface{}) bool {
 	return x == nil || reflect.ValueOf(x).IsNil()
@@ -68,6 +75,7 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 }
 
 func Eval(node ast.Node) object.Object {
+	logger.Debug(fmt.Sprintf("Eval: node = %s", node))
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalStatements(node.Statements)
@@ -121,6 +129,10 @@ func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 }
 
 func evalEquStatement(stmt *ast.EquStatement) object.Object {
+	equKey := stmt.Name.Token.Literal
+	tok := stmt.Name.Token
+	logger.Info(fmt.Sprintf("%s = %s", equKey, tok))
+	equMap[equKey] = tok
 	return nil
 }
 

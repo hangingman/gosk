@@ -15,6 +15,10 @@ var (
 	logger = logrus.New()
 )
 
+func init() {
+	logger.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
+}
+
 func TestAsmHead(t *testing.T) {
 	_, filename, _, _ := runtime.Caller(0)
 	asmheadPath := path.Join(path.Dir(filename), "..", "testdata", "asmhead.nas")
