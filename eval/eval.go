@@ -4,10 +4,11 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	logger "github.com/apsdehal/go-logger"
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
-	"github.com/sirupsen/logrus"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -15,13 +16,14 @@ import (
 
 var (
 	// ロガー
-	logger = logrus.New()
+	log, _ = logger.New("eval", 1, os.Stdout)
 	// 変数格納
 	equMap = make(map[string]token.Token)
 )
 
 func init() {
-	logger.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
+	log.SetFormat("[%{module}] [%{level}] %{message}")
+	log.SetLogLevel(logger.InfoLevel)
 }
 
 func isNil(x interface{}) bool {
@@ -70,12 +72,12 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 
-	logger.Info(fmt.Sprintf("[%s]\n", strings.Join(toks, ", ")))
+	log.InfoF("[%s]", strings.Join(toks, ", "))
 	return &object.Binary{Value: bytes}
 }
 
 func Eval(node ast.Node) object.Object {
-	logger.Debug(fmt.Sprintf("Eval: node = %s", node))
+	log.DebugF("Eval: node = %s", node)
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalStatements(node.Statements)
@@ -131,7 +133,7 @@ func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 func evalEquStatement(stmt *ast.EquStatement) object.Object {
 	equKey := stmt.Name.Token.Literal
 	tok := stmt.Name.Token
-	logger.Info(fmt.Sprintf("%s = %s", equKey, tok))
+	log.InfoF("%s = %s", equKey, tok)
 	equMap[equKey] = tok
 	return nil
 }

@@ -1,8 +1,9 @@
 package lexer
 
 import (
+	logger "github.com/apsdehal/go-logger"
 	"github.com/hangingman/gosk/token"
-	"github.com/sirupsen/logrus"
+	"os"
 )
 
 // Lexer は入力された文字列に対する現状の検査状況を保持します
@@ -11,15 +12,21 @@ type Lexer struct {
 	position     int    // 現在の文字の位置
 	readPosition int    // これから読み込む位置
 	ch           rune   // 現在検査中の文字
-	Logger       *logrus.Logger
+	logger       *logger.Logger
 }
 
 // New は与えられた文字列に対するトークンを返します
-func New(input string, logger *logrus.Logger) *Lexer {
+func New(input string) *Lexer {
 	l := &Lexer{
-		input:  []rune(input),
-		Logger: logger,
+		input: []rune(input),
 	}
+	log, err := logger.New("lexer", 2, os.Stdout)
+	log.SetFormat("[%{module}] [%{level}] %{message}")
+	log.SetLogLevel(logger.InfoLevel)
+	if err != nil {
+		panic(err)
+	}
+	l.logger = log
 	l.readChar()
 	return l
 }
@@ -46,10 +53,10 @@ func (l *Lexer) peekChar() rune {
 // readIdentifier は識別子を読み出して非英字まで読み進める
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	l.Logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
+	// l.logger.DebugF("[%d] = %s", position, string(l.input[l.position]))
 	for isLetter(l.ch) {
 		l.readChar()
-		l.Logger.Debug("[%d] = %s\n", position, string(l.input[l.position]))
+		// l.logger.DebugF("[%d] = %s", position, string(l.input[l.position]))
 	}
 	ident := string(l.input[position:l.position])
 

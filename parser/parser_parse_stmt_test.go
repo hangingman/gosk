@@ -5,7 +5,6 @@ import (
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/token"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
@@ -13,14 +12,6 @@ import (
 	"runtime"
 	"testing"
 )
-
-var (
-	logger = logrus.New()
-)
-
-func init() {
-	logger.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
-}
 
 func TestParseHelloOS(t *testing.T) {
 	_, filename, _, _ := runtime.Caller(0)
@@ -36,8 +27,7 @@ func TestParseHelloOS(t *testing.T) {
 	}
 	input := string(b)
 	// fmt.Println(input)
-	logger.SetOutput(os.Stdout)
-	l := lexer.New(input, logger)
+	l := lexer.New(input)
 
 	// for {
 	// 	tok := l.NextToken()
@@ -57,8 +47,7 @@ func TestParseHelloOS(t *testing.T) {
 func TestParseSettingStatement(t *testing.T) {
 	input := `[INSTRSET "i486p"]`
 
-	logger.SetOutput(os.Stdout)
-	l := lexer.New(input, logger)
+	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
 
@@ -83,11 +72,9 @@ func TestParseSettingStatement(t *testing.T) {
 }
 
 func TestParseEquStatement(t *testing.T) {
-	input := `BOTPAK	EQU		0x00280000		; bootpackのロード先
-`
+	input := `BOTPAK	EQU		0x00280000		; bootpackのロード先`
 
-	logger.SetOutput(os.Stdout)
-	l := lexer.New(input, logger)
+	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
 
@@ -113,8 +100,7 @@ func TestParseEquStatement(t *testing.T) {
 func TestParseLabelStatement(t *testing.T) {
 	input := `msg:   `
 
-	logger.SetOutput(os.Stdout)
-	l := lexer.New(input, logger)
+	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
 	// 取得できる Statement は１つ

@@ -3,11 +3,11 @@ package repl
 import (
 	"bufio"
 	"fmt"
+	logger "github.com/apsdehal/go-logger"
 	"github.com/hangingman/gosk/eval"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/parser"
-	"github.com/sirupsen/logrus"
 	"io"
 	"os"
 )
@@ -16,16 +16,16 @@ const PROMPT = ">> "
 
 var (
 	// ロガー
-	logger = logrus.New()
+	log, _ = logger.New("repl", 1, os.Stdout)
 )
 
 func init() {
-	logger.SetFormatter(&logrus.TextFormatter{DisableTimestamp: true})
+	log.SetFormat("[%{module}] [%{level}] %{message}")
+	log.SetLogLevel(logger.InfoLevel)
 }
 
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
-	logger.SetOutput(os.Stdout)
 
 	for {
 		fmt.Printf(PROMPT)
@@ -34,7 +34,7 @@ func Start(in io.Reader, out io.Writer) {
 			return
 		}
 		line := scanner.Text()
-		l := lexer.New(line, logger)
+		l := lexer.New(line)
 		p := parser.New(l)
 
 		program := p.ParseProgram()

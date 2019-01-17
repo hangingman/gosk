@@ -28,8 +28,7 @@ func TestEvalAsmHead(t *testing.T) {
 	}
 	input := string(b)
 
-	logger.SetOutput(os.Stdout)
-	l := lexer.New(input, logger)
+	l := lexer.New(input)
 	p := parser.New(l)
 
 	// プログラムの解析と評価

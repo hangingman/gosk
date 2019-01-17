@@ -7,7 +7,7 @@ import (
 
 // ParseProgram は Parser を受け取ってAST化されたProgramを返す
 func (p *Parser) ParseProgram() *ast.Program {
-	p.Logger.Debug("ParseProgram!")
+	p.logger.Debug("ParseProgram!")
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
@@ -46,7 +46,7 @@ func (p *Parser) parseMnemonicStatement() *ast.MnemonicStatement {
 	}
 	stmt := opcodeParseFn()
 	p.nextToken()
-	p.Logger.Info(stmt.String())
+	p.logger.Info(stmt.String())
 	return stmt
 }
 
@@ -55,7 +55,7 @@ func (p *Parser) parseLabelStatement() *ast.LabelStatement {
 		Token: p.curToken(),
 		Name:  p.curToken().Literal,
 	}
-	p.Logger.Info(stmt.String())
+	p.logger.Info(stmt.String())
 	return stmt
 }
 
@@ -75,7 +75,7 @@ func (p *Parser) parseSettingStatement() *ast.SettingStatement {
 		p.nextToken()
 	}
 
-	p.Logger.Info(stmt.String())
+	p.logger.Info(stmt.String())
 	return stmt
 }
 
@@ -94,7 +94,7 @@ func (p *Parser) parseEquStatement() *ast.EquStatement {
 
 	p.nextToken()
 	stmt.Name.Value = p.peekToken().Literal
-	p.Logger.Info(stmt.String())
+	p.logger.Info(stmt.String())
 	p.nextToken()
 	p.nextToken()
 
