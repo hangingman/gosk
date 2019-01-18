@@ -12,16 +12,13 @@ const Version = "1.0.0 beta"
 
 func main() {
 	var (
-		version = flag.Bool("v", false, "")
+		version = flag.Bool("v", false, "バージョンとライセンス情報を表示する")
 	)
 	// -hオプション用文言
-	// 	flag.Usage = func() {
-	// 		fmt.Fprintf(os.Stderr, `
-	// Usage of %s:
-	//    %s [OPTIONS] ARGS...
-	// Options\n`, os.Args[0],os.Args[0])
-	// 		flag.PrintDefaults()
-	// 	}
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "usage:  [--help | -v] source [object/binary] [list]\n")
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 
 	if *version {
