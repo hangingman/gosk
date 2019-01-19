@@ -3,6 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/hangingman/gosk/eval"
+	"github.com/hangingman/gosk/lexer"
+	"github.com/hangingman/gosk/object"
+	"github.com/hangingman/gosk/parser"
 	"github.com/hangingman/gosk/repl"
 	"io/ioutil"
 	"os"
@@ -74,11 +78,33 @@ Thank you osask project !`)
 		fmt.Printf("GOSK : can't read %s", assemblySrc)
 		os.Exit(17)
 	}
-	if !fileIsWritable(assemblyDst) {
+	dstFile, err := os.OpenFile(assemblyDst, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
 		fmt.Printf("GOSK : can't open %s", assemblyDst)
 		os.Exit(17)
 	}
+	defer dstFile.Close()
 
 	input := string(bytes)
-	fmt.Println(input)
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	// プログラムの解析と評価
+	program := p.ParseProgram()
+	evaluated := eval.Eval(program)
+
+	// 結果を１つずつ処理する
+	objArray, _ := evaluated.(*object.ObjectArray)
+	for _, obj := range *objArray {
+		if obj != nil {
+			binLiteral, _ := obj.(*object.Binary)
+			bin := binLiteral.Value
+			_, err := dstFile.Write(bin)
+			if err != nil {
+				fmt.Printf("GOSK : can't write %s", assemblyDst)
+			}
+		}
+	}
+
+	os.Exit(0)
 }
