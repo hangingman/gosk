@@ -43,10 +43,10 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("DB", p.parseDBStatement)
 	p.registerOpecode("DW", p.parseDBStatement)
 	p.registerOpecode("DD", p.parseDBStatement)
+	p.registerOpecode("RESB", p.parseRESBStatement)
 
 	// 初回のTokenを配列に追加
 	p.lexedTokens = append(p.lexedTokens, p.curToken())
-	// p.lexedTokens = []token.Token{p.curToken()}
 
 	// EOFまでトークンを読み込む
 	for {

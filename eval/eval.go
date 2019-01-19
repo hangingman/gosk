@@ -14,16 +14,25 @@ import (
 	"strings"
 )
 
+type (
+	opcodeEvalFn func(stmt *ast.MnemonicStatement) object.Object
+)
+
 var (
 	// ロガー
 	log, _ = logger.New("eval", 1, os.Stdout)
 	// 変数格納
 	equMap = make(map[string]token.Token)
+	// オペコードごとに評価関数を切り替える
+	opcodeEvalFns = make(map[string]opcodeEvalFn)
 )
 
 func init() {
 	log.SetFormat("[%{module}] [%{level}] %{message}")
 	log.SetLogLevel(logger.InfoLevel)
+	opcodeEvalFns["DB"] = evalDBStatement
+	opcodeEvalFns["DW"] = evalDWStatement
+	opcodeEvalFns["DD"] = evalDDStatement
 }
 
 func isNil(x interface{}) bool {
@@ -110,16 +119,14 @@ func evalStatements(stmts []ast.Statement) object.Object {
 }
 
 func evalMnemonicStatement(stmt *ast.MnemonicStatement) object.Object {
-	switch stmt.Name.Tokens[0].Literal {
-	case "DB":
-		return evalDBStatement(stmt)
-	case "DW":
-		return evalDWStatement(stmt)
-	case "DD":
-		return evalDDStatement(stmt)
+	opcode := stmt.Name.Tokens[0].Literal
+	evalOpcodeFn := opcodeEvalFns[opcode]
+
+	if evalOpcodeFn == nil {
+		return nil
 	}
 
-	return nil
+	return evalOpcodeFn(stmt)
 }
 
 func evalSettingStatement(stmt *ast.SettingStatement) object.Object {

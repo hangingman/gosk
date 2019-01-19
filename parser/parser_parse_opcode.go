@@ -40,3 +40,19 @@ func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 
 	return stmt
 }
+
+// parseRESBStatement は RESB オペコードを解析する
+func (p *Parser) parseRESBStatement() *ast.MnemonicStatement {
+
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken(),
+		Name: &ast.IdentifierArray{
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
+		},
+	}
+	stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
+	stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
+
+	return stmt
+}

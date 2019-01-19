@@ -39,12 +39,11 @@ func TestEvalAsmHead(t *testing.T) {
 	// キャストをやる
 	objArray, ok := evaluated.(*object.ObjectArray)
 	assert.True(t, ok)
-	assert.Equal(t, 27, len(*objArray))
+	assert.Equal(t, 29, len(*objArray))
 	// 結果を１つずつ見てみる
 	for _, obj := range *objArray {
 		if obj != nil {
 			assert.Equal(t, "*object.Binary", reflect.TypeOf(obj).String())
-			// fmt.Printf("%s: %x\n", reflect.TypeOf(obj), obj)
 		}
 	}
 }
