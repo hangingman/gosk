@@ -33,6 +33,7 @@ func init() {
 	opcodeEvalFns["DB"] = evalDBStatement
 	opcodeEvalFns["DW"] = evalDWStatement
 	opcodeEvalFns["DD"] = evalDDStatement
+	opcodeEvalFns["RESB"] = evalRESBStatement
 }
 
 func isNil(x interface{}) bool {
@@ -155,4 +156,25 @@ func evalDWStatement(stmt *ast.MnemonicStatement) object.Object {
 
 func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
 	return evalDStatements(stmt, int2Dword)
+}
+
+func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
+	toks := []string{}
+	bytes := []byte{}
+
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.INT {
+			// Go言語のintは常にint64 -> uint8
+			int64Val, _ := strconv.Atoi(tok.Literal)
+			bs := make([]byte, int64Val)
+			for i := range bs {
+				bs[i] = 0x00
+			}
+			bytes = append(bytes, bs...)
+		}
+		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+
+	log.InfoF("[%s]", strings.Join(toks, ", "))
+	return &object.Binary{Value: bytes}
 }
