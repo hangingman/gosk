@@ -78,7 +78,8 @@ Thank you osask project !`)
 		fmt.Printf("GOSK : can't read %s", assemblySrc)
 		os.Exit(17)
 	}
-	dstFile, err := os.OpenFile(assemblyDst, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	// 読み書き可能, 新規作成, ファイル内容あっても切り詰め
+	dstFile, err := os.OpenFile(assemblyDst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		fmt.Printf("GOSK : can't open %s", assemblyDst)
 		os.Exit(17)
