@@ -86,12 +86,12 @@ msg:
 		{token.RBRACKET, "]"},
 		// MOV		EDX,2
 		{token.OPCODE, "MOV"},
-		{token.IDENT, "EDX"},
+		{token.REGISTER, "EDX"},
 		{token.COMMA, ","},
 		{token.INT, "2"},
 		// MOV		EBX,msg
 		{token.OPCODE, "MOV"},
-		{token.IDENT, "EBX"},
+		{token.REGISTER, "EBX"},
 		{token.COMMA, ","},
 		{token.IDENT, "msg"},
 		// INT		0x40
@@ -99,7 +99,7 @@ msg:
 		{token.HEX_LIT, "0x40"},
 		// MOV		EDX,4
 		{token.OPCODE, "MOV"},
-		{token.IDENT, "EDX"},
+		{token.REGISTER, "EDX"},
 		{token.COMMA, ","},
 		{token.INT, "4"},
 		// INT		0x40

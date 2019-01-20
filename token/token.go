@@ -12,36 +12,38 @@ type Token struct {
 }
 
 const (
-	ILLEGAL   = "ILLEGAL"
-	EOF       = "EOF"
-	IDENT     = "IDENT"
-	INT       = "INT"
-	ASSIGN    = "="
-	PLUS      = "+"
-	MINUS     = "-"
-	BANG      = "!"
-	ASTERISK  = "*"
-	SLASH     = "/"
-	COMMA     = ","
-	COLON     = ":"
-	SEMICOLON = ";"
-	SHARP     = "#"
-	LT        = "<"
-	GT        = ">"
-	LPAREN    = "("
-	RPAREN    = ")"
-	LBRACE    = "{"
-	RBRACE    = "}"
-	LBRACKET  = "["
-	RBRACKET  = "]"
-	DOUBLE_QT = "\""
-	EQU       = "EQU"
-	GLOBAL    = "GLOBAL"
-	OPCODE    = "OPCODE"
-	SETTING   = "SETTING"
-	STR_LIT   = "STR_LIT"
-	HEX_LIT   = "HEX_LIT"
-	LABEL     = "LABEL"
+	ILLEGAL      = "ILLEGAL"
+	EOF          = "EOF"
+	IDENT        = "IDENT"
+	INT          = "INT"
+	ASSIGN       = "="
+	PLUS         = "+"
+	MINUS        = "-"
+	BANG         = "!"
+	ASTERISK     = "*"
+	SLASH        = "/"
+	COMMA        = ","
+	COLON        = ":"
+	SEMICOLON    = ";"
+	SHARP        = "#"
+	LT           = "<"
+	GT           = ">"
+	LPAREN       = "("
+	RPAREN       = ")"
+	LBRACE       = "{"
+	RBRACE       = "}"
+	LBRACKET     = "["
+	RBRACKET     = "]"
+	DOUBLE_QT    = "\""
+	EQU          = "EQU"
+	GLOBAL       = "GLOBAL"
+	OPCODE       = "OPCODE"
+	SETTING      = "SETTING"
+	STR_LIT      = "STR_LIT"
+	HEX_LIT      = "HEX_LIT"
+	LABEL        = "LABEL"
+	REGISTER     = "REGISTER"
+	SEG_REGISTER = "SEG_REGISTER"
 )
 
 func LookupIdent(ident string) TokenType {
@@ -55,6 +57,37 @@ var keywords = map[string]TokenType{
 	// naskの予約語
 	"EQU":    EQU,
 	"GLOBAL": GLOBAL,
+	// naskがサポートするレジスタ
+	"AL":  REGISTER,
+	"BL":  REGISTER,
+	"CL":  REGISTER,
+	"DL":  REGISTER,
+	"EAX": REGISTER,
+	"EBX": REGISTER,
+	"ECX": REGISTER,
+	"EDX": REGISTER,
+	"AX":  REGISTER,
+	"BX":  REGISTER,
+	"CX":  REGISTER,
+	"DX":  REGISTER,
+	"AH":  REGISTER,
+	"BH":  REGISTER,
+	"CH":  REGISTER,
+	"DH":  REGISTER,
+	"ESP": REGISTER,
+	"EDI": REGISTER,
+	"EBP": REGISTER,
+	"ESI": REGISTER,
+	"SP":  REGISTER,
+	"DI":  REGISTER,
+	"BP":  REGISTER,
+	"SI":  REGISTER,
+	"CS":  SEG_REGISTER, // コード
+	"DS":  SEG_REGISTER, // データ
+	"ES":  SEG_REGISTER, // エクストラ
+	"SS":  SEG_REGISTER, // スタック
+	"FS":  SEG_REGISTER,
+	"GS":  SEG_REGISTER,
 	// naskで用意されている設定用命令
 	"BITS":     SETTING,
 	"INSTRSET": SETTING,
@@ -98,7 +131,6 @@ var keywords = map[string]TokenType{
 	"CMPSD":   OPCODE,
 	"CMPSW":   OPCODE,
 	"CMPXCHG": OPCODE,
-	"CS":      OPCODE,
 	"CWD":     OPCODE,
 	"CWDE":    OPCODE,
 	"DAA":     OPCODE,
@@ -108,12 +140,10 @@ var keywords = map[string]TokenType{
 	"DEC":     OPCODE,
 	"DIV":     OPCODE,
 	"DQ":      OPCODE,
-	"DS":      OPCODE,
 	"DT":      OPCODE,
 	"DW":      OPCODE,
 	"END":     OPCODE,
 	"ENTER":   OPCODE,
-	"ES":      OPCODE,
 	"EXTERN":  OPCODE,
 	"F2XM1":   OPCODE,
 	"FABS":    OPCODE,
@@ -175,7 +205,6 @@ var keywords = map[string]TokenType{
 	"FPREM1":  OPCODE,
 	"FRNDINT": OPCODE,
 	"FRSTOR":  OPCODE,
-	"FS":      OPCODE,
 	"FSAVE":   OPCODE,
 	"FSCALE":  OPCODE,
 	"FSETPM":  OPCODE,
@@ -200,7 +229,6 @@ var keywords = map[string]TokenType{
 	"FXTRACT": OPCODE,
 	"FYL2X":   OPCODE,
 	"FYL2XP1": OPCODE,
-	"GS":      OPCODE,
 	"HLT":     OPCODE,
 	"IDIV":    OPCODE,
 	"IMUL":    OPCODE,
@@ -366,7 +394,6 @@ var keywords = map[string]TokenType{
 	"SIDT":    OPCODE,
 	"SLDT":    OPCODE,
 	"SMSW":    OPCODE,
-	"SS":      OPCODE,
 	"STC":     OPCODE,
 	"STD":     OPCODE,
 	"STI":     OPCODE,
