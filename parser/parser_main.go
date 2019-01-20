@@ -7,6 +7,7 @@ import (
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/token"
 	"os"
+	"reflect"
 )
 
 type (
@@ -122,4 +123,12 @@ func (p *Parser) peekError(t token.TokenType) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
 		t, p.peekToken().Type)
 	p.errors = append(p.errors, msg)
+}
+
+func isNil(x interface{}) bool {
+	return x == nil || reflect.ValueOf(x).IsNil()
+}
+
+func isNotNil(x interface{}) bool {
+	return !isNil(x)
 }

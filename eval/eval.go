@@ -63,6 +63,7 @@ func int2Dword(i int) []byte {
 func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Object {
 	toks := []string{}
 	bytes := []byte{}
+
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.HEX_LIT {
 			// 0xを取り除いて処理
@@ -87,7 +88,6 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 }
 
 func Eval(node ast.Node) object.Object {
-	log.DebugF("Eval: node = %s", node)
 	switch node := node.(type) {
 	case *ast.Program:
 		return evalStatements(node.Statements)

@@ -7,6 +7,7 @@ import (
 
 // parseDBStatement は DB,DW,DD オペコードを解析する
 func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
+	p.logger.DebugF("Parser: cur = %s, peek = %s", p.curToken(), p.peekToken())
 
 	stmt := &ast.MnemonicStatement{
 		Token: p.curToken(),
@@ -19,8 +20,6 @@ func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 	//    [0]    [1]  [2]
 	// <OPCODE> <IMM> <,> ...
 	if p.lookAheadIs(2, token.COMMA) {
-		p.nextToken()
-
 		//  [0]	 [1]  [2]  [3]
 		// <IMM> <,> <IMM> <,> ...
 		for p.lookAheadIs(1, token.COMMA) {
