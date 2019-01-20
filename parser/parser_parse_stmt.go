@@ -44,7 +44,6 @@ func (p *Parser) parseMnemonicStatement() *ast.MnemonicStatement {
 		return nil
 	}
 	stmt := opcodeParseFn()
-	p.nextToken()
 	p.logger.Info(stmt.String())
 	return stmt
 }

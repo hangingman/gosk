@@ -7,7 +7,11 @@ import (
 
 // parseDBStatement は DB,DW,DD オペコードを解析する
 func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
-	p.logger.DebugF("Parser: cur = %s, peek = %s", p.curToken(), p.peekToken())
+	p.logger.DebugF("Parser: cur = %s, peek = %s, peek+1 = %s",
+		p.curToken(),
+		p.peekToken(),
+		p.lookAhead(2),
+	)
 
 	stmt := &ast.MnemonicStatement{
 		Token: p.curToken(),
@@ -16,25 +20,29 @@ func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 			Values: []string{p.curToken().Literal},
 		},
 	}
+	p.nextToken()
 
-	//    [0]    [1]  [2]
+	//    [-]    [0]  [1]
 	// <OPCODE> <IMM> <,> ...
-	if p.lookAheadIs(2, token.COMMA) {
-		//  [0]	 [1]  [2]  [3]
-		// <IMM> <,> <IMM> <,> ...
-		for p.lookAheadIs(1, token.COMMA) {
+	if p.peekTokenIs(token.COMMA) {
+		//  [-]      [0]  [1]  [2]  [3]
+		// <OPCODE> <IMM> <,> <IMM> <,> ...
+		for p.peekTokenIs(token.COMMA) {
 			stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
 			stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
 			p.nextToken()
 			p.nextToken()
 		}
+		if p.curTokenIs(token.INT) || p.curTokenIs(token.HEX_LIT) || p.curTokenIs(token.STR_LIT) {
+			stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+			stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+		}
+
+	} else {
+		//    [-]    [0]
+		// <OPCODE> <IMM>
 		stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
 		stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
-	} else {
-		//    [0]    [1]
-		// <OPCODE> <IMM>
-		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
-		stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
 	}
 
 	return stmt
