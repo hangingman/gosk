@@ -23,6 +23,8 @@ var (
 	equMap = make(map[string]token.Token)
 	// オペコードごとに評価関数を切り替える
 	opcodeEvalFns = make(map[string]opcodeEvalFn)
+	// '$' が表す現在のポジション
+	dollarPosition = int64(0)
 )
 
 func init() {
@@ -35,6 +37,7 @@ func init() {
 	opcodeEvalFns["DW"] = evalDWStatement
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["RESB"] = evalRESBStatement
+	opcodeEvalFns["ORG"] = evalORGStatement
 }
 
 func isNil(x interface{}) bool {
@@ -178,4 +181,23 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
 	return &object.Binary{Value: bytes}
+}
+
+func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
+	toks := []string{}
+
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.INT {
+			// Go言語のintは常にint64
+			v, _ := strconv.Atoi(tok.Literal)
+			dollarPosition = int64(v)
+		} else if tok.Type == token.HEX_LIT {
+			v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
+			dollarPosition = int64(v)
+		}
+		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
+	log.Println(fmt.Sprintf("info: ORG = %d", dollarPosition))
+	return nil
 }

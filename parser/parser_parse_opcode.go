@@ -65,3 +65,23 @@ func (p *Parser) parseRESBStatement() *ast.MnemonicStatement {
 
 	return stmt
 }
+
+// parseORGStatement は ORG オペコードを解析する
+func (p *Parser) parseORGStatement() *ast.MnemonicStatement {
+
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken(),
+		Name: &ast.IdentifierArray{
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
+		},
+	}
+	// ORG 命令の後は必ずintリテラルかhexリテラル
+	if !p.expectPeek(token.INT) && !p.expectPeek(token.HEX_LIT) {
+		return nil
+	}
+	stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+	stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+
+	return stmt
+}
