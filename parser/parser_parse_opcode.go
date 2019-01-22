@@ -1,17 +1,19 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/token"
+	"log"
 )
 
 // parseDBStatement は DB,DW,DD オペコードを解析する
 func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
-	p.logger.DebugF("Parser: cur = %s, peek = %s, peek+1 = %s",
+	log.Println(fmt.Sprintf("debug: Parser: cur = %s, peek = %s, peek+1 = %s",
 		p.curToken(),
 		p.peekToken(),
 		p.lookAhead(2),
-	)
+	))
 
 	stmt := &ast.MnemonicStatement{
 		Token: p.curToken(),

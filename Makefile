@@ -24,7 +24,7 @@ fmt:
 
 dep:
 	$(GOGET) github.com/stretchr/testify
-	$(GOGET) github.com/apsdehal/go-logger
+	$(GOGET) github.com/comail/colog
 
 emacs:
 	$(GOGET) github.com/rogpeppe/godef

@@ -2,11 +2,11 @@ package parser
 
 import (
 	"fmt"
-	logger "github.com/apsdehal/go-logger"
+	"github.com/comail/colog"
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/token"
-	"os"
+	"log"
 	"reflect"
 )
 
@@ -19,7 +19,6 @@ type Parser struct {
 	curIndex       int
 	lexedTokens    []token.Token
 	errors         []string
-	logger         *logger.Logger
 	opcodeParseFns map[string]opcodeParseFn // オペコードごとに構文解析を切り替える
 }
 
@@ -30,14 +29,10 @@ func New(l *lexer.Lexer) *Parser {
 		lexedTokens: make([]token.Token, 50),
 		errors:      []string{},
 	}
-	log, err := logger.New("parser", 1, os.Stdout)
-	log.SetFormat("[%{module}] [%{level}] %{message}")
-	log.SetLogLevel(logger.InfoLevel)
-
-	if err != nil {
-		panic(err)
-	}
-	p.logger = log
+	colog.Register()
+	colog.SetDefaultLevel(colog.LInfo)
+	colog.SetMinLevel(colog.LInfo)
+	colog.SetFlags(log.Lshortfile)
 
 	// オペコードの構文解析方式を格納するmap
 	p.opcodeParseFns = make(map[string]opcodeParseFn)
@@ -54,7 +49,7 @@ func New(l *lexer.Lexer) *Parser {
 		tok := p.l.NextToken()
 		p.lexedTokens = append(p.lexedTokens, tok)
 		if tok.Type == token.EOF {
-			p.logger.InfoF("p.curIndex max = %d", len(p.lexedTokens))
+			log.Println(fmt.Sprintf("debug: p.curIndex max = %d", len(p.lexedTokens)))
 			break
 		}
 	}

@@ -29,19 +29,8 @@ func TestParseHelloOS(t *testing.T) {
 	// fmt.Println(input)
 	l := lexer.New(input)
 
-	// for {
-	// 	tok := l.NextToken()
-	// 	// fmt.Printf("%s\n", tok)
-	// 	if tok.Type == token.EOF {
-	// 		break
-	// 	}
-	// }
-
 	p := New(l)
-	program := p.ParseProgram()
-	for stmt := range program.Statements {
-		fmt.Printf("%T\n", stmt)
-	}
+	p.ParseProgram()
 }
 
 func TestParseSettingStatement(t *testing.T) {

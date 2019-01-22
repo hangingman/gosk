@@ -4,11 +4,11 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	logger "github.com/apsdehal/go-logger"
+	"github.com/comail/colog"
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
-	"os"
+	"log"
 	"reflect"
 	"strconv"
 	"strings"
@@ -19,8 +19,6 @@ type (
 )
 
 var (
-	// ロガー
-	log, _ = logger.New("eval", 1, os.Stdout)
 	// 変数格納
 	equMap = make(map[string]token.Token)
 	// オペコードごとに評価関数を切り替える
@@ -28,8 +26,11 @@ var (
 )
 
 func init() {
-	log.SetFormat("[%{module}] [%{level}] %{message}")
-	log.SetLogLevel(logger.InfoLevel)
+	colog.Register()
+	colog.SetDefaultLevel(colog.LInfo)
+	colog.SetMinLevel(colog.LInfo)
+	colog.SetFlags(log.Lshortfile)
+
 	opcodeEvalFns["DB"] = evalDBStatement
 	opcodeEvalFns["DW"] = evalDWStatement
 	opcodeEvalFns["DD"] = evalDDStatement
@@ -83,7 +84,7 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 
-	log.InfoF("[%s]", strings.Join(toks, ", "))
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
 	return &object.Binary{Value: bytes}
 }
 
@@ -141,7 +142,7 @@ func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 func evalEquStatement(stmt *ast.EquStatement) object.Object {
 	equKey := stmt.Name.Token.Literal
 	tok := stmt.Name.Token
-	log.InfoF("%s = %s", equKey, tok)
+	log.Println(fmt.Sprintf("info: %s = %s", equKey, tok))
 	equMap[equKey] = tok
 	return nil
 }
@@ -175,6 +176,6 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 
-	log.InfoF("[%s]", strings.Join(toks, ", "))
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
 	return &object.Binary{Value: bytes}
 }

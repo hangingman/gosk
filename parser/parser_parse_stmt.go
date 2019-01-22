@@ -1,13 +1,15 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/token"
+	"log"
 )
 
 // ParseProgram は Parser を受け取ってAST化されたProgramを返す
 func (p *Parser) ParseProgram() *ast.Program {
-	p.logger.Debug("ParseProgram!")
+	log.Println("debug: ParseProgram!")
 	program := &ast.Program{}
 	program.Statements = []ast.Statement{}
 
@@ -44,7 +46,7 @@ func (p *Parser) parseMnemonicStatement() *ast.MnemonicStatement {
 		return nil
 	}
 	stmt := opcodeParseFn()
-	p.logger.Info(stmt.String())
+	log.Println(fmt.Sprintf("info: %s", stmt.String()))
 	return stmt
 }
 
@@ -53,7 +55,7 @@ func (p *Parser) parseLabelStatement() *ast.LabelStatement {
 		Token: p.curToken(),
 		Name:  p.curToken().Literal,
 	}
-	p.logger.Info(stmt.String())
+	log.Println(fmt.Sprintf("info: %s", stmt.String()))
 	return stmt
 }
 
@@ -73,7 +75,7 @@ func (p *Parser) parseSettingStatement() *ast.SettingStatement {
 		p.nextToken()
 	}
 
-	p.logger.Info(stmt.String())
+	log.Println(fmt.Sprintf("info: %s", stmt.String()))
 	return stmt
 }
 
@@ -92,7 +94,7 @@ func (p *Parser) parseEquStatement() *ast.EquStatement {
 
 	p.nextToken()
 	stmt.Name.Value = p.peekToken().Literal
-	p.logger.Info(stmt.String())
+	log.Println(fmt.Sprintf("info: %s", stmt.String()))
 	p.nextToken()
 	p.nextToken()
 
