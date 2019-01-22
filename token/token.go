@@ -35,6 +35,7 @@ const (
 	LBRACKET     = "["
 	RBRACKET     = "]"
 	DOUBLE_QT    = "\""
+	DOLLAR       = "$"
 	EQU          = "EQU"
 	GLOBAL       = "GLOBAL"
 	OPCODE       = "OPCODE"

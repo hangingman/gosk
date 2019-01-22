@@ -121,6 +121,8 @@ func (l *Lexer) NextToken() token.Token {
 	case '"':
 		tok.Type = token.STR_LIT
 		tok.Literal = l.readDoubleQuotedString()
+	case '$':
+		tok = newToken(token.DOLLAR, l.ch)
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF

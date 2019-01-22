@@ -63,6 +63,16 @@ func (p *Parser) parseRESBStatement() *ast.MnemonicStatement {
 	stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
 	stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
 
+	if p.lookAheadIs(2, token.MINUS) && p.lookAheadIs(3, token.DOLLAR) {
+		p.nextToken()
+		p.nextToken()
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+		p.nextToken()
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+	}
+
 	return stmt
 }
 
