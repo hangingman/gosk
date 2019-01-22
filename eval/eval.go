@@ -38,6 +38,9 @@ func init() {
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["RESB"] = evalRESBStatement
 	opcodeEvalFns["ORG"] = evalORGStatement
+	opcodeEvalFns["STI"] = func(stmt *ast.MnemonicStatement) object.Object {
+		return &object.Binary{Value: []byte{0xfb}}
+	}
 }
 
 func isNil(x interface{}) bool {

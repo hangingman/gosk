@@ -95,3 +95,16 @@ func (p *Parser) parseORGStatement() *ast.MnemonicStatement {
 
 	return stmt
 }
+
+// parseOnlyOpcodeStatement は オペコードのみの文を解析する
+func (p *Parser) parseOnlyOpcodeStatement() *ast.MnemonicStatement {
+
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken(),
+		Name: &ast.IdentifierArray{
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
+		},
+	}
+	return stmt
+}
