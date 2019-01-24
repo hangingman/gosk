@@ -42,6 +42,16 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("RESB", p.parseRESBStatement)
 	p.registerOpecode("ORG", p.parseORGStatement)
 	p.registerOpecode("STI", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("NOP", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("CLI", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("HLT", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("IRET", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("POPA", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("POPF", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("PUSHA", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("PUSHD", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("RET", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("RETF", p.parseOnlyOpcodeStatement)
 
 	// 初回のTokenを配列に追加
 	p.lexedTokens = append(p.lexedTokens, p.curToken())

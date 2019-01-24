@@ -38,9 +38,17 @@ func init() {
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["RESB"] = evalRESBStatement
 	opcodeEvalFns["ORG"] = evalORGStatement
-	opcodeEvalFns["STI"] = func(stmt *ast.MnemonicStatement) object.Object {
-		return &object.Binary{Value: []byte{0xfb}}
-	}
+	opcodeEvalFns["STI"] = evalSingleByteOpcode("STI", 0xfb)
+	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
+	opcodeEvalFns["CLI"] = evalSingleByteOpcode("CLI", 0xfa)
+	opcodeEvalFns["HLT"] = evalSingleByteOpcode("HLT", 0xf4)
+	opcodeEvalFns["IRET"] = evalSingleByteOpcode("IRET", 0xcf)
+	opcodeEvalFns["POPA"] = evalSingleByteOpcode("POPA", 0x61)
+	opcodeEvalFns["POPF"] = evalSingleByteOpcode("POPF", 0x9d)
+	opcodeEvalFns["PUSHA"] = evalSingleByteOpcode("PUSHA", 0x60)
+	opcodeEvalFns["PUSHD"] = evalSingleByteOpcode("PUSHD", 0x60)
+	opcodeEvalFns["RET"] = evalSingleByteOpcode("RET", 0xc3)
+	opcodeEvalFns["RETF"] = evalSingleByteOpcode("RETF", 0xcb)
 }
 
 func isNil(x interface{}) bool {
@@ -65,6 +73,13 @@ func int2Dword(i int) []byte {
 	bs := make([]byte, 4)
 	binary.LittleEndian.PutUint32(bs, uint32(i))
 	return bs
+}
+
+func evalSingleByteOpcode(opcode string, b byte) func(stmt *ast.MnemonicStatement) object.Object {
+	return func(stmt *ast.MnemonicStatement) object.Object {
+		log.Println(fmt.Sprintf("info: [%s, %x]", opcode, b))
+		return &object.Binary{Value: []byte{b}}
+	}
 }
 
 func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Object {
