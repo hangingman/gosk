@@ -33,22 +33,32 @@ func init() {
 	colog.SetMinLevel(colog.LInfo)
 	colog.SetFlags(log.Lshortfile)
 
-	opcodeEvalFns["DB"] = evalDBStatement
-	opcodeEvalFns["DW"] = evalDWStatement
-	opcodeEvalFns["DD"] = evalDDStatement
-	opcodeEvalFns["RESB"] = evalRESBStatement
-	opcodeEvalFns["ORG"] = evalORGStatement
-	opcodeEvalFns["STI"] = evalSingleByteOpcode("STI", 0xfb)
-	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
+	// opcodeEvalFns[""] = evalSingleByteOpcode("", )
+
+	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAA", 0x37)
+	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAS", 0x3f)
+	opcodeEvalFns["CBW"] = evalSingleByteOpcode("CBW", 0x98)
 	opcodeEvalFns["CLI"] = evalSingleByteOpcode("CLI", 0xfa)
+	opcodeEvalFns["CWDE"] = evalSingleByteOpcode("CWDE", 0x98)
+	opcodeEvalFns["CDQ"] = evalSingleByteOpcode("CDQ", 0x99)
+	opcodeEvalFns["CWD"] = evalSingleByteOpcode("CWD", 0x99)
+	opcodeEvalFns["CLC"] = evalSingleByteOpcode("CLC", 0xf8)
+	opcodeEvalFns["CLD"] = evalSingleByteOpcode("CLD", 0xfc)
+	opcodeEvalFns["DB"] = evalDBStatement
+	opcodeEvalFns["DD"] = evalDDStatement
+	opcodeEvalFns["DW"] = evalDWStatement
 	opcodeEvalFns["HLT"] = evalSingleByteOpcode("HLT", 0xf4)
 	opcodeEvalFns["IRET"] = evalSingleByteOpcode("IRET", 0xcf)
+	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
+	opcodeEvalFns["ORG"] = evalORGStatement
 	opcodeEvalFns["POPA"] = evalSingleByteOpcode("POPA", 0x61)
 	opcodeEvalFns["POPF"] = evalSingleByteOpcode("POPF", 0x9d)
 	opcodeEvalFns["PUSHA"] = evalSingleByteOpcode("PUSHA", 0x60)
 	opcodeEvalFns["PUSHD"] = evalSingleByteOpcode("PUSHD", 0x60)
+	opcodeEvalFns["RESB"] = evalRESBStatement
 	opcodeEvalFns["RET"] = evalSingleByteOpcode("RET", 0xc3)
 	opcodeEvalFns["RETF"] = evalSingleByteOpcode("RETF", 0xcb)
+	opcodeEvalFns["STI"] = evalSingleByteOpcode("STI", 0xfb)
 }
 
 func isNil(x interface{}) bool {
