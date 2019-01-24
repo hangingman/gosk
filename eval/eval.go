@@ -33,22 +33,32 @@ func init() {
 	colog.SetMinLevel(colog.LInfo)
 	colog.SetFlags(log.Lshortfile)
 
-	// opcodeEvalFns[""] = evalSingleByteOpcode("", )
-
 	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAA", 0x37)
 	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAS", 0x3f)
 	opcodeEvalFns["CBW"] = evalSingleByteOpcode("CBW", 0x98)
-	opcodeEvalFns["CLI"] = evalSingleByteOpcode("CLI", 0xfa)
-	opcodeEvalFns["CWDE"] = evalSingleByteOpcode("CWDE", 0x98)
 	opcodeEvalFns["CDQ"] = evalSingleByteOpcode("CDQ", 0x99)
-	opcodeEvalFns["CWD"] = evalSingleByteOpcode("CWD", 0x99)
 	opcodeEvalFns["CLC"] = evalSingleByteOpcode("CLC", 0xf8)
 	opcodeEvalFns["CLD"] = evalSingleByteOpcode("CLD", 0xfc)
+	opcodeEvalFns["CLI"] = evalSingleByteOpcode("CLI", 0xfa)
+	opcodeEvalFns["CLTS"] = evalSingleWordOpcode("CLTS", []byte{0x0f, 0x06})
+	opcodeEvalFns["CMC"] = evalSingleByteOpcode("CMC", 0xf5)
+	opcodeEvalFns["CPUID"] = evalSingleByteOpcode("CPUID", 0xf8)
+	opcodeEvalFns["CWD"] = evalSingleByteOpcode("CWD", 0x99)
+	opcodeEvalFns["CWDE"] = evalSingleByteOpcode("CWDE", 0x98)
+	opcodeEvalFns["DAA"] = evalSingleByteOpcode("DAA", 0x27)
+	opcodeEvalFns["DAS"] = evalSingleByteOpcode("DAS", 0x2f)
 	opcodeEvalFns["DB"] = evalDBStatement
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["DW"] = evalDWStatement
+	opcodeEvalFns["FWAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
 	opcodeEvalFns["HLT"] = evalSingleByteOpcode("HLT", 0xf4)
+	opcodeEvalFns["INCO"] = evalSingleByteOpcode("INCO", 0xce)
+	opcodeEvalFns["INSB"] = evalSingleByteOpcode("INSB", 0x6c)
+	opcodeEvalFns["INSD"] = evalSingleByteOpcode("INSD", 0x6d)
+	opcodeEvalFns["INSW"] = evalSingleByteOpcode("INSW", 0x6d)
+	opcodeEvalFns["INVD"] = evalSingleWordOpcode("INVD", []byte{0x0f, 0x08})
 	opcodeEvalFns["IRET"] = evalSingleByteOpcode("IRET", 0xcf)
+	opcodeEvalFns["IRETD"] = evalSingleByteOpcode("IRETD", 0xcf)
 	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
 	opcodeEvalFns["ORG"] = evalORGStatement
 	opcodeEvalFns["POPA"] = evalSingleByteOpcode("POPA", 0x61)
@@ -59,6 +69,7 @@ func init() {
 	opcodeEvalFns["RET"] = evalSingleByteOpcode("RET", 0xc3)
 	opcodeEvalFns["RETF"] = evalSingleByteOpcode("RETF", 0xcb)
 	opcodeEvalFns["STI"] = evalSingleByteOpcode("STI", 0xfb)
+	opcodeEvalFns["WAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
 }
 
 func isNil(x interface{}) bool {
@@ -89,6 +100,13 @@ func evalSingleByteOpcode(opcode string, b byte) func(stmt *ast.MnemonicStatemen
 	return func(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: [%s, %x]", opcode, b))
 		return &object.Binary{Value: []byte{b}}
+	}
+}
+
+func evalSingleWordOpcode(opcode string, w []byte) func(stmt *ast.MnemonicStatement) object.Object {
+	return func(stmt *ast.MnemonicStatement) object.Object {
+		log.Println(fmt.Sprintf("info: [%s, %x, %x]", opcode, w[0], w[1]))
+		return &object.Binary{Value: w}
 	}
 }
 
