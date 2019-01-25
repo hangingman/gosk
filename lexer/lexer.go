@@ -53,7 +53,6 @@ func (l *Lexer) readIdentifier() string {
 	log.Printf("debug: [%d] = %s", position, string(l.input[l.position]))
 	for isLetter(l.ch) {
 		l.readChar()
-		log.Printf("debug: [%d] = %s", position, string(l.input[l.position]))
 	}
 	ident := string(l.input[position:l.position])
 

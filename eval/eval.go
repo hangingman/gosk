@@ -34,7 +34,7 @@ func init() {
 	colog.SetFlags(log.Lshortfile)
 
 	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAA", 0x37)
-	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAS", 0x3f)
+	opcodeEvalFns["AAS"] = evalSingleByteOpcode("AAS", 0x3f)
 	opcodeEvalFns["CBW"] = evalSingleByteOpcode("CBW", 0x98)
 	opcodeEvalFns["CDQ"] = evalSingleByteOpcode("CDQ", 0x99)
 	opcodeEvalFns["CLC"] = evalSingleByteOpcode("CLC", 0xf8)
