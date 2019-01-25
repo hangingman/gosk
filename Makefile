@@ -8,6 +8,8 @@ GOGET=$(GOCMD) get
 BIN=gosk
 NASK=wine nask.exe
 
+.PHONY: all testdata
+
 all: dep test build
 
 build:

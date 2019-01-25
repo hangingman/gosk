@@ -38,11 +38,20 @@ INSW
 INVD
 IRET
 IRETD
+LAHF
+LEAVE
+LOCK
 NOP
+OUTSB
+OUTSW
+OUTSD
 POPA
+POPAD
 POPF
+POPFD
 PUSHA
 PUSHD
+PUSHF
 RET
 RETF
 STI
@@ -52,38 +61,47 @@ WAIT
 	tests := []struct {
 		Value []byte
 	}{
-		{[]byte{0x37}},
-		{[]byte{0x3f}},
-		{[]byte{0x98}},
-		{[]byte{0x99}},
-		{[]byte{0xf8}},
-		{[]byte{0xfc}},
-		{[]byte{0xfa}},
-		{[]byte{0x0f, 0x06}},
-		{[]byte{0xf5}},
-		{[]byte{0xf8}},
-		{[]byte{0x99}},
-		{[]byte{0x98}},
-		{[]byte{0x27}},
-		{[]byte{0x2f}},
-		{[]byte{0x9b}},
-		{[]byte{0xf4}},
-		{[]byte{0xce}},
-		{[]byte{0x6c}},
-		{[]byte{0x6d}},
-		{[]byte{0x6d}},
-		{[]byte{0x0f, 0x08}},
-		{[]byte{0xcf}},
-		{[]byte{0xcf}},
-		{[]byte{0x90}},
-		{[]byte{0x61}},
-		{[]byte{0x9d}},
-		{[]byte{0x60}},
-		{[]byte{0x60}},
-		{[]byte{0xc3}},
-		{[]byte{0xcb}},
-		{[]byte{0xfb}},
-		{[]byte{0x9b}},
+		{[]byte{0x37}},       // AAA
+		{[]byte{0x3f}},       // AAS
+		{[]byte{0x98}},       // CBW
+		{[]byte{0x99}},       // CDQ
+		{[]byte{0xf8}},       // CLC
+		{[]byte{0xfc}},       // CLD
+		{[]byte{0xfa}},       // CLI
+		{[]byte{0x0f, 0x06}}, // CLTS
+		{[]byte{0xf5}},       // CMC
+		{[]byte{0xf8}},       // CPUID
+		{[]byte{0x99}},       // CWD
+		{[]byte{0x98}},       // CWDE
+		{[]byte{0x27}},       // DAA
+		{[]byte{0x2f}},       // DAS
+		{[]byte{0x9b}},       // WAIT
+		{[]byte{0xf4}},       // HLT
+		{[]byte{0xce}},       // INCO
+		{[]byte{0x6c}},       // INSB
+		{[]byte{0x6d}},       // INSD
+		{[]byte{0x6d}},       // INSW
+		{[]byte{0x0f, 0x08}}, // INVD
+		{[]byte{0xcf}},       // IRET
+		{[]byte{0xcf}},       // IRETD
+		{[]byte{0x9f}},       // LAHF
+		{[]byte{0xc9}},       // LEAVE
+		{[]byte{0xf0}},       // LOCK
+		{[]byte{0x90}},       // NOP
+		{[]byte{0x6f}},       // OUTSB
+		{[]byte{0x6f}},       // OUTSW
+		{[]byte{0x6f}},       // OUTSD
+		{[]byte{0x61}},       // POPA
+		{[]byte{0x61}},       // POPAD
+		{[]byte{0x9d}},       // POPF
+		{[]byte{0x9d}},       // POPFD
+		{[]byte{0x60}},       // PUSHA
+		{[]byte{0x60}},       // PUSHD
+		{[]byte{0x9c}},       // PUSHF
+		{[]byte{0xc3}},       // RET
+		{[]byte{0xcb}},       // RETF
+		{[]byte{0xfb}},       // STI
+		{[]byte{0x9b}},       // WAIT
 	}
 
 	l := lexer.New(input)

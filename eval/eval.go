@@ -60,8 +60,8 @@ func init() {
 	opcodeEvalFns["IRET"] = evalSingleByteOpcode("IRET", 0xcf)
 	opcodeEvalFns["IRETD"] = evalSingleByteOpcode("IRETD", 0xcf)
 	opcodeEvalFns["LAHF"] = evalSingleByteOpcode("LAHF", 0x9f)
-	opcodeEvalFns["LEAVE"] = evalSingleByteOpcode("LAHF", 0xc9)
-	opcodeEvalFns["LOCK"] = evalSingleByteOpcode("LAHF", 0xf0)
+	opcodeEvalFns["LEAVE"] = evalSingleByteOpcode("LEAVE", 0xc9)
+	opcodeEvalFns["LOCK"] = evalSingleByteOpcode("LOCK", 0xf0)
 	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
 	opcodeEvalFns["ORG"] = evalORGStatement
 	opcodeEvalFns["OUTSB"] = evalSingleByteOpcode("OUTSB", 0x6f)
