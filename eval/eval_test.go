@@ -11,97 +11,117 @@ import (
 	"path"
 	"reflect"
 	"runtime"
+	"strings"
 	"testing"
 )
 
 func TestEvalSingleOpcode(t *testing.T) {
-	input := `AAA
-AAS
-CBW
-CDQ
-CLC
-CLD
-CLI
-CLTS
-CMC
-CPUID
-CWD
-CWDE
-DAA
-DAS
-WAIT
-HLT
-INCO
-INSB
-INSD
-INSW
-INVD
-IRET
-IRETD
-LAHF
-LEAVE
-LOCK
-NOP
-OUTSB
-OUTSW
-OUTSD
-POPA
-POPAD
-POPF
-POPFD
-PUSHA
-PUSHD
-PUSHF
-RET
-RETF
-STI
-WAIT
-`
+	input := `AAA ;; 0x37
+AAS ;; 0x3f
+CBW ;; 0x98
+CDQ ;; 0x99
+CLC ;; 0xf8
+CLD ;; 0xfc
+CLI ;; 0xfa
+CLTS ;; []byte{0x0f, 0x06}
+CMC ;; 0xf5
+CPUID ;; 0xf8
+CWD ;; 0x99
+CWDE ;; 0x98
+DAA ;; 0x27
+DAS ;; 0x2f
+WAIT ;; 0x9b
+HLT ;; 0xf4
+INCO ;; 0xce
+INSB ;; 0x6c
+INSD ;; 0x6d
+INSW ;; 0x6d
+INVD ;; []byte{0x0f, 0x08}
+IRET ;; 0xcf
+IRETD ;; 0xcf
+LAHF ;; 0x9f
+LEAVE ;; 0xc9
+LOCK ;; 0xf0
+NOP ;; 0x90
+OUTSB ;; 0x6e
+OUTSD ;; 0x6f
+OUTSW ;; 0x6f
+POPA ;; 0x61
+POPAD ;; 0x61
+POPF ;; 0x9d
+POPFD ;; 0x9d
+PUSHA ;; 0x60
+PUSHD ;; 0x60
+PUSHF ;; 0x9c
+RET ;; 0xc3
+RETF ;; 0xcb
+RSM ;; []byte{0x0f, 0xaa}
+SAHF ;; 0x9e
+STC ;; 0xf9
+STD ;; 0xfd
+STI ;; 0xfb
+UD2 ;; []byte{0x0f, 0x0b}
+WAIT ;; 0x9b
+RDMSR ;; []byte{0x0f, 0x32}
+RDPMC ;; []byte{0x0f, 0x33}
+RDTSC ;; []byte{0x0f, 0x31}
+WBINVD ;; []byte{0x0f, 0x09}
+WRMSR ;; []byte{0x0f, 0x30}`
 
 	tests := []struct {
 		Value []byte
 	}{
-		{[]byte{0x37}},       // AAA
-		{[]byte{0x3f}},       // AAS
-		{[]byte{0x98}},       // CBW
-		{[]byte{0x99}},       // CDQ
-		{[]byte{0xf8}},       // CLC
-		{[]byte{0xfc}},       // CLD
-		{[]byte{0xfa}},       // CLI
-		{[]byte{0x0f, 0x06}}, // CLTS
-		{[]byte{0xf5}},       // CMC
-		{[]byte{0xf8}},       // CPUID
-		{[]byte{0x99}},       // CWD
-		{[]byte{0x98}},       // CWDE
-		{[]byte{0x27}},       // DAA
-		{[]byte{0x2f}},       // DAS
-		{[]byte{0x9b}},       // WAIT
-		{[]byte{0xf4}},       // HLT
-		{[]byte{0xce}},       // INCO
-		{[]byte{0x6c}},       // INSB
-		{[]byte{0x6d}},       // INSD
-		{[]byte{0x6d}},       // INSW
-		{[]byte{0x0f, 0x08}}, // INVD
-		{[]byte{0xcf}},       // IRET
-		{[]byte{0xcf}},       // IRETD
-		{[]byte{0x9f}},       // LAHF
-		{[]byte{0xc9}},       // LEAVE
-		{[]byte{0xf0}},       // LOCK
-		{[]byte{0x90}},       // NOP
-		{[]byte{0x6f}},       // OUTSB
-		{[]byte{0x6f}},       // OUTSW
-		{[]byte{0x6f}},       // OUTSD
-		{[]byte{0x61}},       // POPA
-		{[]byte{0x61}},       // POPAD
-		{[]byte{0x9d}},       // POPF
-		{[]byte{0x9d}},       // POPFD
-		{[]byte{0x60}},       // PUSHA
-		{[]byte{0x60}},       // PUSHD
-		{[]byte{0x9c}},       // PUSHF
-		{[]byte{0xc3}},       // RET
-		{[]byte{0xcb}},       // RETF
-		{[]byte{0xfb}},       // STI
-		{[]byte{0x9b}},       // WAIT
+		{[]byte{0x37}},
+		{[]byte{0x3f}},
+		{[]byte{0x98}},
+		{[]byte{0x99}},
+		{[]byte{0xf8}},
+		{[]byte{0xfc}},
+		{[]byte{0xfa}},
+		{[]byte{0x0f, 0x06}},
+		{[]byte{0xf5}},
+		{[]byte{0xf8}},
+		{[]byte{0x99}},
+		{[]byte{0x98}},
+		{[]byte{0x27}},
+		{[]byte{0x2f}},
+		{[]byte{0x9b}},
+		{[]byte{0xf4}},
+		{[]byte{0xce}},
+		{[]byte{0x6c}},
+		{[]byte{0x6d}},
+		{[]byte{0x6d}},
+		{[]byte{0x0f, 0x08}},
+		{[]byte{0xcf}},
+		{[]byte{0xcf}},
+		{[]byte{0x9f}},
+		{[]byte{0xc9}},
+		{[]byte{0xf0}},
+		{[]byte{0x90}},
+		{[]byte{0x6e}},
+		{[]byte{0x6f}},
+		{[]byte{0x6f}},
+		{[]byte{0x61}},
+		{[]byte{0x61}},
+		{[]byte{0x9d}},
+		{[]byte{0x9d}},
+		{[]byte{0x60}},
+		{[]byte{0x60}},
+		{[]byte{0x9c}},
+		{[]byte{0xc3}},
+		{[]byte{0xcb}},
+		{[]byte{0x0f, 0xaa}},
+		{[]byte{0x9e}},
+		{[]byte{0xf9}},
+		{[]byte{0xfd}},
+		{[]byte{0xfb}},
+		{[]byte{0x0f, 0x0b}},
+		{[]byte{0x9b}},
+		{[]byte{0x0f, 0x32}},
+		{[]byte{0x0f, 0x33}},
+		{[]byte{0x0f, 0x31}},
+		{[]byte{0x0f, 0x09}},
+		{[]byte{0x0f, 0x30}},
 	}
 
 	l := lexer.New(input)
@@ -115,12 +135,17 @@ WAIT
 	// キャストをやる
 	objArray, ok := evaluated.(*object.ObjectArray)
 	assert.True(t, ok)
+	testTarget := strings.Split(input, `\n`)
 	// 結果を１つずつ見てみる
 	for i, obj := range *objArray {
-		assert.NotEqual(t, obj, nil)
-		bin, ok := obj.(*object.Binary)
-		assert.True(t, ok)
-		assert.Equal(t, tests[i].Value, bin.Value)
+		if len(testTarget) > i {
+			assert.NotEqual(t, obj, nil)
+			bin, ok := obj.(*object.Binary)
+			assert.True(t, ok)
+			assert.Equal(t,
+				tests[i].Value,
+				bin.Value, fmt.Sprintf("Opcode: [%s] should be...", testTarget[i]))
+		}
 	}
 }
 

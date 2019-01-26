@@ -64,7 +64,7 @@ func init() {
 	opcodeEvalFns["LOCK"] = evalSingleByteOpcode("LOCK", 0xf0)
 	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
 	opcodeEvalFns["ORG"] = evalORGStatement
-	opcodeEvalFns["OUTSB"] = evalSingleByteOpcode("OUTSB", 0x6f)
+	opcodeEvalFns["OUTSB"] = evalSingleByteOpcode("OUTSB", 0x6e)
 	opcodeEvalFns["OUTSD"] = evalSingleByteOpcode("OUTSD", 0x6f)
 	opcodeEvalFns["OUTSW"] = evalSingleByteOpcode("OUTSW", 0x6f)
 	opcodeEvalFns["POPA"] = evalSingleByteOpcode("POPA", 0x61)
