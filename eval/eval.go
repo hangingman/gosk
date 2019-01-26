@@ -65,8 +65,8 @@ func init() {
 	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
 	opcodeEvalFns["ORG"] = evalORGStatement
 	opcodeEvalFns["OUTSB"] = evalSingleByteOpcode("OUTSB", 0x6f)
-	opcodeEvalFns["OUTSW"] = evalSingleByteOpcode("OUTSW", 0x6f)
 	opcodeEvalFns["OUTSD"] = evalSingleByteOpcode("OUTSD", 0x6f)
+	opcodeEvalFns["OUTSW"] = evalSingleByteOpcode("OUTSW", 0x6f)
 	opcodeEvalFns["POPA"] = evalSingleByteOpcode("POPA", 0x61)
 	opcodeEvalFns["POPAD"] = evalSingleByteOpcode("POPAD", 0x61)
 	opcodeEvalFns["POPF"] = evalSingleByteOpcode("POPF", 0x9d)
@@ -77,8 +77,18 @@ func init() {
 	opcodeEvalFns["RESB"] = evalRESBStatement
 	opcodeEvalFns["RET"] = evalSingleByteOpcode("RET", 0xc3)
 	opcodeEvalFns["RETF"] = evalSingleByteOpcode("RETF", 0xcb)
+	opcodeEvalFns["RSM"] = evalSingleWordOpcode("RSM", []byte{0x0f, 0xaa})
+	opcodeEvalFns["SAHF"] = evalSingleByteOpcode("SAHF", 0x9e)
+	opcodeEvalFns["STC"] = evalSingleByteOpcode("STC", 0xf9)
+	opcodeEvalFns["STD"] = evalSingleByteOpcode("STD", 0xfd)
 	opcodeEvalFns["STI"] = evalSingleByteOpcode("STI", 0xfb)
+	opcodeEvalFns["UD2"] = evalSingleWordOpcode("UD2", []byte{0x0f, 0x0b})
 	opcodeEvalFns["WAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
+	opcodeEvalFns["RDMSR"] = evalSingleWordOpcode("RDMSR", []byte{0x0f, 0x32})
+	opcodeEvalFns["RDPMC"] = evalSingleWordOpcode("RDPMC", []byte{0x0f, 0x33})
+	opcodeEvalFns["RDTSC"] = evalSingleWordOpcode("RDTSC", []byte{0x0f, 0x31})
+	opcodeEvalFns["WBINVD"] = evalSingleWordOpcode("WBINVD", []byte{0x0f, 0x09})
+	opcodeEvalFns["WRMSR"] = evalSingleWordOpcode("WRMSR", []byte{0x0f, 0x30})
 }
 
 func isNil(x interface{}) bool {
