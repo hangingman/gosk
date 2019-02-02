@@ -1,26 +1,19 @@
 package eval
 
 import (
-    "encoding/hex"
-    "reflect"
+	"fmt"
 	"github.com/hangingman/gosk/lexer"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/parser"
 	"github.com/stretchr/testify/assert"
-    "testing"
-    "strings"
-    "fmt"
+	"reflect"
+	"strings"
+	"testing"
 )
-
-const emptyLine = "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|"
-
-func isZeroFillLine(hexLine string) bool {
-    return strings.HasSuffix(hexLine, emptyLine)
-}
 
 // testAsmSource はアセンブラソースとプレイン16進ダンプを受け取りテスト比較する
 func testAsmSource(t *testing.T, asmSource string, expectedHex []string) {
-    
+
 	l := lexer.New(asmSource)
 	p := parser.New(l)
 
@@ -33,57 +26,25 @@ func testAsmSource(t *testing.T, asmSource string, expectedHex []string) {
 	objArray, ok := evaluated.(*object.ObjectArray)
 	assert.True(t, ok)
 
-    actual := []byte{}
+	actual := []byte{}
 	for _, obj := range *objArray {
 		if obj != nil {
 			assert.Equal(t, "*object.Binary", reflect.TypeOf(obj).String())
-            bin, _ := obj.(*object.Binary)
-            actual = append(actual, bin.Value...)
+			bin, _ := obj.(*object.Binary)
+			actual = append(actual, bin.Value...)
 		}
 	}
-    binSize := len(actual)
-    dumpLines := strings.Split(hex.Dump(actual), "\n")
-    dumpReduceZeroFill := []string{}
-    
-    for i := 0; i < len(dumpLines); i++ {
-        line := dumpLines[i]
-        peek := i+1
 
-        if isZeroFillLine(line) && isZeroFillLine(dumpLines[peek]) {
-            dumpReduceZeroFill = append(dumpReduceZeroFill, line)
-            
-            for {
-                peek++
-                
-                if peek == (len(dumpLines) -1) {
-                    dumpReduceZeroFill = append(dumpReduceZeroFill, "*")
-                    dumpReduceZeroFill = append(dumpReduceZeroFill, fmt.Sprintf("%08x", binSize))
-                    i = peek
-                    break
-                }
-                if ! isZeroFillLine(dumpLines[peek]) {
-                    dumpReduceZeroFill = append(dumpReduceZeroFill, "*")
-                    dumpReduceZeroFill = append(dumpReduceZeroFill, dumpLines[peek])
-                    i = peek
-                    break
-                }
-            }
-        } else {
-            dumpReduceZeroFill = append(dumpReduceZeroFill, line)
-        }
-    }
-
-
-    
-    for i, hex := range dumpReduceZeroFill {
-        fmt.Println(hex)
-        assert.Equal(t, expectedHex[i], hex,
-            fmt.Sprintf("expectedHex[%d] should be = %s", i, expectedHex[i]))
-    }
+	for i, hex := range getHexdumpFmtArray(actual) {
+		fmt.Println(hex)
+		assert.Equal(t, expectedHex[i], hex,
+			fmt.Sprintf("expectedHex[%d] should be = %s", i, expectedHex[i]))
+	}
 }
 
+// TestHelloOS1 naskソース１日目(helloos1)のテスト
 func TestHelloOS1(t *testing.T) {
-    input := `	DB	0xeb, 0x4e, 0x90, 0x48, 0x45, 0x4c, 0x4c, 0x4f
+	input := `	DB	0xeb, 0x4e, 0x90, 0x48, 0x45, 0x4c, 0x4c, 0x4f
 	DB	0x49, 0x50, 0x4c, 0x00, 0x02, 0x01, 0x01, 0x00
 	DB	0x02, 0xe0, 0x00, 0x40, 0x0b, 0xf0, 0x09, 0x00
 	DB	0x12, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -106,10 +67,10 @@ func TestHelloOS1(t *testing.T) {
 	DB	0xf0, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00
 	RESB	1469432`
 
-    // wine nask.exe helloos.nas > helloos.obj
-    // hexdump -C helloos.obj > helloos.hex
-    // ... generate .hex file little endian
-    answer := `00000000  eb 4e 90 48 45 4c 4c 4f  49 50 4c 00 02 01 01 00  |.N.HELLOIPL.....|
+	// wine nask.exe helloos.nas > helloos.obj
+	// hexdump -C helloos.obj > helloos.hex
+	// ... generate .hex file little endian
+	answer := `00000000  eb 4e 90 48 45 4c 4c 4f  49 50 4c 00 02 01 01 00  |.N.HELLOIPL.....|
 00000010  02 e0 00 40 0b f0 09 00  12 00 02 00 00 00 00 00  |...@............|
 00000020  40 0b 00 00 00 00 29 ff  ff ff ff 48 45 4c 4c 4f  |@.....)....HELLO|
 00000030  2d 4f 53 20 20 20 46 41  54 31 32 20 20 20 00 00  |-OS   FAT12   ..|
@@ -128,6 +89,6 @@ func TestHelloOS1(t *testing.T) {
 00001410  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
 *
 00168000`
-    
-    testAsmSource(t, input, strings.Split(answer, "\n"))
+
+	testAsmSource(t, input, strings.Split(answer, "\n"))
 }
