@@ -3,7 +3,13 @@ package eval
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/hangingman/gosk/lexer"
+	"github.com/hangingman/gosk/object"
+	"github.com/hangingman/gosk/parser"
+	"github.com/stretchr/testify/assert"
+	"reflect"
 	"strings"
+	"testing"
 )
 
 const emptyLine = "00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|"
@@ -64,4 +70,40 @@ func getHexdumpFmtArray(binary []byte) []string {
 	}
 
 	return hexdumpFmtArr
+}
+
+// testAsmSource はアセンブラソースとプレイン16進ダンプを受け取りテスト比較する
+func testAsmSource(t *testing.T, asmSource string, expectedHex []string) {
+
+	l := lexer.New(asmSource)
+	p := parser.New(l)
+
+	// プログラムの解析と評価
+	program := p.ParseProgram()
+	evaluated := Eval(program)
+	// リフレクションで結果をチェック
+	assert.Equal(t, "*object.ObjectArray", reflect.TypeOf(evaluated).String())
+	// キャストをやる
+	objArray, ok := evaluated.(*object.ObjectArray)
+	assert.True(t, ok)
+
+	actual := []byte{}
+	for _, obj := range *objArray {
+		if obj != nil {
+			assert.Equal(t, "*object.Binary", reflect.TypeOf(obj).String())
+			bin, _ := obj.(*object.Binary)
+			actual = append(actual, bin.Value...)
+		}
+	}
+
+	for i, hex := range getHexdumpFmtArray(actual) {
+		assert.Equal(t, expectedHex[i], hex,
+			fmt.Sprintf(`expectedHex[%d] should be = %s.
+Generated dump:
+%s`,
+				i,
+				expectedHex[i],
+				getHexdumpFmtString(actual),
+			))
+	}
 }

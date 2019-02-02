@@ -24,7 +24,9 @@ var (
 	// オペコードごとに評価関数を切り替える
 	opcodeEvalFns = make(map[string]opcodeEvalFn)
 	// '$' が表す現在のポジション
-	dollarPosition = int64(0)
+	dollarPosition = uint64(0)
+	// 現在までで評価されたバイナリ
+	curByteSize = uint64(0)
 )
 
 func init() {
@@ -181,7 +183,15 @@ func evalStatements(stmts []ast.Statement) object.Object {
 	// 文を評価して、結果としてobject.ObjectArrayを返す
 	for _, stmt := range stmts {
 		if isNotNil(stmt) {
-			results = append(results, Eval(stmt))
+			result := Eval(stmt)
+			bin, ok := result.(*object.Binary)
+			if ok {
+				evalByteSize := uint64(len(bin.Value))
+				log.Println(fmt.Sprintf("debug: evaled byte size: %d", evalByteSize))
+				curByteSize += uint64(len(bin.Value))
+				log.Println(fmt.Sprintf("debug: current byte size: %d", curByteSize))
+			}
+			results = append(results, result)
 		}
 	}
 
@@ -259,7 +269,8 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 			if stmt.Name.Tokens[i+1].Type == token.MINUS &&
 				stmt.Name.Tokens[i+2].Type == token.DOLLAR {
 				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
-				bs := makeZeroFilledBytesU64(u64v)
+				requred := u64v - curByteSize
+				bs := makeZeroFilledBytesU64(requred)
 				bytes = append(bytes, bs...)
 				break
 			}
@@ -278,10 +289,10 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.INT {
 			// Go言語のintは常にint64
 			v, _ := strconv.Atoi(tok.Literal)
-			dollarPosition = int64(v)
+			dollarPosition = uint64(v)
 		} else if tok.Type == token.HEX_LIT {
 			u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
-			dollarPosition = int64(u64v)
+			dollarPosition = uint64(u64v)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
