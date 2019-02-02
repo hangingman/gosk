@@ -227,19 +227,42 @@ func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
 	return evalDStatements(stmt, int2Dword)
 }
 
+func makeZeroFill(bs []byte) []byte {
+	for i := range bs {
+		bs[i] = 0x00
+	}
+	return bs
+}
+
+func makeZeroFilledBytesU64(byteSize uint64) []byte {
+	bs := make([]byte, byteSize)
+	return makeZeroFill(bs)
+}
+
+func makeZeroFilledBytes(byteSize int) []byte {
+	bs := make([]byte, byteSize)
+	return makeZeroFill(bs)
+}
+
 func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 	toks := []string{}
 	bytes := []byte{}
 
-	for _, tok := range stmt.Name.Tokens {
+	for i, tok := range stmt.Name.Tokens {
 		if tok.Type == token.INT {
-			// Go言語のintは常にint64 -> uint8
-			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := make([]byte, int64Val)
-			for i := range bs {
-				bs[i] = 0x00
-			}
+			v, _ := strconv.Atoi(tok.Literal)
+			bs := makeZeroFilledBytes(v)
 			bytes = append(bytes, bs...)
+		} else if tok.Type == token.HEX_LIT {
+			// RESB	0x1fe-$ のように hexリテラル値の後に
+			// ハイフンとダラーがあることを期待する
+			if stmt.Name.Tokens[i+1].Type == token.MINUS &&
+				stmt.Name.Tokens[i+2].Type == token.DOLLAR {
+				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
+				bs := makeZeroFilledBytesU64(u64v)
+				bytes = append(bytes, bs...)
+				break
+			}
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
@@ -257,8 +280,8 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 			v, _ := strconv.Atoi(tok.Literal)
 			dollarPosition = int64(v)
 		} else if tok.Type == token.HEX_LIT {
-			v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
-			dollarPosition = int64(v)
+			u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
+			dollarPosition = int64(u64v)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
