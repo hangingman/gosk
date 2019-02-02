@@ -161,6 +161,8 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
+		dollarPosition = uint64(0)
+		curByteSize = uint64(0)
 		return evalStatements(node.Statements)
 	case *ast.MnemonicStatement:
 		return evalMnemonicStatement(node)
