@@ -108,3 +108,23 @@ func (p *Parser) parseOnlyOpcodeStatement() *ast.MnemonicStatement {
 	}
 	return stmt
 }
+
+// parseJMPStatement は JMP オペコードを解析する
+func (p *Parser) parseJMPStatement() *ast.MnemonicStatement {
+
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken(),
+		Name: &ast.IdentifierArray{
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
+		},
+	}
+	// JMP 命令の後は必ず識別子
+	if !p.expectPeek(token.IDENT) {
+		return nil
+	}
+	stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+	stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+
+	return stmt
+}

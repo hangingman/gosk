@@ -27,6 +27,8 @@ var (
 	dollarPosition = uint64(0)
 	// 現在までで評価されたバイナリ
 	curByteSize = uint64(0)
+	// ラベルとジャンプ命令管理用オブジェクト
+	labelManage = LabelManagement{}
 )
 
 func init() {
@@ -52,6 +54,7 @@ func init() {
 	opcodeEvalFns["DB"] = evalDBStatement
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["DW"] = evalDWStatement
+	opcodeEvalFns["JMP"] = evalJMPStatement
 	opcodeEvalFns["FWAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
 	opcodeEvalFns["HLT"] = evalSingleByteOpcode("HLT", 0xf4)
 	opcodeEvalFns["INCO"] = evalSingleByteOpcode("INCO", 0xce)
@@ -300,5 +303,13 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 	}
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
 	log.Println(fmt.Sprintf("info: ORG = %d", dollarPosition))
+	return nil
+}
+
+func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
+	for _, tok := range stmt.Name.Tokens {
+		log.Println(fmt.Sprintf("info: !!! %s", tok))
+	}
+
 	return nil
 }
