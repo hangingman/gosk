@@ -8,7 +8,7 @@ import (
 type MnemonicStatement struct {
 	Token token.Token // OPCODE
 	Name  *IdentifierArray
-	Line  int
+	// ID    string
 }
 
 func (s *MnemonicStatement) statementNode()       {}
@@ -22,7 +22,7 @@ type SettingStatement struct {
 	Token token.Token // SETTING
 	Name  *Identifier
 	Value string
-	Line  int
+	// ID    string
 }
 
 func (s *SettingStatement) statementNode()       {}
@@ -35,7 +35,7 @@ func (s *SettingStatement) String() string {
 type LabelStatement struct {
 	Token token.Token // LABEL
 	Name  string
-	Line  int
+	// ID    string
 }
 
 func (s *LabelStatement) statementNode()       {}
@@ -49,7 +49,7 @@ type EquStatement struct {
 	Token token.Token // EQU
 	Name  *Identifier
 	Value string // TODO: 後でExpressionにするかも
-	Line  int
+	// ID    string
 }
 
 func (s *EquStatement) statementNode()       {}

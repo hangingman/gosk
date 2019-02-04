@@ -16,6 +16,7 @@ const (
 type Object interface {
 	Type() ObjectType
 	Inspect() string
+	// GetID() string
 }
 
 type ObjectArray []Object
