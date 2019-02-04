@@ -219,6 +219,8 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 }
 
 func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
+	label := strings.TrimSuffix(stmt.Name, ":")
+	labelManage.Emit(label)
 	return nil
 }
 
@@ -308,6 +310,10 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 
 func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.IDENT {
+			// callbackを配置し今のバイト数を設定する
+			labelManage.AddLabelCallback(tok.Literal)
+		}
 		log.Println(fmt.Sprintf("info: !!! %s", tok))
 	}
 
