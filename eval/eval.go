@@ -96,12 +96,12 @@ func init() {
 	opcodeEvalFns["WRMSR"] = evalSingleWordOpcode("WRMSR", []byte{0x0f, 0x30})
 }
 
-func isNil(x interface{}) bool {
+func IsNil(x interface{}) bool {
 	return x == nil || reflect.ValueOf(x).IsNil()
 }
 
-func isNotNil(x interface{}) bool {
-	return !isNil(x)
+func IsNotNil(x interface{}) bool {
+	return !IsNil(x)
 }
 
 func int2Byte(i int) []byte {
@@ -187,7 +187,7 @@ func evalStatements(stmts []ast.Statement) object.Object {
 
 	// 文を評価して、結果としてobject.ObjectArrayを返す
 	for _, stmt := range stmts {
-		if isNotNil(stmt) {
+		if IsNotNil(stmt) {
 			result := Eval(stmt)
 			bin, ok := result.(*object.Binary)
 			if ok {
