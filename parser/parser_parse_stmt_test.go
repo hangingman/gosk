@@ -137,7 +137,6 @@ func TestParseMOVStatement(t *testing.T) {
 			token.Token{Type: token.LBRACKET, Literal: "["},
 			token.Token{Type: token.REGISTER, Literal: "SI"},
 			token.Token{Type: token.RBRACKET, Literal: "]"},
-			token.Token{Type: token.EOF, Literal: ""},
 		},
 	}
 

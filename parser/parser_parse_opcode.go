@@ -163,7 +163,7 @@ func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {
 	if p.peekTokenIs(token.LBRACKET) {
 		// もしブラケットを見つけたら右側の終端まで読み取る
 		for {
-			if p.curTokenIs(token.RBRACKET) {
+			if p.peekTokenIs(token.RBRACKET) {
 				break
 			}
 			if p.curTokenIs(token.EOF) {

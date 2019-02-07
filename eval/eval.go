@@ -69,6 +69,7 @@ func init() {
 	opcodeEvalFns["LAHF"] = evalSingleByteOpcode("LAHF", 0x9f)
 	opcodeEvalFns["LEAVE"] = evalSingleByteOpcode("LEAVE", 0xc9)
 	opcodeEvalFns["LOCK"] = evalSingleByteOpcode("LOCK", 0xf0)
+	opcodeEvalFns["MOV"] = evalMOVStatement
 	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
 	opcodeEvalFns["ORG"] = evalORGStatement
 	opcodeEvalFns["OUTSB"] = evalSingleByteOpcode("OUTSB", 0x6e)
@@ -303,4 +304,16 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 	}
 
 	return bin
+}
+
+func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
+	toks := []string{}
+	bytes := []byte{}
+
+	for _, tok := range stmt.Name.Tokens {
+		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
+	return &object.Binary{Value: bytes}
 }
