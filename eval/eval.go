@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	"github.com/comail/colog"
@@ -9,7 +8,6 @@ import (
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
 	"log"
-	"reflect"
 	"strconv"
 	"strings"
 )
@@ -98,30 +96,6 @@ func init() {
 	opcodeEvalFns["RDTSC"] = evalSingleWordOpcode("RDTSC", []byte{0x0f, 0x31})
 	opcodeEvalFns["WBINVD"] = evalSingleWordOpcode("WBINVD", []byte{0x0f, 0x09})
 	opcodeEvalFns["WRMSR"] = evalSingleWordOpcode("WRMSR", []byte{0x0f, 0x30})
-}
-
-func IsNil(x interface{}) bool {
-	return x == nil || reflect.ValueOf(x).IsNil()
-}
-
-func IsNotNil(x interface{}) bool {
-	return !IsNil(x)
-}
-
-func int2Byte(i int) []byte {
-	return []byte{uint8(i)}
-}
-
-func int2Word(i int) []byte {
-	bs := make([]byte, 2)
-	binary.LittleEndian.PutUint16(bs, uint16(i))
-	return bs
-}
-
-func int2Dword(i int) []byte {
-	bs := make([]byte, 4)
-	binary.LittleEndian.PutUint32(bs, uint32(i))
-	return bs
 }
 
 func evalSingleByteOpcode(opcode string, b byte) func(stmt *ast.MnemonicStatement) object.Object {
