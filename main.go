@@ -97,13 +97,26 @@ Thank you osask project !`)
 	// 結果を１つずつ処理する
 	objArray, _ := evaluated.(*object.ObjectArray)
 	for _, obj := range *objArray {
-		if obj != nil {
+		if eval.IsNil(obj) {
+			continue
+		}
+
+		var bin []byte
+
+		switch obj.(type) {
+		case *object.Binary:
+			// バイナリ
 			binLiteral, _ := obj.(*object.Binary)
-			bin := binLiteral.Value
-			_, err := dstFile.Write(bin)
-			if err != nil {
-				fmt.Printf("GOSK : can't write %s", assemblyDst)
-			}
+			bin = binLiteral.Value
+		case *object.Recalc:
+			// 再計算必要なもの
+			recalc, _ := obj.(*object.Recalc)
+			bin = recalc.Value()
+		}
+		// 実際の書き込み
+		_, err := dstFile.Write(bin)
+		if err != nil {
+			fmt.Printf("GOSK : can't write %s", assemblyDst)
 		}
 	}
 

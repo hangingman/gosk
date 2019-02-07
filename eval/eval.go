@@ -24,11 +24,15 @@ var (
 	// オペコードごとに評価関数を切り替える
 	opcodeEvalFns = make(map[string]opcodeEvalFn)
 	// '$' が表す現在のポジション
-	dollarPosition = uint64(0)
+	dollarPosition = 0
 	// 現在までで評価されたバイナリ
-	curByteSize = uint64(0)
+	curByteSize = 0
 	// ラベルとジャンプ命令管理用オブジェクト
-	labelManage = LabelManagement{}
+	labelManage = LabelManagement{
+		opcode:            map[string][]byte{},
+		labelBinaryRefMap: map[string]*object.Binary{},
+		labelBytesMap:     map[string]int{},
+	}
 )
 
 func init() {
@@ -96,12 +100,12 @@ func init() {
 	opcodeEvalFns["WRMSR"] = evalSingleWordOpcode("WRMSR", []byte{0x0f, 0x30})
 }
 
-func isNil(x interface{}) bool {
+func IsNil(x interface{}) bool {
 	return x == nil || reflect.ValueOf(x).IsNil()
 }
 
-func isNotNil(x interface{}) bool {
-	return !isNil(x)
+func IsNotNil(x interface{}) bool {
+	return !IsNil(x)
 }
 
 func int2Byte(i int) []byte {
@@ -164,8 +168,8 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
-		dollarPosition = uint64(0)
-		curByteSize = uint64(0)
+		dollarPosition = 0
+		curByteSize = 0
 		return evalStatements(node.Statements)
 	case *ast.MnemonicStatement:
 		return evalMnemonicStatement(node)
@@ -187,13 +191,13 @@ func evalStatements(stmts []ast.Statement) object.Object {
 
 	// 文を評価して、結果としてobject.ObjectArrayを返す
 	for _, stmt := range stmts {
-		if isNotNil(stmt) {
+		if IsNotNil(stmt) {
 			result := Eval(stmt)
 			bin, ok := result.(*object.Binary)
 			if ok {
-				evalByteSize := uint64(len(bin.Value))
+				evalByteSize := len(bin.Value)
 				log.Println(fmt.Sprintf("debug: evaled byte size: %d", evalByteSize))
-				curByteSize += uint64(len(bin.Value))
+				curByteSize += len(bin.Value)
 				log.Println(fmt.Sprintf("debug: current byte size: %d", curByteSize))
 			}
 			results = append(results, result)
@@ -220,7 +224,7 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 
 func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 	label := strings.TrimSuffix(stmt.Name, ":")
-	labelManage.Emit(label)
+	labelManage.Emit(label, curByteSize)
 	return nil
 }
 
@@ -276,7 +280,7 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 			if stmt.Name.Tokens[i+1].Type == token.MINUS &&
 				stmt.Name.Tokens[i+2].Type == token.DOLLAR {
 				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
-				requred := u64v - curByteSize
+				requred := u64v - uint64(curByteSize)
 				bs := makeZeroFilledBytesU64(requred)
 				bytes = append(bytes, bs...)
 				break
@@ -296,10 +300,10 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.INT {
 			// Go言語のintは常にint64
 			v, _ := strconv.Atoi(tok.Literal)
-			dollarPosition = uint64(v)
+			dollarPosition = v
 		} else if tok.Type == token.HEX_LIT {
 			u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
-			dollarPosition = uint64(u64v)
+			dollarPosition = int(u64v)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
@@ -309,13 +313,20 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 }
 
 func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
+	bin := &object.Binary{Value: []byte{}}
+
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.IDENT {
 			// callbackを配置し今のバイト数を設定する
-			labelManage.AddLabelCallback(tok.Literal)
+			labelManage.AddLabelCallback(
+				[]byte{0xeb},
+				tok.Literal,
+				bin,
+				curByteSize,
+			)
 		}
 		log.Println(fmt.Sprintf("info: !!! %s", tok))
 	}
 
-	return nil
+	return bin
 }

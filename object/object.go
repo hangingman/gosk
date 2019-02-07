@@ -2,15 +2,14 @@ package object
 
 import (
 	"encoding/hex"
-	"strings"
 )
 
 type ObjectType string
 
 const (
-	OBJ_ARRAY        = "OBJECT_ARRAY"
-	BINARY_OBJ       = "BINARY"
-	BINARY_ARRAY_OBJ = "BINARY_ARRAY"
+	OBJ_ARRAY  = "OBJECT_ARRAY"
+	BINARY_OBJ = "BINARY"
+	RECALC_OBJ = "RECALC"
 )
 
 type Object interface {
@@ -48,19 +47,15 @@ func (b *Binary) Inspect() string {
 	return hex.EncodeToString(b.Value)
 }
 
-// BinaryArray
-type BinaryArray struct {
-	Value []Binary
+// Recalc
+type Recalc struct {
+	Value func() []byte
 }
 
-func (b *BinaryArray) Type() ObjectType {
-	return BINARY_ARRAY_OBJ
+func (r *Recalc) Type() ObjectType {
+	return RECALC_OBJ
 }
 
-func (b *BinaryArray) Inspect() string {
-	var barray []string
-	for _, binary := range b.Value {
-		barray = append(barray, binary.Inspect())
-	}
-	return strings.Join(barray, ",")
+func (r *Recalc) Inspect() string {
+	return hex.EncodeToString(r.Value())
 }
