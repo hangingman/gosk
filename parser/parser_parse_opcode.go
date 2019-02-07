@@ -128,3 +128,36 @@ func (p *Parser) parseJMPStatement() *ast.MnemonicStatement {
 
 	return stmt
 }
+
+// parseMOVStatement は MOV オペコードを解析する
+func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {
+	// MOV DST  ,  SRC
+	// [0] [1] [2] [3]
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken(),
+		Name: &ast.IdentifierArray{
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
+		},
+	}
+
+	p.nextToken()
+	// MOV DST  ,  SRC
+	// [-] [0] [1] [2]
+	stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+	stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+
+	for {
+		if p.curTokenIs(token.COMMA) {
+			break
+		}
+		if p.curTokenIs(token.EOF) {
+			return nil
+		}
+		p.nextToken()
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+	}
+
+	return stmt
+}
