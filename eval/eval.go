@@ -307,13 +307,29 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 }
 
 func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
-	toks := []string{}
-	bytes := []byte{}
+	toks := stmt.Name.Tokens
+	bin := []byte{}
 
-	for _, tok := range stmt.Name.Tokens {
-		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	switch {
+	case IsR8(toks[1]) && IsImm8(toks[2]):
+		// MOV r8 , imm8
+		log.Println(fmt.Sprintf("info: MOV r8 (%s), imm8 (%s)", toks[1], toks[2]))
+		bin = []byte{0xb0} // 0xB0+rb
+	case IsR16(toks[1]) && IsImm16(toks[2]):
+		// MOV r16, imm16
+		log.Println(fmt.Sprintf("info: MOV r16 (%s), imm16 (%s)", toks[1], toks[2]))
+		bin = []byte{0xb8} // 0xB8+rw
+	case IsR32(toks[1]) && IsImm32(toks[2]):
+		// MOV r32, imm32
+		log.Println(fmt.Sprintf("info: MOV r32 (%s), imm32 (%s)", toks[1], toks[2]))
+		bin = []byte{0xb8} // 0xB8+rd
 	}
 
-	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
-	return &object.Binary{Value: bytes}
+	tokStrArray := []string{}
+	for _, tok := range toks {
+		tokStrArray = append(tokStrArray, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(tokStrArray, ", ")))
+	return &object.Binary{Value: bin}
 }
