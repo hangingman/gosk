@@ -1,6 +1,7 @@
 package eval
 
 import (
+	"fmt"
 	"github.com/hangingman/gosk/token"
 	"regexp"
 	"strconv"
@@ -11,8 +12,6 @@ var r8 = regexp.MustCompile(`AL|CL|DL|BL|AH|CH|DH|BH`)
 var r16 = regexp.MustCompile(`AX|BX|CX|DX|SI|DI|BP|SP|IP|FLAGS|CS|SS|DS|ES|FS|GS`)
 var r32 = regexp.MustCompile(`EAX|EBX|ECX|EDX|ESI|EDI|EBP|ESP|EIP|EFLAGS`)
 var sr = regexp.MustCompile(`ES|CS|SS|DS|FS|GS`)
-
-//
 
 func IsR(tok token.Token, re *regexp.Regexp) bool {
 	return tok.Type == token.REGISTER && re.MatchString(tok.Literal)
@@ -33,10 +32,10 @@ func IsR32(tok token.Token) bool {
 func IsImm8(tok token.Token) bool {
 	if tok.Type == token.INT {
 		_, err := strconv.ParseInt(tok.Literal, 10, 8)
-		return IsNotNil(err)
+		return IsNil(err)
 	}
-	if tok.Type == token.HEX_LIT {
-		return len(tok.Literal) == 4
+	if isByteHex(tok) {
+		return true
 	}
 	return false
 }
@@ -44,10 +43,10 @@ func IsImm8(tok token.Token) bool {
 func IsImm16(tok token.Token) bool {
 	if tok.Type == token.INT {
 		_, err := strconv.ParseInt(tok.Literal, 10, 16)
-		return IsNotNil(err)
+		return IsNil(err)
 	}
-	if tok.Type == token.HEX_LIT {
-		return len(tok.Literal) == 6
+	if isWordHex(tok) {
+		return true
 	}
 	return false
 }
@@ -55,10 +54,10 @@ func IsImm16(tok token.Token) bool {
 func IsImm32(tok token.Token) bool {
 	if tok.Type == token.INT {
 		_, err := strconv.ParseInt(tok.Literal, 10, 32)
-		return IsNotNil(err)
+		return IsNil(err)
 	}
-	if tok.Type == token.HEX_LIT {
-		return len(tok.Literal) == 8
+	if isDwordHex(tok) {
+		return true
 	}
 	return false
 }
