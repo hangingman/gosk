@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"fmt"
 	"github.com/hangingman/gosk/token"
 	"regexp"
 	"strconv"
@@ -9,9 +8,20 @@ import (
 
 // 8bit, 16bit, 32bitのレジスタ
 var r8 = regexp.MustCompile(`AL|CL|DL|BL|AH|CH|DH|BH`)
-var r16 = regexp.MustCompile(`AX|BX|CX|DX|SI|DI|BP|SP|IP|FLAGS|CS|SS|DS|ES|FS|GS`)
-var r32 = regexp.MustCompile(`EAX|EBX|ECX|EDX|ESI|EDI|EBP|ESP|EIP|EFLAGS`)
+var r16 = regexp.MustCompile(`AX|CX|DX|BX|SP|BP|SI|DI|IP|FLAGS|CS|SS|DS|ES|FS|GS`)
+var r32 = regexp.MustCompile(`EAX|ECX|EDX|EBX|ESP|EBP|ESI|EDI|EIP|EFLAGS`)
 var sr = regexp.MustCompile(`ES|CS|SS|DS|FS|GS`)
+
+// 8bit, 16bit, 32bitのレジスタとレジスタコードの対応
+var r8CodeMap = map[string]int{
+	"AL": 0, "CL": 1, "DL": 2, "BL": 3, "AH": 4, "CH": 5, "DH": 6, "BH": 7,
+}
+var r16CodeMap = map[string]int{
+	"AX": 0, "CX": 1, "DX": 2, "BX": 3, "SP": 4, "BP": 5, "SI": 6, "DI": 7,
+}
+var r32CodeMap = map[string]int{
+	"EAX": 0, "ECX": 1, "EDX": 2, "EBX": 3, "ESP": 4, "EBP": 5, "ESI": 6, "EDI": 7,
+}
 
 func IsR(tok token.Token, re *regexp.Regexp) bool {
 	return tok.Type == token.REGISTER && re.MatchString(tok.Literal)

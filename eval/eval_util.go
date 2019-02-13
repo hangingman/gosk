@@ -79,3 +79,18 @@ func imm32ToDword(tok token.Token) []byte {
 	}
 	return nil
 }
+
+func plusRb(opcode byte, register string) byte {
+	// +rb
+	return int2Byte(int(opcode) + r8CodeMap[register])[0]
+}
+
+func plusRw(opcode byte, register string) byte {
+	// +rw
+	return int2Byte(int(opcode) + r16CodeMap[register])[0]
+}
+
+func plusRd(opcode byte, register string) byte {
+	// +rd
+	return int2Byte(int(opcode) + r32CodeMap[register])[0]
+}
