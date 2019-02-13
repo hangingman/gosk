@@ -329,6 +329,11 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = []byte{} // 0xB8+rd
 		bin = append(bin, plusRd(0xb8, toks[1].Literal))
 		bin = append(bin, imm32ToDword(toks[2])...)
+	case IsSreg(toks[1]) && IsR16(toks[2]):
+		// MOV Sreg, r/m16
+		log.Println(fmt.Sprintf("info: MOV Sreg (%s), r/m16 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x8E /r
+		bin = append(bin, 0x8e)
 	}
 
 	tokStrArray := []string{}
