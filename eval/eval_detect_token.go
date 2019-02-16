@@ -1,17 +1,15 @@
 package eval
 
 import (
-	"fmt"
 	"github.com/hangingman/gosk/token"
-	"log"
 	"regexp"
 	"strconv"
 )
 
 // 8bit, 16bit, 32bitのレジスタ
 var r8 = regexp.MustCompile(`AL|CL|DL|BL|AH|CH|DH|BH`)
-var r16 = regexp.MustCompile(`AX|CX|DX|BX|SP|BP|SI|DI|IP|FLAGS|CS|SS|DS|ES|FS|GS`)
-var r32 = regexp.MustCompile(`EAX|ECX|EDX|EBX|ESP|EBP|ESI|EDI|EIP|EFLAGS`)
+var r16 = regexp.MustCompile(`AX|CX|DX|BX|SP|BP|SI|DI`)
+var r32 = regexp.MustCompile(`EAX|ECX|EDX|EBX|ESP|EBP|ESI|EDI`)
 var sr = regexp.MustCompile(`ES|CS|SS|DS|FS|GS`)
 
 // 8bit, 16bit, 32bitのレジスタとレジスタコードの対応
@@ -45,13 +43,6 @@ func IsR32(tok token.Token) bool {
 }
 
 func IsSreg(tok token.Token) bool {
-	log.Println(fmt.Sprintf("info: %s !!!!!!!!!!!!!", tok))
-	log.Println(fmt.Sprintf("info: %v !!!!!!!!!!!!!",
-		tok.Type == token.SEG_REGISTER,
-	))
-	log.Println(fmt.Sprintf("info: %v !!!!!!!!!!!!!",
-		sr.MatchString(tok.Literal),
-	))
 	return tok.Type == token.SEG_REGISTER && sr.MatchString(tok.Literal)
 }
 

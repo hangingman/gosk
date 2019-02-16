@@ -59,7 +59,7 @@ func imm8ToByte(tok token.Token) []byte {
 func imm16ToWord(tok token.Token) []byte {
 	if tok.Type == token.HEX_LIT {
 		bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
-		return bs
+		return []byte{bs[1], bs[0]}
 	}
 	if tok.Type == token.INT {
 		v, _ := strconv.Atoi(tok.Literal)

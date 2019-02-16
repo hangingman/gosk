@@ -37,7 +37,7 @@ var mod2byteMap = map[Mod]string{
 }
 
 func getRMFromReg(srcReg string) string {
-	log.Println(fmt.Sprintf("info: Get rm from %s", srcReg))
+	log.Println(fmt.Sprintf("info: Get rm reg=%s", srcReg))
 
 	// const size_t imm = get_imm_size_evenif_bracket(src_reg);
 	// if (imm == imm16) {
@@ -57,15 +57,9 @@ func getRMFromReg(srcReg string) string {
 	case IsR32(token.Token{Type: token.REGISTER, Literal: srcReg}):
 		regBits = r32CodeMap[srcReg]
 	case IsSreg(token.Token{Type: token.SEG_REGISTER, Literal: srcReg}):
-		log.Println(fmt.Sprintf("info: HiHi!!!"))
 		regBits = sregCodeMap[srcReg]
+	default:
 	}
-
-	// } else if (SEGMENT_REGISTERS_SSS_MAP.count(src_reg)) {
-	//  return SEGMENT_REGISTERS_SSS_MAP.at(src_reg);
-	// } else if (REGISTERS_MMM_MAP.count(src_reg)) {
-	//  return REGISTERS_MMM_MAP.at(src_reg);
-	// }
 
 	// [<SIB>], [<SIB>+disp8], [<SIB>+disp32]
 	//return "100";
@@ -87,7 +81,7 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string) byte {
 	//
 	modrm := mod2byteMap[m]       // [mod]
 	modrm += getRMFromReg(dstReg) // [reg]
-	modrm += getRMFromReg(dstReg) // [r/m]
+	modrm += "000"                // [r/m]
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
 	log.Println(fmt.Sprintf("info: ModR/M => %s(%x)", modrm, i))
