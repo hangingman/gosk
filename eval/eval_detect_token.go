@@ -1,7 +1,9 @@
 package eval
 
 import (
+	"fmt"
 	"github.com/hangingman/gosk/token"
+	"log"
 	"regexp"
 	"strconv"
 )
@@ -22,6 +24,9 @@ var r16CodeMap = map[string]int{
 var r32CodeMap = map[string]int{
 	"EAX": 0, "ECX": 1, "EDX": 2, "EBX": 3, "ESP": 4, "EBP": 5, "ESI": 6, "EDI": 7,
 }
+var sregCodeMap = map[string]int{
+	"ES": 0, "CS": 1, "SS": 2, "DS": 3, "FS": 4, "GS": 5,
+}
 
 func IsR(tok token.Token, re *regexp.Regexp) bool {
 	return tok.Type == token.REGISTER && re.MatchString(tok.Literal)
@@ -37,6 +42,17 @@ func IsR16(tok token.Token) bool {
 
 func IsR32(tok token.Token) bool {
 	return IsR(tok, r32)
+}
+
+func IsSreg(tok token.Token) bool {
+	log.Println(fmt.Sprintf("info: %s !!!!!!!!!!!!!", tok))
+	log.Println(fmt.Sprintf("info: %v !!!!!!!!!!!!!",
+		tok.Type == token.SEG_REGISTER,
+	))
+	log.Println(fmt.Sprintf("info: %v !!!!!!!!!!!!!",
+		sr.MatchString(tok.Literal),
+	))
+	return tok.Type == token.SEG_REGISTER && sr.MatchString(tok.Literal)
 }
 
 func IsImm8(tok token.Token) bool {
@@ -80,10 +96,6 @@ func IsImm32(tok token.Token) bool {
 
 // func IsRm32(tok token.Token) bool {
 // }
-
-func IsSreg(tok token.Token) bool {
-	return IsR(tok, sr)
-}
 
 // func IsMoffs8(tok token.Token) bool {
 // }

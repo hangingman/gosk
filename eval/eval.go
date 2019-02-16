@@ -334,6 +334,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV Sreg (%s), r/m16 (%s)", toks[1], toks[2]))
 		bin = []byte{} // 0x8E /r
 		bin = append(bin, 0x8e)
+		bin = append(bin, generateModRMSlashR(0x8e, RegReg, toks[1].Literal))
 	}
 
 	tokStrArray := []string{}
