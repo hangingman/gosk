@@ -329,6 +329,44 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = []byte{} // 0xB8+rd
 		bin = append(bin, plusRd(0xb8, toks[1].Literal))
 		bin = append(bin, imm32ToDword(toks[2])...)
+
+	case IsR8(toks[1]) && toks[2].Type == token.IDENT:
+		// MOV r8 , imm8 で immがラベルの場合
+		// callbackを配置し今のバイト数を設定する
+		log.Println(fmt.Sprintf("info: MOV r8 (%s), imm8(label) (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0xB0+rb
+		bin = append(bin, plusRb(0xb0, toks[1].Literal))
+		labelManage.AddLabelCallback(
+			[]byte{0x00},
+			toks[2].Literal,
+			&object.Binary{Value: bin},
+			curByteSize,
+		)
+	case IsR16(toks[1]) && toks[2].Type == token.IDENT:
+		// MOV r16 , imm16 で immがラベルの場合
+		// callbackを配置し今のバイト数を設定する
+		log.Println(fmt.Sprintf("info: MOV r16 (%s), imm16(label) (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0xB8+rw
+		bin = append(bin, plusRw(0xb8, toks[1].Literal))
+		labelManage.AddLabelCallback(
+			[]byte{0x00, 0x00},
+			toks[2].Literal,
+			&object.Binary{Value: bin},
+			curByteSize,
+		)
+	case IsR32(toks[1]) && toks[2].Type == token.IDENT:
+		// MOV r32 , imm32 で immがラベルの場合
+		// callbackを配置し今のバイト数を設定する
+		log.Println(fmt.Sprintf("info: MOV r32 (%s), imm32(label) (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0xB8+rd
+		bin = append(bin, plusRd(0xb8, toks[1].Literal))
+		labelManage.AddLabelCallback(
+			[]byte{0x00, 0x00, 0x00, 0x00},
+			toks[2].Literal,
+			&object.Binary{Value: bin},
+			curByteSize,
+		)
+
 	case IsSreg(toks[1]) && IsR16(toks[2]):
 		// MOV Sreg, r/m16
 		log.Println(fmt.Sprintf("info: MOV Sreg (%s), r/m16 (%s)", toks[1], toks[2]))
