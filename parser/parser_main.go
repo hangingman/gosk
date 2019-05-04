@@ -46,6 +46,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("CLI", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("CLTS", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("CMC", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("CMP", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("CPUID", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("CWD", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("CWDE", p.parseOnlyOpcodeStatement)

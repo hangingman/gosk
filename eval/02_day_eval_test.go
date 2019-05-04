@@ -22,6 +22,14 @@ func TestMovDisp(t *testing.T) {
 }
 
 // TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestCmp(t *testing.T) {
+	input := "CMP		AL,0"
+	answer := []string{"00000000  3c 00                                             |<.|", ""}
+
+	testAsmSource(t, input, answer)
+}
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
 func TestHelloOS3(t *testing.T) {
 	input := `; hello-os
 ; TAB=4

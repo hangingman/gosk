@@ -49,6 +49,7 @@ func init() {
 	opcodeEvalFns["CLI"] = evalSingleByteOpcode("CLI", 0xfa)
 	opcodeEvalFns["CLTS"] = evalSingleWordOpcode("CLTS", []byte{0x0f, 0x06})
 	opcodeEvalFns["CMC"] = evalSingleByteOpcode("CMC", 0xf5)
+	opcodeEvalFns["CMP"] = evalCMPStatement
 	opcodeEvalFns["CPUID"] = evalSingleByteOpcode("CPUID", 0xf8)
 	opcodeEvalFns["CWD"] = evalSingleByteOpcode("CWD", 0x99)
 	opcodeEvalFns["CWDE"] = evalSingleByteOpcode("CWDE", 0x98)
