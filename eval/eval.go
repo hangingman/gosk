@@ -265,9 +265,10 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
 
 				log.Println(fmt.Sprintf("info: RESB will fill by zero, upto %d", u64v))
-				log.Println(fmt.Sprintf("info: RESB required %d zero filled binary", required))
 				// TODO: 帳尻合わせしているが何か間違えている
 				required := u64v - uint64(dollarPosition) - uint64(curByteSize) - 6
+				log.Println(fmt.Sprintf("info: RESB required %d zero filled binary", required))
+                
 				bs := makeZeroFilledBytesU64(required)
 				bytes = append(bytes, bs...)
 				break
