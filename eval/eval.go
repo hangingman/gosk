@@ -335,11 +335,7 @@ func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.IDENT {
 			// callbackを配置し今のバイト数を設定する
 			labelManage.AddLabelCallback(
-				[]byte{0x74},
-				tok.Literal,
-				bin,
-				-dollarPosition,
-				int2Byte,
+				[]byte{0x74}, tok.Literal, bin, curByteSize, int2Byte,
 			)
 		}
 		log.Println(fmt.Sprintf("info: %s", tok))
