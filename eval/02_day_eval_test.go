@@ -6,6 +6,28 @@ import (
 )
 
 // TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestMovWithLabel(t *testing.T) {
+	input := `ORG		0x7c00			; このプログラムがどこに読み込まれるのか
+		MOV		SI,msg
+		MOV		AL,[SI]
+		ADD		SI,1			; SIに1を足す
+		CMP		AL,0
+		MOV		AH,0x0e			; 一文字表示ファンクション
+		MOV		BX,15			; カラーコード
+		INT		0x10			; ビデオBIOS呼び出し
+		JMP		putloop
+		HLT						; 何かあるまでCPUを停止させる
+
+msg:
+		DB		0x0a, 0x0a		; 改行を2つ
+		DB		"hello, world"
+		DB		0x0a			; 改行
+		DB		0`
+
+	testAsmSourceOnlyDump(t, input, strings.Split("", "\n"))
+}
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
 func TestHelloOS3(t *testing.T) {
 	input := `; hello-os
 ; TAB=4
