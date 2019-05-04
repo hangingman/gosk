@@ -52,9 +52,12 @@ func (l *LabelManagement) Emit(ident string, to int) int {
 		log.Println(fmt.Sprintf("info: emit label %s to %d !!", ident, to-from))
 		log.Println(fmt.Sprintf("info: hex style => %s", hex.EncodeToString(int2Byte(to-from))))
 		bin.Value = append(bin.Value, opcode...)
-		bin.Value = append(bin.Value, l.genBytesFns[ident](to-from)...)
+
+		binToAppend := l.genBytesFns[ident](to - from)
+		bin.Value = append(bin.Value, binToAppend...)
+
+		return len(binToAppend) + len(opcode)
 	}
 
-	// TODO: 本当に必要かどうか後で検証
 	return 0
 }

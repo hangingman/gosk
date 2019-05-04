@@ -205,7 +205,11 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 	label := strings.TrimSuffix(stmt.Name, ":")
 	// ラベルが見つかったのでコールバックを起動して処理する
-	curByteSize += labelManage.Emit(label, curByteSize)
+	evalByteSize := labelManage.Emit(label, curByteSize)
+	log.Println(fmt.Sprintf("info: evaled byte size: %d", evalByteSize))
+	curByteSize += evalByteSize
+	log.Println(fmt.Sprintf("info: current byte size: %d", curByteSize))
+
 	// 先にラベルが見つかった場合、バイト数を記録しておく
 	labelManage.labelBytesMap[label] = curByteSize
 	return nil
@@ -265,12 +269,11 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
 
 				log.Println(fmt.Sprintf("info: RESB will fill by zero, upto %d", u64v))
-				// TODO: 帳尻合わせしているが何か間違えている
-				required := u64v - uint64(dollarPosition) - uint64(curByteSize) - 6
+				required := int(u64v) - dollarPosition - curByteSize
 				log.Println(fmt.Sprintf("info: RESB required %d zero filled binary", required))
-                
-				bs := makeZeroFilledBytesU64(required)
-				bytes = append(bytes, bs...)
+				for i := 0; i < required; i++ {
+					bytes = append(bytes, 0x00)
+				}
 				break
 			}
 		}
