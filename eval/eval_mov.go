@@ -63,7 +63,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 			[]byte{},
 			toks[2].Literal,
 			bin,
-			-dollarPosition,
+			-dollarPosition - 1,
 			int2Byte,
 		)
 	case IsR16(toks[1]) && toks[2].Type == token.IDENT:
@@ -76,7 +76,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 			[]byte{},
 			toks[2].Literal,
 			bin,
-			-dollarPosition,
+			-dollarPosition - 2,
 			int2Word,
 		)
 	case IsR32(toks[1]) && toks[2].Type == token.IDENT:
@@ -89,7 +89,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 			[]byte{},
 			toks[2].Literal,
 			bin,
-			-dollarPosition,
+			-dollarPosition - 4,
 			int2Dword,
 		)
 	case IsSreg(toks[1]) && IsR16(toks[2]):
