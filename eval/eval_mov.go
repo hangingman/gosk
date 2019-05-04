@@ -69,6 +69,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 			toks[2].Literal,
 			&object.Binary{Value: bin},
 			-dollarPosition,
+			int2Byte,
 		)
 	case IsR16(toks[1]) && toks[2].Type == token.IDENT:
 		// MOV r16 , imm16 で immがラベルの場合
@@ -81,6 +82,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 			toks[2].Literal,
 			&object.Binary{Value: bin},
 			-dollarPosition,
+			int2Word,
 		)
 	case IsR32(toks[1]) && toks[2].Type == token.IDENT:
 		// MOV r32 , imm32 で immがラベルの場合
@@ -93,6 +95,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 			toks[2].Literal,
 			&object.Binary{Value: bin},
 			-dollarPosition,
+			int2Dword,
 		)
 
 	case IsSreg(toks[1]) && IsR16(toks[2]):

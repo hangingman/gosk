@@ -30,6 +30,7 @@ var (
 		opcode:            map[string][]byte{},
 		labelBinaryRefMap: map[string]*object.Binary{},
 		labelBytesMap:     map[string]int{},
+		genBytesFns:       map[string]func(i int) []byte{},
 	}
 )
 
@@ -301,6 +302,7 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 				tok.Literal,
 				bin,
 				curByteSize,
+				int2Byte,
 			)
 		}
 		log.Println(fmt.Sprintf("info: !!! %s", tok))
@@ -320,6 +322,7 @@ func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
 				tok.Literal,
 				bin,
 				-dollarPosition,
+				int2Byte,
 			)
 		}
 		log.Println(fmt.Sprintf("info: !!! %s", tok))
