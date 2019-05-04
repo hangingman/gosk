@@ -34,8 +34,32 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = append(bin, plusRd(0xb8, toks[1].Literal))
 		bin = append(bin, imm32ToDword(toks[2])...)
 
+	case IsR8(toks[1]) && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+		// MOV r8 , imm8 で immが参照（ex: [SI]）
+		log.Println(fmt.Sprintf("info: MOV r8 (%s), disp8 (%s)", toks[1], toks[3]))
+		disp := "[" + toks[3].Literal + "]"
+		bin = []byte{} // 0x8a
+		bin = append(bin, 0x8a)
+		bin = append(bin, generateModRMSlashN(0x8a, RegReg, disp, "/0"))
+
+	case IsR16(toks[1]) && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+		// MOV r16 , imm16 で immが参照
+		log.Println(fmt.Sprintf("info: MOV r16 (%s), disp16 (%s)", toks[1], toks[3]))
+		disp := "[" + toks[3].Literal + "]"
+		bin = []byte{} // 0x8b
+		bin = append(bin, 0x8b)
+		bin = append(bin, generateModRMSlashN(0x8b, RegReg, disp, "/0"))
+
+	case IsR32(toks[1]) && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+		// MOV r32 , imm32 で immが参照
+		log.Println(fmt.Sprintf("info: MOV r32 (%s), disp32 (%s)", toks[1], toks[3]))
+		disp := "[" + toks[3].Literal + "]"
+		bin = []byte{} // 0x8b
+		bin = append(bin, 0x8b)
+		bin = append(bin, generateModRMSlashN(0x8b, RegReg, disp, "/0"))
+
 	case IsR8(toks[1]) && toks[2].Type == token.IDENT:
-		// MOV r8 , imm8 で immがラベルの場合
+		// MOV r8 , imm8 で immがラベル
 		// callbackを配置し今のバイト数を設定する
 		log.Println(fmt.Sprintf("info: MOV r8 (%s), imm8(label) (%s)", toks[1], toks[2]))
 		bin = []byte{} // 0xB0+rb

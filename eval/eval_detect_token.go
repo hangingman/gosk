@@ -78,21 +78,3 @@ func IsImm32(tok token.Token) bool {
 	}
 	return false
 }
-
-// func IsRm8(tok token.Token) bool {
-// }
-
-// func IsRm16(tok token.Token) bool {
-// }
-
-// func IsRm32(tok token.Token) bool {
-// }
-
-// func IsMoffs8(tok token.Token) bool {
-// }
-
-// func IsMoffs16(tok token.Token) bool {
-// }
-
-// func IsMoffs32(tok token.Token) bool {
-// }

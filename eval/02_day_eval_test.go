@@ -1,16 +1,22 @@
 package eval
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 )
 
 // TestHelloOS3 naskソース２日目(helloos3)のテスト
 func TestAdd(t *testing.T) {
-	fmt.Println("aaa")
 	input := "ADD		SI,1			; SIに1を足す"
 	answer := []string{"00000000  83 c6 01                                          |...|", ""}
+
+	testAsmSource(t, input, answer)
+}
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestMovDisp(t *testing.T) {
+	input := "MOV		AL,[SI]"
+	answer := []string{"00000000  8a 04                                             |..|", ""}
 
 	testAsmSource(t, input, answer)
 }

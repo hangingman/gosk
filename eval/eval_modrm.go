@@ -5,6 +5,7 @@ import (
 	"github.com/hangingman/gosk/token"
 	"log"
 	"strconv"
+	"strings"
 )
 
 type Mod int
@@ -54,6 +55,9 @@ func getRMFromReg(srcReg string) string {
 	var regBits int
 
 	switch {
+	// [<SIB>], [<SIB>+disp8], [<SIB>+disp32]
+	case strings.HasPrefix(srcReg, "["):
+		regBits = 4 // "100"
 	case IsR8(token.Token{Type: token.REGISTER, Literal: srcReg}):
 		regBits = r8CodeMap[srcReg]
 	case IsR16(token.Token{Type: token.REGISTER, Literal: srcReg}):
@@ -64,9 +68,6 @@ func getRMFromReg(srcReg string) string {
 		regBits = sregCodeMap[srcReg]
 	default:
 	}
-
-	// [<SIB>], [<SIB>+disp8], [<SIB>+disp32]
-	//return "100";
 
 	ans := fmt.Sprintf("%03b", regBits)
 	log.Println(fmt.Sprintf("info: Get rm = %s", ans))
