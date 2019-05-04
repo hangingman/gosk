@@ -204,7 +204,10 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 
 func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 	label := strings.TrimSuffix(stmt.Name, ":")
+	// ラベルが見つかったのでコールバックを起動して処理する
 	curByteSize += labelManage.Emit(label, curByteSize)
+	// 先にラベルが見つかった場合、バイト数を記録しておく
+	labelManage.labelBytesMap[label] = curByteSize
 	return nil
 }
 
@@ -297,14 +300,19 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.IDENT {
-			// callbackを配置し今のバイト数を設定する
-			labelManage.AddLabelCallback(
-				[]byte{0xeb},
-				tok.Literal,
-				bin,
-				curByteSize,
-				int2Byte,
-			)
+			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
+				// ラベルが見つかっていればバイト数を計算して設定する
+				log.Println(fmt.Sprintf("info: has label %s", tok.Literal))
+				bin.Value = append(bin.Value, 0xeb)
+				bin.Value = append(bin.Value, int2Byte(from-curByteSize)...)
+			} else {
+				// ラベルが見つかっていないならば
+				// callbackを配置し今のバイト数を設定する
+				log.Println(fmt.Sprintf("info: no label %s", tok.Literal))
+				labelManage.AddLabelCallback(
+					[]byte{0xeb}, tok.Literal, bin, curByteSize, int2Byte,
+				)
+			}
 		}
 		log.Println(fmt.Sprintf("info: %s", tok))
 	}
