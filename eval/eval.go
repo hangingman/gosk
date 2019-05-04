@@ -176,9 +176,9 @@ func evalStatements(stmts []ast.Statement) object.Object {
 			bin, ok := result.(*object.Binary)
 			if ok {
 				evalByteSize := len(bin.Value)
-				log.Println(fmt.Sprintf("debug: evaled byte size: %d", evalByteSize))
+				log.Println(fmt.Sprintf("info: evaled byte size: %d", evalByteSize))
 				curByteSize += len(bin.Value)
-				log.Println(fmt.Sprintf("debug: current byte size: %d", curByteSize))
+				log.Println(fmt.Sprintf("info: current byte size: %d", curByteSize))
 			}
 			results = append(results, result)
 		}
@@ -263,8 +263,12 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 			if stmt.Name.Tokens[i+1].Type == token.MINUS &&
 				stmt.Name.Tokens[i+2].Type == token.DOLLAR {
 				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
-				requred := u64v - uint64(curByteSize)
-				bs := makeZeroFilledBytesU64(requred)
+
+				log.Println(fmt.Sprintf("info: RESB will fill by zero, upto %d", u64v))
+				log.Println(fmt.Sprintf("info: RESB required %d zero filled binary", required))
+				// TODO: 帳尻合わせしているが何か間違えている
+				required := u64v - uint64(dollarPosition) - uint64(curByteSize) - 6
+				bs := makeZeroFilledBytesU64(required)
 				bytes = append(bytes, bs...)
 				break
 			}
