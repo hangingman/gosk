@@ -38,6 +38,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.opcodeParseFns = make(map[string]opcodeParseFn)
 	p.registerOpecode("AAA", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("AAS", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("ADD", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("CBW", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("CDQ", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("CLC", p.parseOnlyOpcodeStatement)

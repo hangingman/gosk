@@ -177,3 +177,39 @@ func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {
 
 	return stmt
 }
+
+// parseGeneralOpcodeStatement は 一般的なオペコードをパースする
+// ex) ADD DST, SRC
+func (p *Parser) parseGeneralOpcodeStatement() *ast.MnemonicStatement {
+
+	// MOV DST  ,  SRC
+	// [0] [1] [2] [3]
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken(),
+		Name: &ast.IdentifierArray{
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
+		},
+	}
+
+	p.nextToken()
+	// MOV DST  ,  SRC
+	// [-] [0] [1] [2]
+	stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+	stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+
+	for {
+		// 最初のカンマまで読み取る
+		if p.curTokenIs(token.COMMA) {
+			break
+		}
+		if p.curTokenIs(token.EOF) {
+			return nil
+		}
+		p.nextToken()
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
+	}
+
+	return stmt
+}

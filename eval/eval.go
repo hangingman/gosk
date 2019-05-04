@@ -41,6 +41,7 @@ func init() {
 
 	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAA", 0x37)
 	opcodeEvalFns["AAS"] = evalSingleByteOpcode("AAS", 0x3f)
+	opcodeEvalFns["ADD"] = evalADDStatement
 	opcodeEvalFns["CBW"] = evalSingleByteOpcode("CBW", 0x98)
 	opcodeEvalFns["CDQ"] = evalSingleByteOpcode("CDQ", 0x99)
 	opcodeEvalFns["CLC"] = evalSingleByteOpcode("CLC", 0xf8)
