@@ -22,6 +22,20 @@ func evalADDStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = append(bin, 0x80)
 		bin = append(bin, generateModRMSlashN(0x80, Reg, toks[1].Literal, "/0"))
 		bin = append(bin, imm8ToByte(toks[2])...)
+	case IsR16(toks[1]) && IsImm8(toks[2]):
+		// ADD r/m16, imm8
+		log.Println(fmt.Sprintf("info: ADD r/m16 (%s), imm8 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x83 /0 ib
+		bin = append(bin, 0x83)
+		bin = append(bin, generateModRMSlashN(0x83, Reg, toks[1].Literal, "/0"))
+		bin = append(bin, imm8ToByte(toks[2])...)
+	case IsR32(toks[1]) && IsImm8(toks[2]):
+		// ADD r/m32, imm8
+		log.Println(fmt.Sprintf("info: ADD r/m32 (%s), imm8 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x83 /0 ib
+		bin = append(bin, 0x83)
+		bin = append(bin, generateModRMSlashN(0x83, Reg, toks[1].Literal, "/0"))
+		bin = append(bin, imm8ToByte(toks[2])...)
 	case IsR16(toks[1]) && IsImm16(toks[2]):
 		// ADD r/m16, imm16
 		log.Println(fmt.Sprintf("info: ADD r/m16 (%s), imm16 (%s)", toks[1], toks[2]))

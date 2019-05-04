@@ -9,12 +9,10 @@ import (
 // TestHelloOS3 naskソース２日目(helloos3)のテスト
 func TestAdd(t *testing.T) {
 	fmt.Println("aaa")
-	input := `; hello-os
-ADD		SI,1			; SIに1を足す
-`
-	answer := `00000000  83 c6 01                                          |....|`
+	input := "ADD		SI,1			; SIに1を足す"
+	answer := []string{"00000000  83 c6 01                                          |...|", ""}
 
-	testAsmSource(t, input, strings.Split(answer, "\n"))
+	testAsmSource(t, input, answer)
 }
 
 // TestHelloOS3 naskソース２日目(helloos3)のテスト
