@@ -60,7 +60,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// 0xB0+rb
 		bin.Value = append(bin.Value, plusRb(0xb0, toks[1].Literal))
 		labelManage.AddLabelCallback(
-			[]byte{0x00},
+			[]byte{},
 			toks[2].Literal,
 			bin,
 			-dollarPosition,
@@ -73,7 +73,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// 0xB8+rw
 		bin.Value = append(bin.Value, plusRw(0xb8, toks[1].Literal))
 		labelManage.AddLabelCallback(
-			[]byte{0x00, 0x00},
+			[]byte{},
 			toks[2].Literal,
 			bin,
 			-dollarPosition,
@@ -86,7 +86,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// 0xB8+rd
 		bin.Value = append(bin.Value, plusRd(0xb8, toks[1].Literal))
 		labelManage.AddLabelCallback(
-			[]byte{0x00, 0x00, 0x00, 0x00},
+			[]byte{},
 			toks[2].Literal,
 			bin,
 			-dollarPosition,
