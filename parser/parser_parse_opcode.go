@@ -109,7 +109,7 @@ func (p *Parser) parseOnlyOpcodeStatement() *ast.MnemonicStatement {
 	return stmt
 }
 
-// parseJMPStatement は JMP オペコードを解析する
+// parseJMPStatement は JMP系 オペコードを解析する
 func (p *Parser) parseJMPStatement() *ast.MnemonicStatement {
 
 	stmt := &ast.MnemonicStatement{

@@ -1,6 +1,7 @@
 package eval
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/hangingman/gosk/object"
 	"log"
@@ -41,6 +42,7 @@ func (l *LabelManagement) Emit(ident string, to int) int {
 	if opcodeOk && binOk && fromOk {
 		log.Println(fmt.Sprintf("info: from=%d, to=%d", from, to))
 		log.Println(fmt.Sprintf("info: emit label %s to %d !!", ident, to-from))
+		log.Println(fmt.Sprintf("info: hex style => %s", hex.EncodeToString(int2Byte(to-from))))
 		bin.Value = append(bin.Value, opcode...)
 		bin.Value = append(bin.Value, int2Byte(to-from)...)
 	}
