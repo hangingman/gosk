@@ -199,7 +199,7 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 
 func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 	label := strings.TrimSuffix(stmt.Name, ":")
-	labelManage.Emit(label, curByteSize)
+	curByteSize += labelManage.Emit(label, curByteSize)
 	return nil
 }
 

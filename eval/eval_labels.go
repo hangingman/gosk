@@ -32,14 +32,19 @@ func (l *LabelManagement) RemoveLabelCallback(ident string) {
 // コールバックとは書いたが、呼び出すのは自分自身
 // @param ident 使用されるラベル
 // @param from ラベルのあった位置
-func (l *LabelManagement) Emit(ident string, to int) {
+// @return 増えたバイトサイズ
+func (l *LabelManagement) Emit(ident string, to int) int {
 	opcode, opcodeOk := l.opcode[ident]
 	bin, binOk := l.labelBinaryRefMap[ident]
 	from, fromOk := l.labelBytesMap[ident]
 
 	if opcodeOk && binOk && fromOk {
+        log.Println(fmt.Sprintf("info: from=%d, to=%d", from, to))
 		log.Println(fmt.Sprintf("info: emit label %s to %d !!", ident, to-from))
 		bin.Value = append(bin.Value, opcode...)
 		bin.Value = append(bin.Value, int2Byte(to-from)...)
-	}
+ 	}
+
+    // TODO: 本当に必要かどうか後で検証
+    return 0
 }
