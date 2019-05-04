@@ -5,33 +5,7 @@ import (
 	"testing"
 )
 
-// TestHelloOS3 naskソース２日目(helloos3)のテスト
-func TestAdd(t *testing.T) {
-	input := "ADD		SI,1			; SIに1を足す"
-	answer := []string{"00000000  83 c6 01                                          |...|", ""}
-
-	testAsmSource(t, input, answer)
-}
-
-// TestHelloOS3 naskソース２日目(helloos3)のテスト
-func TestMovDisp(t *testing.T) {
-	input := "MOV		AL,[SI]"
-	answer := []string{"00000000  8a 04                                             |..|", ""}
-
-	testAsmSource(t, input, answer)
-}
-
-// TestHelloOS3 naskソース２日目(helloos3)のテスト
-func TestCmp(t *testing.T) {
-	input := "CMP		AL,0"
-	answer := []string{"00000000  3c 00                                             |<.|", ""}
-
-	testAsmSource(t, input, answer)
-}
-
-// TestHelloOS3 naskソース２日目(helloos3)のテスト
-func TestHelloOS3(t *testing.T) {
-	input := `; hello-os
+const DAY2_ASM_SRC = `; hello-os
 ; TAB=4
 
 		ORG		0x7c00			; このプログラムがどこに読み込まれるのか
@@ -99,6 +73,40 @@ msg:
 		DB		0xf0, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00
 		RESB	1469432
 `
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestAdd(t *testing.T) {
+	input := "ADD		SI,1			; SIに1を足す"
+	answer := []string{"00000000  83 c6 01                                          |...|", ""}
+
+	testAsmSource(t, input, answer)
+}
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestMovDisp(t *testing.T) {
+	input := "MOV		AL,[SI]"
+	answer := []string{"00000000  8a 04                                             |..|", ""}
+
+	testAsmSource(t, input, answer)
+}
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestCmp(t *testing.T) {
+	input := "CMP		AL,0"
+	answer := []string{"00000000  3c 00                                             |<.|", ""}
+
+	testAsmSource(t, input, answer)
+}
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestDumpHelloOS3(t *testing.T) {
+	input := DAY2_ASM_SRC
+	testAsmSourceOnlyDump(t, input, []string{""})
+}
+
+// TestHelloOS3 naskソース２日目(helloos3)のテスト
+func TestHelloOS3(t *testing.T) {
+	input := DAY2_ASM_SRC
 
 	// wine nask.exe helloos.nas > helloos.obj
 	// hexdump -C helloos.obj > helloos.hex

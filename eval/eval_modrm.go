@@ -50,7 +50,7 @@ var slash2bitMap = map[string]string{
 }
 
 func getRMFromReg(srcReg string) string {
-	log.Println(fmt.Sprintf("info: Get rm reg=%s", srcReg))
+	log.Println(fmt.Sprintf("debug: Get rm reg=%s", srcReg))
 
 	var regBits int
 
@@ -70,14 +70,14 @@ func getRMFromReg(srcReg string) string {
 	}
 
 	ans := fmt.Sprintf("%03b", regBits)
-	log.Println(fmt.Sprintf("info: Get rm = %s", ans))
+	log.Println(fmt.Sprintf("debug: Get rm = %s", ans))
 	return ans
 }
 
 // generateModRM オペコードと２つのレジスタについてModR/Mを作成する
 // 仕様書に '/r' の形式でModR/Mを求められる場合に使用する
 func generateModRMSlashR(opcode byte, m Mod, dstReg string) byte {
-	log.Println(fmt.Sprintf("info: ModR/M /r opcode=%x type=%s dst=%s", opcode, m, dstReg))
+	log.Println(fmt.Sprintf("debug: ModR/M /r opcode=%x type=%s dst=%s", opcode, m, dstReg))
 	//
 	// Generate ModR/M byte with arguments
 	// [mod] 2bit
@@ -89,7 +89,7 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string) byte {
 	modrm += "000"                // [r/m]
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
-	log.Println(fmt.Sprintf("info: ModR/M => %s(%x)", modrm, i))
+	log.Println(fmt.Sprintf("debug: ModR/M => %s(%x)", modrm, i))
 	return byte(i)
 }
 
@@ -100,7 +100,7 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string) byte {
 // @param dstReg   宛先のレジスタ
 // @param regField '/0', '/1' ... '/7' までの文字列
 func generateModRMSlashN(opcode byte, m Mod, dstReg string, regField string) byte {
-	log.Println(fmt.Sprintf("info: ModR/M %s opcode=%x type=%s dst=%s", regField, opcode, m, dstReg))
+	log.Println(fmt.Sprintf("debug: ModR/M %s opcode=%x type=%s dst=%s", regField, opcode, m, dstReg))
 	//
 	// Generate ModR/M byte with arguments
 	// [mod] 2bit
@@ -112,6 +112,6 @@ func generateModRMSlashN(opcode byte, m Mod, dstReg string, regField string) byt
 	modrm += getRMFromReg(dstReg)   // [r/m]
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
-	log.Println(fmt.Sprintf("info: ModR/M => %s(%x)", modrm, i))
+	log.Println(fmt.Sprintf("debug: ModR/M => %s(%x)", modrm, i))
 	return byte(i)
 }

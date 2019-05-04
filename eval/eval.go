@@ -305,7 +305,7 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 				int2Byte,
 			)
 		}
-		log.Println(fmt.Sprintf("info: !!! %s", tok))
+		log.Println(fmt.Sprintf("info: %s", tok))
 	}
 
 	return bin
@@ -325,7 +325,7 @@ func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
 				int2Byte,
 			)
 		}
-		log.Println(fmt.Sprintf("info: !!! %s", tok))
+		log.Println(fmt.Sprintf("info: %s", tok))
 	}
 
 	return bin
