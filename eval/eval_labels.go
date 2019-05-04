@@ -39,12 +39,12 @@ func (l *LabelManagement) Emit(ident string, to int) int {
 	from, fromOk := l.labelBytesMap[ident]
 
 	if opcodeOk && binOk && fromOk {
-        log.Println(fmt.Sprintf("info: from=%d, to=%d", from, to))
+		log.Println(fmt.Sprintf("info: from=%d, to=%d", from, to))
 		log.Println(fmt.Sprintf("info: emit label %s to %d !!", ident, to-from))
 		bin.Value = append(bin.Value, opcode...)
 		bin.Value = append(bin.Value, int2Byte(to-from)...)
- 	}
+	}
 
-    // TODO: 本当に必要かどうか後で検証
-    return 0
+	// TODO: 本当に必要かどうか後で検証
+	return 0
 }

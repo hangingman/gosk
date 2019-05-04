@@ -36,17 +36,21 @@ var mod2byteMap = map[Mod]string{
 	RegReg: "00", RegDisp8: "01", RegDisp16: "10", Reg: "11",
 }
 
+// /0,/1.../7の条件と3bitのデータの対応
+var slash2bitMap = map[string]string{
+	"/0": "000",
+	"/1": "001",
+	"/2": "010",
+	"/3": "011",
+	"/4": "100",
+	"/5": "101",
+	"/6": "110",
+	"/7": "111",
+}
+
 func getRMFromReg(srcReg string) string {
 	log.Println(fmt.Sprintf("info: Get rm reg=%s", srcReg))
 
-	// const size_t imm = get_imm_size_evenif_bracket(src_reg);
-	// if (imm == imm16) {
-	//  return "110";
-	// } else if (imm == imm32) {
-	//  return "110";
-	// }
-
-	// fmt.Printf("%03b\n", 3)
 	var regBits int
 
 	switch {
@@ -82,6 +86,29 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string) byte {
 	modrm := mod2byteMap[m]       // [mod]
 	modrm += getRMFromReg(dstReg) // [reg]
 	modrm += "000"                // [r/m]
+
+	i, _ := strconv.ParseUint(modrm, 2, 0)
+	log.Println(fmt.Sprintf("info: ModR/M => %s(%x)", modrm, i))
+	return byte(i)
+}
+
+// generateModRM オペコードと２つのレジスタについてModR/Mを作成する
+// 仕様書に '/r' の形式でModR/Mを求められる場合に使用する
+// @param opcode   オペコード
+// @param m        どの形式の命令か
+// @param dstReg   宛先のレジスタ
+// @param regField '/0', '/1' ... '/7' までの文字列
+func generateModRMSlashN(opcode byte, m Mod, dstReg string, regField string) byte {
+	log.Println(fmt.Sprintf("info: ModR/M %s opcode=%x type=%s dst=%s", regField, opcode, m, dstReg))
+	//
+	// Generate ModR/M byte with arguments
+	// [mod] 2bit
+	// [reg] 3bit
+	// [r/m] 3bit
+	//
+	modrm := mod2byteMap[m]         // [mod]
+	modrm += slash2bitMap[regField] // [reg]
+	modrm += getRMFromReg(dstReg)   // [r/m]
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
 	log.Println(fmt.Sprintf("info: ModR/M => %s(%x)", modrm, i))
