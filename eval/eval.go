@@ -67,6 +67,7 @@ func init() {
 	opcodeEvalFns["INSB"] = evalSingleByteOpcode("INSB", 0x6c)
 	opcodeEvalFns["INSD"] = evalSingleByteOpcode("INSD", 0x6d)
 	opcodeEvalFns["INSW"] = evalSingleByteOpcode("INSW", 0x6d)
+	opcodeEvalFns["INT"] = evalINTStatement
 	opcodeEvalFns["INVD"] = evalSingleWordOpcode("INVD", []byte{0x0f, 0x08})
 	opcodeEvalFns["IRET"] = evalSingleByteOpcode("IRET", 0xcf)
 	opcodeEvalFns["IRETD"] = evalSingleByteOpcode("IRETD", 0xcf)
@@ -328,5 +329,26 @@ func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: %s", tok))
 	}
 
+	return bin
+}
+
+func evalINTStatement(stmt *ast.MnemonicStatement) object.Object {
+	bin := &object.Binary{Value: []byte{}}
+	toks := []string{}
+
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.INT {
+			// Go言語のintは常にint64
+			v, _ := strconv.Atoi(tok.Literal)
+			bin.Value = append(bin.Value, 0xcd)
+			bin.Value = append(bin.Value, int2Byte(v)...)
+		} else if tok.Type == token.HEX_LIT {
+			u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
+			bin.Value = append(bin.Value, 0xcd)
+			bin.Value = append(bin.Value, int2Byte(int(u64v))...)
+		}
+		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
 	return bin
 }

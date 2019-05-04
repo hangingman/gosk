@@ -50,6 +50,11 @@ func (p *Parser) parseDBStatement() *ast.MnemonicStatement {
 	return stmt
 }
 
+// parseDBLikeStatement はDBのようにレジスタをとらないオペコードを解析する
+func (p *Parser) parseDBLikeStatement() *ast.MnemonicStatement {
+	return p.parseDBStatement()
+}
+
 // parseRESBStatement は RESB オペコードを解析する
 func (p *Parser) parseRESBStatement() *ast.MnemonicStatement {
 

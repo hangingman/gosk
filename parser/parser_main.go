@@ -63,6 +63,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("INSB", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("INSD", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("INSW", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("INT", p.parseDBLikeStatement)
 	p.registerOpecode("INVD", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("IRET", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("IRETD", p.parseOnlyOpcodeStatement)
