@@ -22,46 +22,46 @@ func (p *Parser) ParseProgram() *ast.Program {
 	}
 
 	// next, prevを設定する
-	for index, stmt := range program.Statements {
+	for index := range program.Statements {
 		if index == len(program.Statements)-1 {
-			stmt.SetNextNode(nil)
+			program.Statements[index].SetNextNode(nil)
 		} else {
-			nextNode := interface{}(&program.Statements[index+1])
+			nextNode := program.Statements[index+1]
 
 			switch nextNode.(type) {
 			case *ast.MnemonicStatement:
 				m := nextNode.(*ast.MnemonicStatement)
-				stmt.SetNextNode(m)
+				program.Statements[index].SetNextNode(m)
 			case *ast.SettingStatement:
 				m := nextNode.(*ast.SettingStatement)
-				stmt.SetNextNode(m)
+				program.Statements[index].SetNextNode(m)
 			case *ast.LabelStatement:
 				m := nextNode.(*ast.LabelStatement)
-				stmt.SetNextNode(m)
+				program.Statements[index].SetNextNode(m)
 			case *ast.EquStatement:
 				m := nextNode.(*ast.EquStatement)
-				stmt.SetNextNode(m)
+				program.Statements[index].SetNextNode(m)
 			}
 
 		}
 		if index == 0 {
-			stmt.SetPrevNode(nil)
+			program.Statements[index].SetPrevNode(nil)
 		} else {
-			prevNode := interface{}(&program.Statements[index-1])
+			prevNode := program.Statements[index-1]
 
 			switch prevNode.(type) {
 			case *ast.MnemonicStatement:
 				m := prevNode.(*ast.MnemonicStatement)
-				stmt.SetPrevNode(m)
+				program.Statements[index].SetPrevNode(m)
 			case *ast.SettingStatement:
 				m := prevNode.(*ast.SettingStatement)
-				stmt.SetPrevNode(m)
+				program.Statements[index].SetPrevNode(m)
 			case *ast.LabelStatement:
 				m := prevNode.(*ast.LabelStatement)
-				stmt.SetPrevNode(m)
+				program.Statements[index].SetPrevNode(m)
 			case *ast.EquStatement:
 				m := prevNode.(*ast.EquStatement)
-				stmt.SetPrevNode(m)
+				program.Statements[index].SetPrevNode(m)
 			}
 		}
 	}

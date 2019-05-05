@@ -316,6 +316,19 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 				// ラベルが見つかっていればバイト数を計算して設定する
 				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
 				log.Println(fmt.Sprintf("info: %d - %d = %d", from, curByteSize, from-curByteSize))
+
+				prevStmt := stmt.GetNextNode()
+
+				//for {
+				// prevStmt = prevStmt.GetPrevNode()
+				if prevStmt == nil {
+					//break
+					log.Println(fmt.Printf("! cast test failed "))
+				} else {
+					log.Println(fmt.Printf("! cast test %T", prevStmt))
+				}
+				//}
+
 				stmt.Bin.Value = append(stmt.Bin.Value, 0xeb)
 				stmt.Bin.Value = append(stmt.Bin.Value, int2Byte(from-curByteSize)...)
 			} else {
