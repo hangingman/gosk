@@ -1,9 +1,10 @@
 package eval
 
 import (
-	"encoding/binary"
 	"encoding/hex"
+	"fmt"
 	"github.com/hangingman/gosk/token"
+	"log"
 	"reflect"
 	"strconv"
 )
@@ -17,19 +18,29 @@ func IsNotNil(x interface{}) bool {
 }
 
 func int2Byte(i int) []byte {
-	return []byte{uint8(i)}
+	hexStr := fmt.Sprintf("%08x", uint(i))
+	bs, _ := hex.DecodeString(hexStr[6:])
+	log.Println(fmt.Sprintf("info: int2Byte %s = %x", hexStr, bs[0:1]))
+	return bs[0:1]
 }
 
 func int2Word(i int) []byte {
-	bs := make([]byte, 2)
-	binary.LittleEndian.PutUint16(bs, uint16(i))
-	return bs
+	hexStr := fmt.Sprintf("%08x", uint(i))
+	bs, _ := hex.DecodeString(hexStr[4:])
+	// リトルエンディアンで格納する
+	bs[0], bs[1] = bs[1], bs[0]
+	log.Println(fmt.Sprintf("info: int2Word %s = %x", hexStr, bs[0:2]))
+	return bs[0:2]
 }
 
 func int2Dword(i int) []byte {
-	bs := make([]byte, 4)
-	binary.LittleEndian.PutUint32(bs, uint32(i))
-	return bs
+	hexStr := fmt.Sprintf("%08x", uint(i))
+	bs, _ := hex.DecodeString(hexStr)
+
+	// リトルエンディアンで格納する
+	bs[0], bs[1], bs[2], bs[3] = bs[3], bs[2], bs[1], bs[0]
+	log.Println(fmt.Sprintf("info: int2Dword %s = %x", hexStr, bs[0:4]))
+	return bs[0:4]
 }
 
 func isByteHex(tok token.Token) bool {
