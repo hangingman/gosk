@@ -206,9 +206,9 @@ func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 	label := strings.TrimSuffix(stmt.Name, ":")
 	// ラベルが見つかったのでコールバックを起動して処理する
 	evalByteSize := labelManage.Emit(label, curByteSize)
-	log.Println(fmt.Sprintf("info: evaled byte size: %d", evalByteSize))
+	log.Println(fmt.Sprintf("info: evaled byte size: %d, label: %s", evalByteSize, label))
 	curByteSize += evalByteSize
-	log.Println(fmt.Sprintf("info: current byte size: %d", curByteSize))
+	log.Println(fmt.Sprintf("info: current byte size: %d, label: %s", curByteSize, label))
 
 	// 先にラベルが見つかった場合、バイト数を記録しておく
 	labelManage.labelBytesMap[label] = curByteSize
@@ -310,7 +310,8 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.IDENT {
 			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
 				// ラベルが見つかっていればバイト数を計算して設定する
-				log.Println(fmt.Sprintf("info: has label %s", tok.Literal))
+				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
+				log.Println(fmt.Sprintf("info: %d - %d = %d", from, curByteSize, from-curByteSize))
 				bin.Value = append(bin.Value, 0xeb)
 				bin.Value = append(bin.Value, int2Byte(from-curByteSize)...)
 			} else {

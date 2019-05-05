@@ -14,6 +14,8 @@ type Node interface {
 type Statement interface {
 	Node
 	statementNode()
+	nextNode() *Statement
+	prevNode() *Statement
 }
 
 type Expression interface {
