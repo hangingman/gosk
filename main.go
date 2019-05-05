@@ -60,7 +60,7 @@ Thank you osask project !`)
 
 	if len(flag.Args()) < 2 {
 		fmt.Fprintf(os.Stderr, "usage:  [--help | -v] source [object/binary] [list]\n")
-		flag.PrintDefaults()
+		//flag.PrintDefaults()
 		os.Exit(16)
 	}
 	fmt.Printf("source: %s, object: %s\n", flag.Args()[0], flag.Args()[1])
