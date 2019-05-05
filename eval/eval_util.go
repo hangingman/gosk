@@ -18,6 +18,14 @@ func IsNotNil(x interface{}) bool {
 }
 
 func int2Byte(i int) []byte {
+	// TODO: ここはもう少しうまくやりたい
+	if i < 0 {
+		hexStr := fmt.Sprintf("%16x", uint(i))
+		bs, _ := hex.DecodeString(hexStr[14:16])
+		log.Println(fmt.Sprintf("info: int2Byte %s = %x", hexStr, bs[0:1]))
+		return bs[0:1]
+	}
+
 	hexStr := fmt.Sprintf("%08x", uint(i))
 	bs, _ := hex.DecodeString(hexStr[6:])
 	log.Println(fmt.Sprintf("info: int2Byte %s = %x", hexStr, bs[0:1]))
