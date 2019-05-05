@@ -14,10 +14,10 @@ type Node interface {
 type Statement interface {
 	Node
 	statementNode()
-	SetNextNode(*Statement)
-	SetPrevNode(*Statement)
-	GetNextNode() *Statement
-	GetPrevNode() *Statement
+	SetNextNode(Statement)
+	SetPrevNode(Statement)
+	GetNextNode() Statement
+	GetPrevNode() Statement
 }
 
 type Expression interface {

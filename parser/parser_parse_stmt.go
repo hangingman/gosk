@@ -26,12 +26,43 @@ func (p *Parser) ParseProgram() *ast.Program {
 		if index == len(program.Statements)-1 {
 			stmt.SetNextNode(nil)
 		} else {
-			stmt.SetNextNode(&program.Statements[index+1])
+			nextNode := interface{}(&program.Statements[index+1])
+
+			switch nextNode.(type) {
+			case *ast.MnemonicStatement:
+				m := nextNode.(*ast.MnemonicStatement)
+				stmt.SetNextNode(m)
+			case *ast.SettingStatement:
+				m := nextNode.(*ast.SettingStatement)
+				stmt.SetNextNode(m)
+			case *ast.LabelStatement:
+				m := nextNode.(*ast.LabelStatement)
+				stmt.SetNextNode(m)
+			case *ast.EquStatement:
+				m := nextNode.(*ast.EquStatement)
+				stmt.SetNextNode(m)
+			}
+
 		}
 		if index == 0 {
 			stmt.SetPrevNode(nil)
 		} else {
-			stmt.SetPrevNode(&program.Statements[index-1])
+			prevNode := interface{}(&program.Statements[index-1])
+
+			switch prevNode.(type) {
+			case *ast.MnemonicStatement:
+				m := prevNode.(*ast.MnemonicStatement)
+				stmt.SetPrevNode(m)
+			case *ast.SettingStatement:
+				m := prevNode.(*ast.SettingStatement)
+				stmt.SetPrevNode(m)
+			case *ast.LabelStatement:
+				m := prevNode.(*ast.LabelStatement)
+				stmt.SetPrevNode(m)
+			case *ast.EquStatement:
+				m := prevNode.(*ast.EquStatement)
+				stmt.SetPrevNode(m)
+			}
 		}
 	}
 
