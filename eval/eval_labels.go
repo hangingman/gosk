@@ -41,8 +41,7 @@ func (l *LabelManagement) RemoveLabelCallback(ident string) {
 // コールバックとは書いたが、呼び出すのは自分自身
 // @param ident 使用されるラベル
 // @param from ラベルのあった位置
-// @return 増えたバイトサイズ
-func (l *LabelManagement) Emit(ident string, to int) int {
+func (l *LabelManagement) Emit(ident string, to int) {
 	opcode, opcodeOk := l.opcode[ident]
 	bin, binOk := l.labelBinaryRefMap[ident]
 	from, fromOk := l.labelBytesMap[ident]
@@ -56,9 +55,5 @@ func (l *LabelManagement) Emit(ident string, to int) int {
 		binToAppend := l.genBytesFns[ident](to - from)
 		bin.Value = append(bin.Value, opcode...)
 		bin.Value = append(bin.Value, binToAppend...)
-
-		return len(binToAppend) + len(opcode)
 	}
-
-	return 0
 }

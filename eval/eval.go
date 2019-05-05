@@ -208,11 +208,7 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 	label := strings.TrimSuffix(stmt.Name, ":")
 	// ラベルが見つかったのでコールバックを起動して処理する
-	evalByteSize := labelManage.Emit(label, curByteSize)
-	log.Println(fmt.Sprintf("info: evaled byte size: %d, label: %s", evalByteSize, label))
-	curByteSize += evalByteSize
-	log.Println(fmt.Sprintf("info: current byte size: %d, label: %s", curByteSize, label))
-
+	labelManage.Emit(label, curByteSize)
 	// 先にラベルが見つかった場合、バイト数を記録しておく
 	labelManage.labelBytesMap[label] = curByteSize
 	return nil
