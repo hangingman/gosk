@@ -107,14 +107,16 @@ func init() {
 func evalSingleByteOpcode(opcode string, b byte) func(stmt *ast.MnemonicStatement) object.Object {
 	return func(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: [%s, %x]", opcode, b))
-		return &object.Binary{Value: []byte{b}}
+		stmt.Bin = &object.Binary{Value: []byte{b}}
+		return stmt.Bin
 	}
 }
 
 func evalSingleWordOpcode(opcode string, w []byte) func(stmt *ast.MnemonicStatement) object.Object {
 	return func(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: [%s, %x, %x]", opcode, w[0], w[1]))
-		return &object.Binary{Value: w}
+		stmt.Bin = &object.Binary{Value: w}
+		return stmt.Bin
 	}
 }
 
@@ -142,7 +144,8 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 	}
 
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
-	return &object.Binary{Value: bytes}
+	stmt.Bin = &object.Binary{Value: bytes}
+	return stmt.Bin
 }
 
 func Eval(node ast.Node) object.Object {
@@ -281,7 +284,8 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 	}
 
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
-	return &object.Binary{Value: bytes}
+	stmt.Bin = &object.Binary{Value: bytes}
+	return stmt.Bin
 }
 
 func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
@@ -304,7 +308,7 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 }
 
 func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
-	bin := &object.Binary{Value: []byte{}}
+	stmt.Bin = &object.Binary{Value: []byte{}}
 
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.IDENT {
@@ -312,21 +316,21 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 				// ラベルが見つかっていればバイト数を計算して設定する
 				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
 				log.Println(fmt.Sprintf("info: %d - %d = %d", from, curByteSize, from-curByteSize))
-				bin.Value = append(bin.Value, 0xeb)
-				bin.Value = append(bin.Value, int2Byte(from-curByteSize)...)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0xeb)
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Byte(from-curByteSize)...)
 			} else {
 				// ラベルが見つかっていないならば
 				// callbackを配置し今のバイト数を設定する
 				log.Println(fmt.Sprintf("info: no label %s", tok.Literal))
 				labelManage.AddLabelCallback(
-					[]byte{0xeb}, tok.Literal, bin, curByteSize, int2Byte,
+					[]byte{0xeb}, tok.Literal, stmt.Bin, curByteSize, int2Byte,
 				)
 			}
 		}
 		log.Println(fmt.Sprintf("info: %s", tok))
 	}
 
-	return bin
+	return stmt.Bin
 }
 
 func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
@@ -342,7 +346,8 @@ func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: %s", tok))
 	}
 
-	return bin
+	stmt.Bin = bin
+	return stmt.Bin
 }
 
 func evalINTStatement(stmt *ast.MnemonicStatement) object.Object {
@@ -363,5 +368,7 @@ func evalINTStatement(stmt *ast.MnemonicStatement) object.Object {
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
-	return bin
+
+	stmt.Bin = bin
+	return stmt.Bin
 }

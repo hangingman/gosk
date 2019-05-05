@@ -41,5 +41,6 @@ func evalCMPStatement(stmt *ast.MnemonicStatement) object.Object {
 	}
 
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(tokStrArray, ", ")))
-	return &object.Binary{Value: bin}
+	stmt.Bin = &object.Binary{Value: bin}
+	return stmt.Bin
 }

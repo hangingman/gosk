@@ -106,5 +106,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 	}
 
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(tokStrArray, ", ")))
-	return bin
+
+	stmt.Bin = bin
+	return stmt.Bin
 }

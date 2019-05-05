@@ -1,6 +1,7 @@
 package ast
 
 import (
+	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
 )
 
@@ -10,6 +11,7 @@ type MnemonicStatement struct {
 	Name     *IdentifierArray
 	NextNode *Statement
 	PrevNode *Statement
+	Bin      *object.Binary
 }
 
 func (s *MnemonicStatement) statementNode()       {}
