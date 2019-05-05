@@ -17,8 +17,10 @@ func (s *MnemonicStatement) TokenLiteral() string { return s.Token.Literal }
 func (s *MnemonicStatement) String() string {
 	return "{ " + token.OPCODE + ":" + s.Name.String() + " }"
 }
-func (s *MnemonicStatement) nextNode() *Statement { return s.NextNode }
-func (s *MnemonicStatement) prevNode() *Statement { return s.PrevNode }
+func (s *MnemonicStatement) SetNextNode(stmt *Statement) { s.NextNode = stmt }
+func (s *MnemonicStatement) SetPrevNode(stmt *Statement) { s.PrevNode = stmt }
+func (s *MnemonicStatement) GetNextNode() *Statement     { return s.NextNode }
+func (s *MnemonicStatement) GetPrevNode() *Statement     { return s.PrevNode }
 
 // SettingStatement は `[FORMAT "WCOFF"]` のような構文を解析する
 type SettingStatement struct {
@@ -34,8 +36,10 @@ func (s *SettingStatement) TokenLiteral() string { return s.Token.Literal }
 func (s *SettingStatement) String() string {
 	return "{ " + token.SETTING + ":" + s.Name.String() + " }"
 }
-func (s *SettingStatement) nextNode() *Statement { return s.NextNode }
-func (s *SettingStatement) prevNode() *Statement { return s.PrevNode }
+func (s *SettingStatement) SetNextNode(stmt *Statement) { s.NextNode = stmt }
+func (s *SettingStatement) SetPrevNode(stmt *Statement) { s.PrevNode = stmt }
+func (s *SettingStatement) GetNextNode() *Statement     { return s.NextNode }
+func (s *SettingStatement) GetPrevNode() *Statement     { return s.PrevNode }
 
 // LabelStatement は `entry:` のような構文を解析する
 type LabelStatement struct {
@@ -50,8 +54,10 @@ func (s *LabelStatement) TokenLiteral() string { return s.Token.Literal }
 func (s *LabelStatement) String() string {
 	return "{ " + token.LABEL + ": \"" + s.Name + "\" }"
 }
-func (s *LabelStatement) nextNode() *Statement { return s.NextNode }
-func (s *LabelStatement) prevNode() *Statement { return s.PrevNode }
+func (s *LabelStatement) SetNextNode(stmt *Statement) { s.NextNode = stmt }
+func (s *LabelStatement) SetPrevNode(stmt *Statement) { s.PrevNode = stmt }
+func (s *LabelStatement) GetNextNode() *Statement     { return s.NextNode }
+func (s *LabelStatement) GetPrevNode() *Statement     { return s.PrevNode }
 
 // EquStatement は `BOTPAK  EQU  0x00280000` のような構文を解析する
 type EquStatement struct {
@@ -67,8 +73,10 @@ func (s *EquStatement) TokenLiteral() string { return s.Token.Literal }
 func (s *EquStatement) String() string {
 	return "{ " + token.EQU + ":" + s.Name.String() + " }"
 }
-func (s *EquStatement) nextNode() *Statement { return s.NextNode }
-func (s *EquStatement) prevNode() *Statement { return s.PrevNode }
+func (s *EquStatement) SetNextNode(stmt *Statement) { s.NextNode = stmt }
+func (s *EquStatement) SetPrevNode(stmt *Statement) { s.PrevNode = stmt }
+func (s *EquStatement) GetNextNode() *Statement     { return s.NextNode }
+func (s *EquStatement) GetPrevNode() *Statement     { return s.PrevNode }
 
 type DummyStatement struct{}
 

@@ -21,6 +21,20 @@ func (p *Parser) ParseProgram() *ast.Program {
 		p.nextToken()
 	}
 
+	// next, prevを設定する
+	for index, stmt := range program.Statements {
+		if index == len(program.Statements)-1 {
+			stmt.SetNextNode(nil)
+		} else {
+			stmt.SetNextNode(&program.Statements[index+1])
+		}
+		if index == 0 {
+			stmt.SetPrevNode(nil)
+		} else {
+			stmt.SetPrevNode(&program.Statements[index-1])
+		}
+	}
+
 	return program
 }
 
