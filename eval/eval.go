@@ -312,15 +312,18 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 				// ラベルが見つかっていればバイト数を計算して設定する
 				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
 				log.Println(fmt.Sprintf("info: %d - %d - 2 = %d", from, curByteSize, from-curByteSize-2))
-
 				stmt.Bin.Value = append(stmt.Bin.Value, 0xeb)
 				stmt.Bin.Value = append(stmt.Bin.Value, int2Byte(from-curByteSize-2)...)
 			} else {
 				// ラベルが見つかっていないならば
 				// callbackを配置し今のバイト数を設定する
 				log.Println(fmt.Sprintf("info: no label %s", tok.Literal))
+				stmt.Bin.Value = append(stmt.Bin.Value, 0xeb)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
+
 				labelManage.AddLabelCallback(
-					[]byte{0xeb}, tok.Literal, stmt.Bin, curByteSize, int2Byte,
+					// JMP自体のバイト数を含まないので +2 しておく
+					[]byte{0xeb}, tok.Literal, stmt.Bin, curByteSize+2, int2Byte,
 				)
 			}
 		}
