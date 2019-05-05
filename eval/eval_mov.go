@@ -58,9 +58,12 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// callbackを配置し今のバイト数を設定する
 		log.Println(fmt.Sprintf("info: MOV r8 (%s), imm8(label) (%s)", toks[1], toks[2]))
 		// 0xB0+rb
-		bin.Value = append(bin.Value, plusRb(0xb0, toks[1].Literal))
+		opcode := plusRb(0xb0, toks[1].Literal)
+		bin.Value = append(bin.Value, opcode)
+		bin.Value = append(bin.Value, 0x00)
+
 		labelManage.AddLabelCallback(
-			[]byte{},
+			[]byte{opcode},
 			toks[2].Literal,
 			bin,
 			-dollarPosition-1,
@@ -71,9 +74,13 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// callbackを配置し今のバイト数を設定する
 		log.Println(fmt.Sprintf("info: MOV r16 (%s), imm16(label) (%s)", toks[1], toks[2]))
 		// 0xB8+rw
-		bin.Value = append(bin.Value, plusRw(0xb8, toks[1].Literal))
+		opcode := plusRw(0xb8, toks[1].Literal)
+		bin.Value = append(bin.Value, opcode)
+		bin.Value = append(bin.Value, 0x00)
+		bin.Value = append(bin.Value, 0x00)
+
 		labelManage.AddLabelCallback(
-			[]byte{},
+			[]byte{opcode},
 			toks[2].Literal,
 			bin,
 			-dollarPosition-2,
@@ -84,9 +91,15 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// callbackを配置し今のバイト数を設定する
 		log.Println(fmt.Sprintf("info: MOV r32 (%s), imm32(label) (%s)", toks[1], toks[2]))
 		// 0xB8+rd
-		bin.Value = append(bin.Value, plusRd(0xb8, toks[1].Literal))
+		opcode := plusRd(0xb8, toks[1].Literal)
+		bin.Value = append(bin.Value, opcode)
+		bin.Value = append(bin.Value, 0x00)
+		bin.Value = append(bin.Value, 0x00)
+		bin.Value = append(bin.Value, 0x00)
+		bin.Value = append(bin.Value, 0x00)
+
 		labelManage.AddLabelCallback(
-			[]byte{},
+			[]byte{opcode},
 			toks[2].Literal,
 			bin,
 			-dollarPosition-4,

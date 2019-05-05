@@ -51,9 +51,10 @@ func (l *LabelManagement) Emit(ident string, to int) int {
 		log.Println(fmt.Sprintf("info: from=%d, to=%d", from, to))
 		log.Println(fmt.Sprintf("info: emit label %s to %d !!", ident, to-from))
 		log.Println(fmt.Sprintf("info: hex style => %s", hex.EncodeToString(int2Byte(to-from))))
-		bin.Value = append(bin.Value, opcode...)
 
+		bin.Value = nil
 		binToAppend := l.genBytesFns[ident](to - from)
+		bin.Value = append(bin.Value, opcode...)
 		bin.Value = append(bin.Value, binToAppend...)
 
 		return len(binToAppend) + len(opcode)

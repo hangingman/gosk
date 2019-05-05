@@ -317,18 +317,6 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
 				log.Println(fmt.Sprintf("info: %d - %d = %d", from, curByteSize, from-curByteSize))
 
-				prevStmt := stmt.GetNextNode()
-
-				//for {
-				// prevStmt = prevStmt.GetPrevNode()
-				if prevStmt == nil {
-					//break
-					log.Println(fmt.Printf("! cast test failed "))
-				} else {
-					log.Println(fmt.Printf("! cast test %T", prevStmt))
-				}
-				//}
-
 				stmt.Bin.Value = append(stmt.Bin.Value, 0xeb)
 				stmt.Bin.Value = append(stmt.Bin.Value, int2Byte(from-curByteSize)...)
 			} else {
@@ -347,7 +335,7 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 }
 
 func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
-	bin := &object.Binary{Value: []byte{}}
+	bin := &object.Binary{Value: []byte{0x74, 0x00}} // 仮にバイナリを作っておく
 
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.IDENT {
