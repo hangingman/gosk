@@ -60,8 +60,9 @@ func init() {
 	opcodeEvalFns["DB"] = evalDBStatement
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["DW"] = evalDWStatement
-	opcodeEvalFns["JMP"] = evalJMPStatement
+	opcodeEvalFns["JC"] = evalJCStatement
 	opcodeEvalFns["JE"] = evalJEStatement
+	opcodeEvalFns["JMP"] = evalJMPStatement
 	opcodeEvalFns["FWAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
 	opcodeEvalFns["HLT"] = evalSingleByteOpcode("HLT", 0xf4)
 	opcodeEvalFns["INCO"] = evalSingleByteOpcode("INCO", 0xce)
@@ -331,6 +332,24 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: %s", tok))
 	}
 
+	return stmt.Bin
+}
+
+func evalJCStatement(stmt *ast.MnemonicStatement) object.Object {
+	bin := &object.Binary{Value: []byte{0x72, 0x00}} // 仮にバイナリを作っておく
+
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.IDENT {
+			// callbackを配置し今のバイト数を設定する
+			labelManage.AddLabelCallback(
+				// JC自体のバイト数を含まないので +2 しておく
+				[]byte{0x72}, tok.Literal, bin, curByteSize+2, int2Byte,
+			)
+		}
+		log.Println(fmt.Sprintf("info: %s", tok))
+	}
+
+	stmt.Bin = bin
 	return stmt.Bin
 }
 
