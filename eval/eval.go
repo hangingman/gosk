@@ -354,20 +354,30 @@ func evalJCStatement(stmt *ast.MnemonicStatement) object.Object {
 }
 
 func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
-	bin := &object.Binary{Value: []byte{0x74, 0x00}} // 仮にバイナリを作っておく
+	stmt.Bin = &object.Binary{Value: []byte{}} // 仮にバイナリを作っておく
 
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.IDENT {
-			// callbackを配置し今のバイト数を設定する
-			labelManage.AddLabelCallback(
-				// JE自体のバイト数を含まないので +2 しておく
-				[]byte{0x74}, tok.Literal, bin, curByteSize+2, int2Byte,
-			)
+			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
+				// ラベルが見つかっていればバイト数を計算して設定する
+				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
+				log.Println(fmt.Sprintf("info: %d - %d - 2 = %d", from, curByteSize, from-curByteSize-2))
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x74)
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Byte(from-curByteSize-2)...)
+			} else {
+				// ラベルが見つかっていないならば
+				// callbackを配置し今のバイト数を設定する
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x74)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
+				labelManage.AddLabelCallback(
+					// JE自体のバイト数を含まないので +2 しておく
+					[]byte{0x74}, tok.Literal, stmt.Bin, curByteSize+2, int2Byte,
+				)
+			}
 		}
 		log.Println(fmt.Sprintf("info: %s", tok))
 	}
 
-	stmt.Bin = bin
 	return stmt.Bin
 }
 
