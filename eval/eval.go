@@ -39,6 +39,7 @@ func init() {
 	colog.SetDefaultLevel(colog.LInfo)
 	colog.SetMinLevel(colog.LInfo)
 	colog.SetFlags(log.Lshortfile)
+	colog.SetFormatter(&colog.StdFormatter{Colors: false})
 
 	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAA", 0x37)
 	opcodeEvalFns["AAS"] = evalSingleByteOpcode("AAS", 0x3f)
@@ -340,7 +341,7 @@ func evalJEStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.IDENT {
 			// callbackを配置し今のバイト数を設定する
 			labelManage.AddLabelCallback(
-                // JE自体のバイト数を含まないので +2 しておく
+				// JE自体のバイト数を含まないので +2 しておく
 				[]byte{0x74}, tok.Literal, bin, curByteSize+2, int2Byte,
 			)
 		}

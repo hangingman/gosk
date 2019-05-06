@@ -24,6 +24,7 @@ func New(input string) *Lexer {
 	colog.SetMinLevel(colog.LInfo)
 	colog.SetFlags(log.Lshortfile)
 	colog.ParseFields(true)
+	colog.SetFormatter(&colog.StdFormatter{Colors: false})
 	l.readChar()
 	return l
 }

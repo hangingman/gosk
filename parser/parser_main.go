@@ -33,6 +33,7 @@ func New(l *lexer.Lexer) *Parser {
 	colog.SetDefaultLevel(colog.LInfo)
 	colog.SetMinLevel(colog.LInfo)
 	colog.SetFlags(log.Lshortfile)
+	colog.SetFormatter(&colog.StdFormatter{Colors: false})
 
 	// オペコードの構文解析方式を格納するmap
 	p.opcodeParseFns = make(map[string]opcodeParseFn)

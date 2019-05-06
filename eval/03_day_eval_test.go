@@ -84,7 +84,6 @@ msg:
 		DB		0x55, 0xaa
 `
 
-
 // TestHelloOS3 naskソース２日目(harib00a)のテスト
 func TestDumpHarib00a(t *testing.T) {
 	input := DAY3_HARIB00A_ASM_SRC
