@@ -7,7 +7,11 @@ import (
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/parser"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"os"
+	"path"
 	"reflect"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -23,6 +27,23 @@ func isZeroFillLine(hexLine string) bool {
 func getHexdumpFmtString(binary []byte) string {
 	hexDumpArr := getHexdumpFmtArray(binary)
 	return strings.Join(hexDumpArr, "\n")
+}
+
+// getAsmSource はアセンブラソース名を指定すると、ソースコードを文字列で返す
+func getAsmSource(asmSourceName string) string {
+	_, filename, _, _ := runtime.Caller(0)
+	asmheadPath := path.Join(path.Dir(filename), "..", "testdata", asmSourceName)
+	err := os.Chdir("../../")
+
+	if err != nil {
+		panic(err)
+	}
+
+	b, err := ioutil.ReadFile(asmheadPath)
+	if err != nil {
+		fmt.Print(err)
+	}
+	return string(b)
 }
 
 // getHexdumpFmtArray バイナリを引数にとって
