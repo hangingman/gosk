@@ -337,7 +337,6 @@ func evalJMPStatement(stmt *ast.MnemonicStatement) object.Object {
 	return stmt.Bin
 }
 
-
 func evalJAEStatement(stmt *ast.MnemonicStatement) object.Object {
 	stmt.Bin = &object.Binary{Value: []byte{}}
 
@@ -368,7 +367,6 @@ func evalJAEStatement(stmt *ast.MnemonicStatement) object.Object {
 	return stmt.Bin
 }
 
-
 func evalJNCStatement(stmt *ast.MnemonicStatement) object.Object {
 	stmt.Bin = &object.Binary{Value: []byte{}}
 
@@ -398,7 +396,6 @@ func evalJNCStatement(stmt *ast.MnemonicStatement) object.Object {
 
 	return stmt.Bin
 }
-
 
 func evalJCStatement(stmt *ast.MnemonicStatement) object.Object {
 	bin := &object.Binary{Value: []byte{0x72, 0x00}} // 仮にバイナリを作っておく
