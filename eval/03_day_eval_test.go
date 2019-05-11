@@ -3,15 +3,21 @@ package eval
 import (
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestDumpHarib(t *testing.T) {
 	input := getAsmSource("03_day_harib00b_ipl.nas")
 	testAsmSourceOnlyDump(t, input, []string{""})
+
+	// 実際のテスト
+	t.Run("harib00a", testHarib00a)
+	t.Run("harib00b", testHarib00b)
 }
 
 // TestHelloOS3 naskソース３日目(harib00a)のテスト
-func TestHarib00a(t *testing.T) {
+func testHarib00a(t *testing.T) {
+	time.Sleep(1 * time.Second)
 	input := getAsmSource("03_day_harib00a_ipl.nas")
 
 	// wine nask.exe ipl.nas ipl.obj
@@ -36,7 +42,8 @@ func TestHarib00a(t *testing.T) {
 }
 
 // TestHelloOS3 naskソース３日目(harib00b)のテスト
-func TestHarib00b(t *testing.T) {
+func testHarib00b(t *testing.T) {
+	time.Sleep(1 * time.Second)
 	input := getAsmSource("03_day_harib00b_ipl.nas")
 
 	// wine nask.exe ipl.nas ipl.obj
@@ -57,6 +64,5 @@ func TestHarib00b(t *testing.T) {
 *
 000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|
 `
-
 	testAsmSource(t, input, strings.Split(answer, "\n"))
 }
