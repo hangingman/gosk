@@ -157,6 +157,10 @@ func Eval(node ast.Node) object.Object {
 	case *ast.Program:
 		dollarPosition = 0
 		curByteSize = 0
+		labelManage.opcode = map[string][]byte{}
+		labelManage.labelBinaryRefMap = map[string]*object.Binary{}
+		labelManage.labelBytesMap = map[string]int{}
+		labelManage.genBytesFns = map[string]func(i int) []byte{}
 		return evalStatements(node.Statements)
 	case *ast.MnemonicStatement:
 		return evalMnemonicStatement(node)
