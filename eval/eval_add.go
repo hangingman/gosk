@@ -15,6 +15,24 @@ func evalADDStatement(stmt *ast.MnemonicStatement) object.Object {
 
 	switch {
 
+	case toks[1].Literal == "AL" && IsImm8(toks[2]):
+		// ADD AL , imm8
+		log.Println(fmt.Sprintf("info: ADD %s, imm8 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x04 ib
+		bin = append(bin, 0x04)
+		bin = append(bin, imm8ToByte(toks[2])...)
+	case toks[1].Literal == "AX" && IsImm16(toks[2]):
+		// ADD AX , imm16
+		log.Println(fmt.Sprintf("info: ADD %s, imm16 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x05 iw
+		bin = append(bin, 0x05)
+		bin = append(bin, imm16ToWord(toks[2])...)
+	case toks[1].Literal == "EAX" && IsImm32(toks[2]):
+		// ADD EAX , imm32
+		log.Println(fmt.Sprintf("info: ADD %s, imm32 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x05 id
+		bin = append(bin, 0x05)
+		bin = append(bin, imm32ToDword(toks[2])...)
 	case IsR8(toks[1]) && IsImm8(toks[2]):
 		// ADD r/m8 , imm8
 		log.Println(fmt.Sprintf("info: ADD r/m8 (%s), imm8 (%s)", toks[1], toks[2]))
