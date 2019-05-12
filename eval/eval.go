@@ -61,6 +61,7 @@ func init() {
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["DW"] = evalDWStatement
 	opcodeEvalFns["JAE"] = evalJAEStatement
+	opcodeEvalFns["JBE"] = evalJBEStatement
 	opcodeEvalFns["JC"] = evalJCStatement
 	opcodeEvalFns["JE"] = evalJEStatement
 	opcodeEvalFns["JMP"] = evalJMPStatement
@@ -362,6 +363,36 @@ func evalJAEStatement(stmt *ast.MnemonicStatement) object.Object {
 				labelManage.AddLabelCallback(
 					// JAE自体のバイト数を含まないので +2 しておく
 					[]byte{0x73}, tok.Literal, stmt.Bin, curByteSize+2, int2Byte,
+				)
+			}
+		}
+		log.Println(fmt.Sprintf("info: %s", tok))
+	}
+
+	return stmt.Bin
+}
+
+func evalJBEStatement(stmt *ast.MnemonicStatement) object.Object {
+	stmt.Bin = &object.Binary{Value: []byte{}}
+
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.IDENT {
+			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
+				// ラベルが見つかっていればバイト数を計算して設定する
+				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
+				log.Println(fmt.Sprintf("info: %d - %d - 2 = %d", from, curByteSize, from-curByteSize-2))
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x76)
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Byte(from-curByteSize-2)...)
+			} else {
+				// ラベルが見つかっていないならば
+				// callbackを配置し今のバイト数を設定する
+				log.Println(fmt.Sprintf("info: no label %s", tok.Literal))
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x76)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
+
+				labelManage.AddLabelCallback(
+					// JBE自体のバイト数を含まないので +2 しておく
+					[]byte{0x76}, tok.Literal, stmt.Bin, curByteSize+2, int2Byte,
 				)
 			}
 		}
