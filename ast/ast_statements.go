@@ -65,7 +65,7 @@ func (s *LabelStatement) GetPrevNode() Statement     { return s.PrevNode }
 type EquStatement struct {
 	Token    token.Token // EQU
 	Name     *Identifier
-	Value    string // TODO: 後でExpressionにするかも
+	Value    token.Token
 	NextNode Statement
 	PrevNode Statement
 }

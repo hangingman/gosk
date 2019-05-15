@@ -226,7 +226,7 @@ func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 func evalEquStatement(stmt *ast.EquStatement) object.Object {
 	// EQUで指定された文字列を置き換える
 	equKey := stmt.Name.Token.Literal
-	equTok := stmt.Name.Token
+	equTok := stmt.Value
 	log.Println(fmt.Sprintf("info: %s = %s", equKey, equTok))
 	equMap[equKey] = equTok
 
@@ -237,6 +237,7 @@ func evalEquStatement(stmt *ast.EquStatement) object.Object {
 			m := nextStmt.(*ast.MnemonicStatement)
 			for idx, tok := range m.Name.Tokens {
 				if tok.Type == token.IDENT && tok.Literal == equKey {
+					log.Println("info: replace token by EQU specified")
 					m.Name.Tokens[idx] = equTok
 					m.Name.Values[idx] = equTok.Literal
 				}
