@@ -224,10 +224,32 @@ func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 }
 
 func evalEquStatement(stmt *ast.EquStatement) object.Object {
+	// EQUで指定された文字列を置き換える
 	equKey := stmt.Name.Token.Literal
-	tok := stmt.Name.Token
-	log.Println(fmt.Sprintf("info: %s = %s", equKey, tok))
-	equMap[equKey] = tok
+	equTok := stmt.Name.Token
+	log.Println(fmt.Sprintf("info: %s = %s", equKey, equTok))
+	equMap[equKey] = equTok
+
+	nextStmt := stmt.GetNextNode()
+	for {
+		switch nextStmt.(type) {
+		case *ast.MnemonicStatement:
+			m := nextStmt.(*ast.MnemonicStatement)
+			for idx, tok := range m.Name.Tokens {
+				if tok.Type == token.IDENT && tok.Literal == equKey {
+					m.Name.Tokens[idx] = equTok
+					m.Name.Values[idx] = equTok.Literal
+				}
+			}
+		default:
+			// do nothing
+		}
+		nextStmt = nextStmt.GetNextNode()
+		if nextStmt == nil {
+			break
+		}
+	}
+
 	return nil
 }
 
