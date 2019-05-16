@@ -61,6 +61,7 @@ func init() {
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["DW"] = evalDWStatement
 	opcodeEvalFns["JAE"] = evalJumpStatement(0x73)
+	opcodeEvalFns["JB"] = evalJumpStatement(0x72)
 	opcodeEvalFns["JBE"] = evalJumpStatement(0x76)
 	opcodeEvalFns["JC"] = evalJumpStatement(0x72)
 	opcodeEvalFns["JE"] = evalJumpStatement(0x74)
