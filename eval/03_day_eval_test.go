@@ -14,7 +14,7 @@ func TestDumpHarib(t *testing.T) {
 	t.Run("harib00a", testHarib00a)
 	t.Run("harib00b", testHarib00b)
 	t.Run("harib00c", testHarib00c)
-	// t.Run("harib00d", testHarib00d)
+	t.Run("harib00d", testHarib00d)
 	// t.Run("harib00e", testHarib00e)
 }
 

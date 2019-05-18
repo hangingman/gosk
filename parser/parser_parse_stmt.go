@@ -138,10 +138,10 @@ func (p *Parser) parseEquStatement() *ast.EquStatement {
 	}
 
 	p.nextToken()
-	stmt.Name.Value = p.peekToken().Literal
-	stmt.Value = p.peekToken()
+	pTok := p.peekToken()
+	stmt.Name.Value = pTok.Literal
+	stmt.Value = pTok
 	log.Println(fmt.Sprintf("info: %s", stmt.String()))
-	p.nextToken()
 	p.nextToken()
 
 	return stmt
