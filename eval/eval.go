@@ -360,6 +360,12 @@ func evalJumpStatement(b byte) func(stmt *ast.MnemonicStatement) object.Object {
 						[]byte{b}, tok.Literal, stmt.Bin, curByteSize+2, int2Byte,
 					)
 				}
+			} else if tok.Type == token.HEX_LIT {
+				// JMP 0xc200
+				// のようにジャンプさせたい時用
+				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0xb)
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(int(u64v))...)
 			}
 			log.Println(fmt.Sprintf("info: %s", tok))
 		}
