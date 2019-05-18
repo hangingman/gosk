@@ -364,8 +364,8 @@ func evalJumpStatement(b byte) func(stmt *ast.MnemonicStatement) object.Object {
 				// JMP 0xc200
 				// のようにジャンプさせたい時用
 				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
-				stmt.Bin.Value = append(stmt.Bin.Value, 0xb)
-				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(int(u64v))...)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0xe9)
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(int(u64v)-dollarPosition-curByteSize-3)...)
 			}
 			log.Println(fmt.Sprintf("info: %s", tok))
 		}
