@@ -7,7 +7,7 @@ import (
 )
 
 func TestDumpHarib(t *testing.T) {
-	input := getAsmSource("03_day_harib00d_ipl.nas")
+	input := getAsmSource("03_day_harib00e_ipl.nas")
 	testAsmSourceOnlyDump(t, input, []string{""})
 
 	// 実際のテスト
@@ -15,7 +15,7 @@ func TestDumpHarib(t *testing.T) {
 	t.Run("harib00b", testHarib00b)
 	t.Run("harib00c", testHarib00c)
 	t.Run("harib00d", testHarib00d)
-	// t.Run("harib00e", testHarib00e)
+	t.Run("harib00e", testHarib00e)
 }
 
 // TestHelloOS3 naskソース３日目(harib00a)のテスト
