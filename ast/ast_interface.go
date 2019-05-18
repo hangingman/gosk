@@ -40,7 +40,11 @@ type IdentifierArray struct {
 }
 
 func (i *IdentifierArray) String() string {
-	return "{ " + i.Tokens[0].Literal + ": " + strings.Join(i.Values, ",") + " }"
+	tokenLit := ""
+	if len(i.Tokens) > 0 {
+		tokenLit = i.Tokens[0].Literal
+	}
+	return "{ " + tokenLit + ": " + strings.Join(i.Values, ",") + " }"
 }
 
 type Program struct {

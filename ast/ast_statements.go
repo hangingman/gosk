@@ -17,7 +17,11 @@ type MnemonicStatement struct {
 func (s *MnemonicStatement) statementNode()       {}
 func (s *MnemonicStatement) TokenLiteral() string { return s.Token.Literal }
 func (s *MnemonicStatement) String() string {
-	return "{ " + token.OPCODE + ":" + s.Name.String() + " }"
+	name := "nil"
+	if isNotNil(s) && isNotNil(s.Name) {
+		name = s.Name.String()
+	}
+	return "{ " + token.OPCODE + ":" + name + " }"
 }
 func (s *MnemonicStatement) SetNextNode(stmt Statement) { s.NextNode = stmt }
 func (s *MnemonicStatement) SetPrevNode(stmt Statement) { s.PrevNode = stmt }
