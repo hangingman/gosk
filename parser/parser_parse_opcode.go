@@ -124,8 +124,10 @@ func (p *Parser) parseJMPStatement() *ast.MnemonicStatement {
 			Values: []string{p.curToken().Literal},
 		},
 	}
-	// JMP 命令の後は必ず識別子
-	if !p.expectPeek(token.IDENT) {
+	// JMP 命令の後は必ず識別子か即値（hex/digit）
+	if !(p.expectPeek(token.IDENT) ||
+		p.expectPeek(token.HEX_LIT) ||
+		p.expectPeek(token.INT)) {
 		return nil
 	}
 	stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
