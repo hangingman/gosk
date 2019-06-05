@@ -155,6 +155,8 @@ func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {
 	stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
 
 	for {
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
 		// 最初のカンマまで読み取る
 		if p.curTokenIs(token.COMMA) {
 			break
@@ -163,8 +165,6 @@ func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {
 			return nil
 		}
 		p.nextToken()
-		stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
-		stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
 	}
 
 	if p.peekTokenIs(token.LBRACKET) {

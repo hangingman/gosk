@@ -15,6 +15,9 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 	bin := &object.Binary{Value: []byte{}}
 
 	switch {
+        //
+        // MOV r8~r32, immX
+        //
 	case IsR8(toks[1]) && IsImm8(toks[2]):
 		// MOV r8 , imm8
 		log.Println(fmt.Sprintf("info: MOV r8 (%s), imm8 (%s)", toks[1], toks[2]))
@@ -32,6 +35,24 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// 0xB8+rd
 		bin.Value = append(bin.Value, plusRd(0xb8, toks[1].Literal))
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
+
+        //
+        // MOV m8~m32, rX
+        //
+	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && IsR8(toks[4]):
+		// MOV m8 , r8
+		log.Println(fmt.Sprintf("info: MOV m8 (%s), r8 (%s)", toks[2], toks[4]))
+		bin.Value = append(bin.Value, plusRb(0x88, toks[1].Literal))
+	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && IsR16(toks[4]):
+		// MOV m16, r16
+		log.Println(fmt.Sprintf("info: MOV m16 (%s), r16 (%s)", toks[2], toks[4]))
+		bin.Value = append(bin.Value, plusRw(0x89, toks[1].Literal))
+	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && IsR32(toks[4]):
+		// MOV m32, r32
+		log.Println(fmt.Sprintf("info: MOV m32 (%s), r32 (%s)", toks[2], toks[4]))
+		bin.Value = append(bin.Value, plusRd(0x89, toks[1].Literal))
+
+        
 	case IsR8(toks[1]) && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
 		// MOV r8 , imm8 で immが参照（ex: [SI]）
 		log.Println(fmt.Sprintf("info: MOV r8 (%s), disp8 (%s)", toks[1], toks[3]))
