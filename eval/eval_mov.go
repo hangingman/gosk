@@ -15,9 +15,9 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 	bin := &object.Binary{Value: []byte{}}
 
 	switch {
-        //
-        // MOV r8~r32, immX
-        //
+	//
+	// MOV r8~r32, immX
+	//
 	case IsR8(toks[1]) && IsImm8(toks[2]):
 		// MOV r8 , imm8
 		log.Println(fmt.Sprintf("info: MOV r8 (%s), imm8 (%s)", toks[1], toks[2]))
@@ -36,9 +36,9 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, plusRd(0xb8, toks[1].Literal))
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
 
-        //
-        // MOV m8~m32, rX
-        //
+		//
+		// MOV m8~m32, rX
+		//
 	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && IsR8(toks[4]):
 		// MOV m8 , r8
 		log.Println(fmt.Sprintf("info: MOV m8 (%s), r8 (%s)", toks[2], toks[4]))
@@ -52,7 +52,6 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV m32 (%s), r32 (%s)", toks[2], toks[4]))
 		bin.Value = append(bin.Value, plusRd(0x89, toks[1].Literal))
 
-        
 	case IsR8(toks[1]) && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
 		// MOV r8 , imm8 で immが参照（ex: [SI]）
 		log.Println(fmt.Sprintf("info: MOV r8 (%s), disp8 (%s)", toks[1], toks[3]))
