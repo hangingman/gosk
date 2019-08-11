@@ -43,7 +43,26 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
 
 		//
-		// (2) MOV m8~m32, rX
+		// (2) MOV moffs8~32, Acc
+		//
+	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && toks[4].Literal == "AL":
+		// MOV moffs8, AL
+		log.Println(fmt.Sprintf("info: MOV moffs8 (%s), AL (%s)", toks[2], toks[4]))
+		bin.Value = append(bin.Value, 0xa2)
+		bin.Value = append(bin.Value, imm16ToWord(toks[2])...)
+	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && toks[4].Literal == "AX":
+		// MOV moffs16, AX
+		log.Println(fmt.Sprintf("info: MOV moffs16 (%s), AX (%s)", toks[2], toks[4]))
+		bin.Value = append(bin.Value, 0xa3)
+		bin.Value = append(bin.Value, imm16ToWord(toks[2])...)
+	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && toks[4].Literal == "EAX":
+		// MOV moffs32, EAX
+		log.Println(fmt.Sprintf("info: MOV moffs32 (%s), EAX (%s)", toks[2], toks[4]))
+		bin.Value = append(bin.Value, 0xa3)
+		bin.Value = append(bin.Value, imm16ToWord(toks[2])...)
+
+		//
+		// (2) MOV m8~m32, rX (not accumulator)
 		//
 	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && IsR8(toks[4]):
 		// MOV m8 , r8
