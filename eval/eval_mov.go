@@ -156,6 +156,21 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// 0x8C /r
 		bin.Value = append(bin.Value, 0x8c)
 		bin.Value = append(bin.Value, generateModRMSlashR(0x8e, Reg, toks[1].Literal, toks[2].Literal))
+	case toks[1].Literal == "BYTE"  && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+		// MOV r/m8, imm8
+		log.Println(fmt.Sprintf("info: MOV r/m8 (%s), Imm (%s)", toks[3], toks[5]))
+		bin.Value = append(bin.Value, 0xc6)
+		bin.Value = append(bin.Value, generateModRMSlashR(0xc6, Reg, toks[3].Literal, toks[5].Literal))
+	case toks[1].Literal == "WORD"  && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+		// MOV r/m16, imm16pp
+		log.Println(fmt.Sprintf("info: MOV r/m16 (%s), Imm (%s)", toks[3], toks[5]))
+		bin.Value = append(bin.Value, 0xc7)
+		bin.Value = append(bin.Value, generateModRMSlashR(0xc7, Reg, toks[3].Literal, toks[5].Literal))
+	case toks[1].Literal == "DWORD" && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+		// MOV r/m32, imm32
+		log.Println(fmt.Sprintf("info: MOV r/m32 (%s), Imm (%s)", toks[3], toks[5]))
+		bin.Value = append(bin.Value, 0xc7)
+		bin.Value = append(bin.Value, generateModRMSlashR(0xc7, Reg, toks[3].Literal, toks[5].Literal))
 	}
 
 	tokStrArray := []string{}
