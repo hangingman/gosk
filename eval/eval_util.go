@@ -90,7 +90,9 @@ func imm16ToWord(tok token.Token) []byte {
 func imm32ToDword(tok token.Token) []byte {
 	if tok.Type == token.HEX_LIT {
 		bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
-		return bs
+		// リトルエンディアンで格納する
+		bs[0], bs[1], bs[2], bs[3] = bs[3], bs[2], bs[1], bs[0]
+		return bs[0:4]
 	}
 	if tok.Type == token.INT {
 		v, _ := strconv.Atoi(tok.Literal)

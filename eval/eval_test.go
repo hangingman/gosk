@@ -27,8 +27,8 @@ MOV DWORD[0x0ff8],0x000a0000`
 		{[]byte{0x88, 0x2e, 0xf0, 0x0f}},
 		{[]byte{0xc6, 0x06, 0xf2, 0x0f, 0x08}},
 		{[]byte{0xc7, 0x06, 0xf4, 0x0f, 0x40, 0x01}},
-		{[]byte{0xc7, 0x06, 0xf6, 0x0f, 0xc8, 0x00, 0x66}},
-		{[]byte{0xc7, 0x06, 0xf8, 0x0f, 0x00, 0x00, 0x0a, 0x00}},
+		{[]byte{0xc7, 0x06, 0xf6, 0x0f, 0xc8, 0x00}},
+		{[]byte{0x66, 0xc7, 0x06, 0xf8, 0x0f, 0x00, 0x00, 0x0a, 0x00}},
 	}
 
 	l := lexer.New(input)
@@ -38,15 +38,16 @@ MOV DWORD[0x0ff8],0x000a0000`
 	program := p.ParseProgram()
 	evaluated := Eval(program)
 	objArray, _ := evaluated.(*object.ObjectArray)
-	testTarget := strings.Split(input, `\n`)
+	testTarget := strings.Split(input, "\n")
 	// 結果を１つずつ見てみる
+	assert.Equal(t, 5, len(*objArray))
 	for i, obj := range *objArray {
-		assert.NotEqual(t, obj, nil)
-		bin, ok := obj.(*object.Binary)
-		assert.True(t, ok)
+		bin, _ := obj.(*object.Binary)
+
 		assert.Equal(t,
 			tests[i].Value,
-			bin.Value, fmt.Sprintf("Opcode: [%s] should be...", testTarget[i]))
+			bin.Value,
+			fmt.Sprintf("Opcode: [%s] should be...", testTarget[i]))
 	}
 }
 
