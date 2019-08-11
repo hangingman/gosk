@@ -7,8 +7,8 @@ import (
 )
 
 func TestDumpHarib(t *testing.T) {
-	input := getAsmSource("03_day_harib00f_ipl.nas")
-	testAsmSourceOnlyDump(t, input, []string{""})
+	// input := getAsmSource("03_day_harib00f_ipl.nas")
+	// testAsmSourceOnlyDump(t, input, []string{""})
 
 	// 実際のテスト
 	t.Run("harib00a", testHarib00a)

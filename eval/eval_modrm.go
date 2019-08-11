@@ -76,17 +76,21 @@ func getRMFromReg(srcReg string) string {
 
 // generateModRM オペコードと２つのレジスタについてModR/Mを作成する
 // 仕様書に '/r' の形式でModR/Mを求められる場合に使用する
-func generateModRMSlashR(opcode byte, m Mod, dstReg string) byte {
-	log.Println(fmt.Sprintf("debug: ModR/M /r opcode=%x type=%s dst=%s", opcode, m, dstReg))
+func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte {
+	log.Println(fmt.Sprintf("debug: ModR/M /r opcode=%x type=%s dst=%s src=%s", opcode, m, dstReg, srcReg))
 	//
 	// Generate ModR/M byte with arguments
 	// [mod] 2bit
 	// [reg] 3bit
 	// [r/m] 3bit
 	//
+	// example) MOV DS, AX (mov dst, src)
+	//          [mod] = Reg
+	//          [reg] = DS(011)
+	//          [r/m] = AX(000)
 	modrm := mod2byteMap[m]       // [mod]
 	modrm += getRMFromReg(dstReg) // [reg]
-	modrm += "000"                // [r/m]
+	modrm += getRMFromReg(srcReg) // [r/m]
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
 	log.Println(fmt.Sprintf("debug: ModR/M => %s(%x)", modrm, i))
