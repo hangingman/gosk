@@ -56,8 +56,10 @@ func getRMFromReg(srcReg string) string {
 
 	switch {
 	// [<SIB>], [<SIB>+disp8], [<SIB>+disp32]
-	case strings.HasPrefix(srcReg, "["):
-		regBits = 4 // "100"
+	case strings.HasPrefix(srcReg, "[0x") && strings.HasSuffix(srcReg, "]"):
+		regBits = 6 // 0x0000 "110"
+	case strings.HasPrefix(srcReg, "[") && strings.HasSuffix(srcReg, "]"):
+		regBits = 4 // 0x00   "100"
 	case IsR8(token.Token{Type: token.REGISTER, Literal: srcReg}):
 		regBits = r8CodeMap[srcReg]
 	case IsR16(token.Token{Type: token.REGISTER, Literal: srcReg}):
@@ -88,12 +90,20 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte 
 	//          [mod] = Reg
 	//          [reg] = DS(011)
 	//          [r/m] = AX(000)
-	modrm := mod2byteMap[m]       // [mod]
-	modrm += getRMFromReg(dstReg) // [reg]
-	modrm += getRMFromReg(srcReg) // [r/m]
+	var srcRM string = getRMFromReg(srcReg)
+	var modrm string = ""
+	if srcRM[2:3] == "0" {
+		modrm += mod2byteMap[m]       // [mod]
+		modrm += getRMFromReg(dstReg) // [reg]
+		modrm += getRMFromReg(srcReg) // [r/m]
+	} else {
+		modrm += mod2byteMap[m]       // [mod]
+		modrm += getRMFromReg(srcReg) // [r/m]
+		modrm += getRMFromReg(dstReg) // [reg]
+	}
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
-	log.Println(fmt.Sprintf("debug: ModR/M => %s(%x)", modrm, i))
+	log.Println(fmt.Sprintf("info: ModR/M => %s(%x)", modrm, i))
 	return byte(i)
 }
 

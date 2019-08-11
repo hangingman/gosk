@@ -15,6 +15,33 @@ import (
 	"testing"
 )
 
+func TestEvalMov(t *testing.T) {
+	input := `MOV [0x0ff0], CH`
+	tests := []struct {
+		Value []byte
+	}{
+		{[]byte{0x88, 0x2e, 0xf0, 0x0f}},
+	}
+
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	// プログラムの解析と評価
+	program := p.ParseProgram()
+	evaluated := Eval(program)
+	objArray, _ := evaluated.(*object.ObjectArray)
+	testTarget := strings.Split(input, `\n`)
+	// 結果を１つずつ見てみる
+	for i, obj := range *objArray {
+		assert.NotEqual(t, obj, nil)
+		bin, ok := obj.(*object.Binary)
+		assert.True(t, ok)
+		assert.Equal(t,
+			tests[i].Value,
+			bin.Value, fmt.Sprintf("Opcode: [%s] should be...", testTarget[i]))
+	}
+}
+
 func TestEvalSingleOpcode(t *testing.T) {
 	input := `AAA ;; 0x37
 AAS ;; 0x3f
