@@ -17,7 +17,7 @@ func TestDumpHarib(t *testing.T) {
 	t.Run("harib00d", testHarib00d)
 	t.Run("harib00e", testHarib00e)
 	t.Run("harib00f", testHarib00f)
-	// t.Run("harib00g", testHarib00g)
+	t.Run("harib00g", testHarib00g)
 }
 
 // TestHelloOS3 naskソース３日目(harib00a)のテスト
@@ -197,7 +197,7 @@ func testHarib00f(t *testing.T) {
 // TestHelloOS3 naskソース３日目(harib00g)のテスト
 func testHarib00g(t *testing.T) {
 	time.Sleep(1 * time.Second)
-	input1 := getAsmSource("03_day_harib00g_ipl.nas")
+	input1 := getAsmSource("03_day_harib00g_ipl10.nas")
 
 	// wine nask.exe ipl.nas ipl.obj
 	// hexdump -C ipl.obj > ipl.hex
