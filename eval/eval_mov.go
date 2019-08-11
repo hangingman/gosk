@@ -175,7 +175,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// 0x8C /r
 		bin.Value = append(bin.Value, 0x8c)
 		bin.Value = append(bin.Value, generateModRMSlashR(0x8e, Reg, toks[1].Literal, toks[2].Literal))
-	case toks[1].Literal == "BYTE"  && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+	case toks[1].Literal == "BYTE" && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
 		// MOV r/m8, imm8
 		log.Println(fmt.Sprintf("info: MOV r/m8 (%s), Imm (%s)", toks[3], toks[5]))
 		disp := "[" + toks[3].Literal + "]"
@@ -183,7 +183,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, generateModRMSlashR(0xc6, RegReg, toks[5].Literal, disp))
 		bin.Value = append(bin.Value, imm16ToWord(toks[3])...)
 		bin.Value = append(bin.Value, imm8ToByte(toks[5])...)
-	case toks[1].Literal == "WORD"  && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
+	case toks[1].Literal == "WORD" && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
 		// MOV r/m16, imm16pp
 		log.Println(fmt.Sprintf("info: MOV r/m16 (%s), Imm (%s)", toks[3], toks[5]))
 		disp := "[" + toks[3].Literal + "]"

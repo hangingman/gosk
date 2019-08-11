@@ -11,15 +11,15 @@ func TestDumpHarib(t *testing.T) {
 	// testAsmSourceOnlyDump(t, input, []string{""})
 
 	// 実際のテスト
-	t.Run("harib00a", testHarib00a)
-	t.Run("harib00b", testHarib00b)
-	t.Run("harib00c", testHarib00c)
-	t.Run("harib00d", testHarib00d)
-	t.Run("harib00e", testHarib00e)
-	t.Run("harib00f", testHarib00f)
-	t.Run("harib00g", testHarib00g)
-	t.Run("harib00h", testHarib00h)
-	//t.Run("harib00i", testHarib00i)
+	// t.Run("harib00a", testHarib00a)
+	// t.Run("harib00b", testHarib00b)
+	// t.Run("harib00c", testHarib00c)
+	// t.Run("harib00d", testHarib00d)
+	// t.Run("harib00e", testHarib00e)
+	// t.Run("harib00f", testHarib00f)
+	// t.Run("harib00g", testHarib00g)
+	// t.Run("harib00h", testHarib00h)
+	t.Run("harib00i", testHarib00i)
 }
 
 // TestHelloOS3 naskソース３日目(harib00a)のテスト
@@ -272,7 +272,6 @@ func testHarib00h(t *testing.T) {
 
 }
 
-
 // TestHelloOS3 naskソース３日目(harib00i)のテスト
 func testHarib00i(t *testing.T) {
 	time.Sleep(1 * time.Second)
@@ -284,12 +283,12 @@ func testHarib00i(t *testing.T) {
 	answer1 := `00000000  b0 13 b4 00 cd 10 c6 06  f2 0f 08 c7 06 f4 0f 40  |...............@|
 00000010  01 c7 06 f6 0f c8 00 66  c7 06 f8 0f 00 00 0a 00  |.......f........|
 00000020  b4 02 cd 16 a2 f1 0f b0  ff e6 21 90 e6 a1 fa e8  |..........!.....|
-00000030  b5 00 b0 d1 e6 64 e8 ae  00 b0 df e6 60 e8 a7 00  |.....d......`+"`"+`...|
+00000030  b5 00 b0 d1 e6 64 e8 ae  00 b0 df e6 60 e8 a7 00  |.....d......` + "`" + `...|
 00000040  0f 01 16 2a c3 0f 20 c0  66 25 ff ff ff 7f 66 83  |...*.. .f%....f.|
 00000050  c8 01 0f 22 c0 eb 00 b8  08 00 8e d8 8e c0 8e e0  |..."............|
 00000060  8e e8 8e d0 66 be 30 c3  00 00 66 bf 00 00 28 00  |....f.0...f...(.|
 00000070  66 b9 00 00 02 00 e8 75  00 66 be 00 7c 00 00 66  |f......u.f..|..f|
-00000080  bf 00 00 10 00 66 b9 80  00 00 00 e8 60 00 66 be  |.....f......`+"`"+`.f.|
+00000080  bf 00 00 10 00 66 b9 80  00 00 00 e8 60 00 66 be  |.....f......` + "`" + `.f.|
 00000090  00 82 00 00 66 bf 00 02  10 00 66 b9 00 00 00 00  |....f.....f.....|
 000000a0  8a 0e f0 0f 66 69 c9 00  12 00 00 66 81 e9 80 00  |....fi.....f....|
 000000b0  00 00 e8 39 00 66 bb 00  00 28 00 67 66 8b 4b 10  |...9.f...(.gf.K.|
@@ -299,7 +298,8 @@ func testHarib00i(t *testing.T) {
 000000f0  8b 06 66 83 c6 04 67 66  89 07 66 83 c7 04 66 83  |..f...gf..f...f.|
 00000100  e9 01 75 ea c3 00 00 00  00 00 00 00 00 00 00 00  |..u.............|
 00000110  00 00 00 00 00 00 00 00  ff ff 00 00 00 92 cf 00  |................|
-00000120  ff ff 00 00 28 9a 47 00  00 00 17 00 10 c3 00 00  |....(.G.........|`
+00000120  ff ff 00 00 28 9a 47 00  00 00 17 00 10 c3 00 00  |....(.G.........|
+`
 
 	testAsmSource(t, input1, strings.Split(answer1, "\n"))
 
@@ -321,7 +321,8 @@ func testHarib00i(t *testing.T) {
 000000d0  72 6f 72 0a 00 00 00 00  00 00 00 00 00 00 00 00  |ror.............|
 000000e0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
 *
-000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|`
+000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U.|
+`
 	testAsmSource(t, input2, strings.Split(answer2, "\n"))
 
 }
