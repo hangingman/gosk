@@ -79,6 +79,7 @@ func init() {
 	opcodeEvalFns["IRET"] = evalSingleByteOpcode("IRET", 0xcf)
 	opcodeEvalFns["IRETD"] = evalSingleByteOpcode("IRETD", 0xcf)
 	opcodeEvalFns["LAHF"] = evalSingleByteOpcode("LAHF", 0x9f)
+	opcodeEvalFns["LGDT"] = evalLGDTStatement
 	opcodeEvalFns["LEAVE"] = evalSingleByteOpcode("LEAVE", 0xc9)
 	opcodeEvalFns["LOCK"] = evalSingleByteOpcode("LOCK", 0xf0)
 	opcodeEvalFns["MOV"] = evalMOVStatement
@@ -336,6 +337,25 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
 	log.Println(fmt.Sprintf("info: ORG = %d", dollarPosition))
 	return nil
+}
+
+func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
+	bin := &object.Binary{Value: []byte{}}
+	toks := []string{}
+
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.IDENT {
+			bin.Value = append(bin.Value, 0x0f)
+			bin.Value = append(bin.Value, 0x01)
+			bin.Value = append(bin.Value, generateModRMSlashN(0x0f, Reg, "[" + tok.Literal + "]", "/1"))
+			//bin.Value = append(bin.Value, int2Byte(v)...)
+		}
+		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
+
+	stmt.Bin = bin
+	return stmt.Bin
 }
 
 func evalCallStatement(stmt *ast.MnemonicStatement) object.Object {

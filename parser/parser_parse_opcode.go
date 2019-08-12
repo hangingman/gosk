@@ -136,6 +136,33 @@ func (p *Parser) parseJMPStatement() *ast.MnemonicStatement {
 	return stmt
 }
 
+
+func (p *Parser) parseLGDTStatement() *ast.MnemonicStatement {
+
+	stmt := &ast.MnemonicStatement{
+		Token: p.curToken(),
+		Name: &ast.IdentifierArray{
+			Tokens: []token.Token{p.curToken()},
+			Values: []string{p.curToken().Literal},
+		},
+	}
+	p.nextToken()
+
+	for !p.curTokenIs(token.EOF) && !p.curTokenIs(token.OPCODE) && !p.curTokenIs(token.LABEL) {
+		if p.curTokenIs(token.COMMA) {
+			p.nextToken()
+			continue
+		}
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
+		p.nextToken()
+	}
+
+	p.curIndex--
+	return stmt
+}
+
+
 // parseMOVStatement は MOV オペコードを解析する
 func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {
 	// MOV DST  ,  SRC
