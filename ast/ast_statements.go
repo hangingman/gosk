@@ -5,8 +5,18 @@ import (
 	"github.com/hangingman/gosk/token"
 	"fmt"
 	"strconv"
+	"github.com/comail/colog"
+	"log"
 	"github.com/pk-rawat/gostr/src"
 )
+
+func init() {
+	colog.Register()
+	colog.SetDefaultLevel(colog.LInfo)
+	colog.SetMinLevel(colog.LInfo)
+	colog.SetFlags(log.Lshortfile)
+	colog.SetFormatter(&colog.StdFormatter{Colors: false})
+}
 
 // MnemonicStatement は `MOV BX, 15` のような構文を解析する
 type MnemonicStatement struct {
@@ -55,7 +65,6 @@ func (m *MnemonicStatement) PreEval() *MnemonicStatement {
 		}
 	}
 
-
 	evalStr := ""
 	for i := start; i <= end; i++ {
 		if m.Name.Tokens[i].Type == token.REGISTER ||
@@ -70,10 +79,7 @@ func (m *MnemonicStatement) PreEval() *MnemonicStatement {
 			evalStr += m.Name.Tokens[i].Literal
 		}
 	}
-	fmt.Println("---")
-	fmt.Printf("IN: %s\n", m.Name.Tokens)
-
-	fmt.Println(evalStr)
+	log.Printf("info: expr %s\n", m.Name.Tokens)
 	result := gostr.Evaluate(evalStr, nil)
 
 	// new token array
@@ -88,8 +94,7 @@ func (m *MnemonicStatement) PreEval() *MnemonicStatement {
 	newValues = append(newValues, fmt.Sprintf("%s", result))
 
 	m.Name.Tokens = newTokens
-	fmt.Printf("OUT: %s\n", m.Name.Tokens)
-	fmt.Println("---")
+	log.Printf("info: expr %s\n", m.Name.Tokens)
 
 	return nil
 }
