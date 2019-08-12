@@ -41,6 +41,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// MOV r32, imm32
 		log.Println(fmt.Sprintf("info: MOV r32 (%s), imm32 (%s)", toks[1], toks[2]))
 		// 0xB8+rd
+		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, plusRd(0xb8, toks[1].Literal))
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
 
@@ -60,6 +61,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && toks[4].Literal == "EAX":
 		// MOV moffs32, EAX
 		log.Println(fmt.Sprintf("info: MOV moffs32 (%s), EAX (%s)", toks[2], toks[4]))
+		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, 0xa3)
 		bin.Value = append(bin.Value, imm16ToWord(toks[2])...)
 
@@ -110,6 +112,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV r32 (%s), disp32 (%s)", toks[1], toks[3]))
 		disp := "[" + toks[3].Literal + "]"
 		// 0x8b
+		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, 0x8b)
 		bin.Value = append(bin.Value, generateModRMSlashN(0x8b, RegReg, disp, "/0"))
 	case IsR8(toks[1]) && toks[2].Type == token.IDENT:
@@ -151,6 +154,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV r32 (%s), imm32(label) (%s)", toks[1], toks[2]))
 		// 0xB8+rd
 		opcode := plusRd(0xb8, toks[1].Literal)
+		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, opcode)
 		bin.Value = append(bin.Value, 0x00)
 		bin.Value = append(bin.Value, 0x00)
