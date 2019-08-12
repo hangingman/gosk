@@ -20,6 +20,8 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 	//     MOV AX, labl
 	// (4) MOV Sreg, R16
 	//     MOV R16, Sreg
+	// (5) MOV CR, r32
+	//     MOV r32, CR
 	switch {
 	//
 	// (1) MOV r8~r32, immX
@@ -200,6 +202,21 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, generateModRMSlashR(0xc7, RegReg, toks[5].Literal, disp))
 		bin.Value = append(bin.Value, imm16ToWord(toks[3])...)
 		bin.Value = append(bin.Value, imm32ToDword(toks[5])...)
+
+	case IsCtl(toks[1]) && IsR32(toks[2]):
+		// MOV CR0, r32
+		log.Println(fmt.Sprintf("info: MOV CR0(%s), R32(%s)", toks[1], toks[2]))
+		bin.Value = append(bin.Value, 0x0f)
+		bin.Value = append(bin.Value, 0x22)
+		bin.Value = append(bin.Value, generateModRMSlashR(0x0f, Reg, toks[1].Literal, toks[2].Literal))
+
+	case IsR32(toks[1]) && IsCtl(toks[2]):
+		// MOV r32, CR0
+		log.Println(fmt.Sprintf("info: MOV R32(%s), CR0(%s)", toks[1], toks[2]))
+		bin.Value = append(bin.Value, 0x0f)
+		bin.Value = append(bin.Value, 0x20)
+		bin.Value = append(bin.Value, generateModRMSlashR(0x0f, Reg, toks[1].Literal, toks[2].Literal))
+
 	}
 
 	tokStrArray := []string{}

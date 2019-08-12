@@ -43,7 +43,11 @@ func IsR32(tok token.Token) bool {
 }
 
 func IsSreg(tok token.Token) bool {
-	return tok.Type == token.SEG_REGISTER && sr.MatchString(tok.Literal)
+	return tok.Type == token.SEG_REGISTER
+}
+
+func IsCtl(tok token.Token) bool {
+	return tok.Type == token.CTL_REGISTER
 }
 
 func IsImm8(tok token.Token) bool {
