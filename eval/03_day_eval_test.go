@@ -11,15 +11,15 @@ func TestDumpHarib(t *testing.T) {
 	// testAsmSourceOnlyDump(t, input, []string{""})
 
 	// 実際のテスト
-	// t.Run("harib00a", testHarib00a)
-	// t.Run("harib00b", testHarib00b)
-	// t.Run("harib00c", testHarib00c)
-	// t.Run("harib00d", testHarib00d)
-	// t.Run("harib00e", testHarib00e)
-	// t.Run("harib00f", testHarib00f)
-	// t.Run("harib00g", testHarib00g)
-	// t.Run("harib00h", testHarib00h)
-	t.Run("harib00i", testHarib00i)
+	t.Run("harib00a", testHarib00a)
+	t.Run("harib00b", testHarib00b)
+	t.Run("harib00c", testHarib00c)
+	t.Run("harib00d", testHarib00d)
+	t.Run("harib00e", testHarib00e)
+	t.Run("harib00f", testHarib00f)
+	t.Run("harib00g", testHarib00g)
+	t.Run("harib00h", testHarib00h)
+	// t.Run("harib00i", testHarib00i)
 }
 
 // TestHelloOS3 naskソース３日目(harib00a)のテスト

@@ -42,7 +42,7 @@ MOV [0x0ff1] AL`
 	objArray, _ := evaluated.(*object.ObjectArray)
 	testTarget := strings.Split(input, "\n")
 	// 結果を１つずつ見てみる
-	assert.Equal(t, 5, len(*objArray))
+	assert.Equal(t, 6, len(*objArray))
 	for i, obj := range *objArray {
 		bin, _ := obj.(*object.Binary)
 

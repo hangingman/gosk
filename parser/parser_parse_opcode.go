@@ -147,49 +147,19 @@ func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {
 			Values: []string{p.curToken().Literal},
 		},
 	}
-
 	p.nextToken()
-	// MOV DST  ,  SRC
-	// [-] [0] [1] [2]
 
-	for {
-		// 最初のカンマまで読み取る
-		if !p.curTokenIs(token.COMMA) {
-			stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
-			stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
-		} else {
-			if p.peekTokenIs(token.LBRACKET) {
-				// もしブラケットを見つけたら右側の終端まで読み取る
-				p.nextToken()
-				stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
-				stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
-
-				for {
-					if p.peekTokenIs(token.RBRACKET) {
-						stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
-						stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
-						break
-					}
-					if p.curTokenIs(token.EOF) {
-						return nil
-					}
-					p.nextToken()
-					stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
-					stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
-				}
-			} else {
-				stmt.Name.Tokens = append(stmt.Name.Tokens, p.peekToken())
-				stmt.Name.Values = append(stmt.Name.Values, p.peekToken().Literal)
-			}
-			break
+	for !p.curTokenIs(token.EOF) && !p.curTokenIs(token.OPCODE) && !p.curTokenIs(token.LABEL) {
+		if p.curTokenIs(token.COMMA) {
+			p.nextToken()
+			continue
 		}
-
-		if p.curTokenIs(token.EOF) {
-			return nil
-		}
+		stmt.Name.Tokens = append(stmt.Name.Tokens, p.curToken())
+		stmt.Name.Values = append(stmt.Name.Values, p.curToken().Literal)
 		p.nextToken()
 	}
 
+	p.curIndex--
 	return stmt
 }
 
