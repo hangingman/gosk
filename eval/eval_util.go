@@ -60,7 +60,7 @@ func isWordHex(tok token.Token) bool {
 }
 
 func isDwordHex(tok token.Token) bool {
-	return tok.Type == token.HEX_LIT && len(tok.Literal) == 8
+	return tok.Type == token.HEX_LIT && len(tok.Literal) == 10
 }
 
 func imm8ToByte(tok token.Token) []byte {

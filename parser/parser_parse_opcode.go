@@ -136,7 +136,6 @@ func (p *Parser) parseJMPStatement() *ast.MnemonicStatement {
 	return stmt
 }
 
-
 func (p *Parser) parseLGDTStatement() *ast.MnemonicStatement {
 
 	stmt := &ast.MnemonicStatement{
@@ -161,7 +160,6 @@ func (p *Parser) parseLGDTStatement() *ast.MnemonicStatement {
 	p.curIndex--
 	return stmt
 }
-
 
 // parseMOVStatement は MOV オペコードを解析する
 func (p *Parser) parseMOVStatement() *ast.MnemonicStatement {

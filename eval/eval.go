@@ -44,6 +44,7 @@ func init() {
 	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAA", 0x37)
 	opcodeEvalFns["AAS"] = evalSingleByteOpcode("AAS", 0x3f)
 	opcodeEvalFns["ADD"] = evalADDStatement
+	opcodeEvalFns["AND"] = evalANDStatement
 	opcodeEvalFns["CALL"] = evalCallStatement
 	opcodeEvalFns["CBW"] = evalSingleByteOpcode("CBW", 0x98)
 	opcodeEvalFns["CDQ"] = evalSingleByteOpcode("CDQ", 0x99)
@@ -347,7 +348,7 @@ func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.IDENT {
 			bin.Value = append(bin.Value, 0x0f)
 			bin.Value = append(bin.Value, 0x01)
-			bin.Value = append(bin.Value, generateModRMSlashN(0x0f, Reg, "[" + tok.Literal + "]", "/1"))
+			bin.Value = append(bin.Value, generateModRMSlashN(0x0f, Reg, "["+tok.Literal+"]", "/1"))
 			//bin.Value = append(bin.Value, int2Byte(v)...)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
