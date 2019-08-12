@@ -207,6 +207,10 @@ func evalStatements(stmts []ast.Statement) object.Object {
 
 func evalMnemonicStatement(stmt *ast.MnemonicStatement) object.Object {
 	opcode := stmt.Name.Tokens[0].Literal
+
+	if stmt.HasOperator() {
+		stmt.PreEval()
+	}
 	evalOpcodeFn := opcodeEvalFns[opcode]
 
 	if evalOpcodeFn == nil {
@@ -351,6 +355,8 @@ func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
 			bin.Value = append(bin.Value, 0x01)
 			bin.Value = append(bin.Value, generateModRMSlashN(0x0f, Reg, "["+tok.Literal+"]", "/1"))
 			//bin.Value = append(bin.Value, int2Byte(v)...)
+			bin.Value = append(bin.Value, 0x00)
+			bin.Value = append(bin.Value, 0x00)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}

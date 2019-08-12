@@ -32,6 +32,7 @@ fmt:
 dep:
 	$(GOGET) github.com/stretchr/testify
 	$(GOGET) github.com/comail/colog
+	$(GOGET) github.com/pk-rawat/gostr
 
 emacs:
 	$(GOGET) github.com/rogpeppe/godef

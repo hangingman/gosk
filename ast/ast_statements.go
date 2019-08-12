@@ -3,6 +3,9 @@ package ast
 import (
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
+	"fmt"
+	"strconv"
+	"github.com/pk-rawat/gostr/src"
 )
 
 // MnemonicStatement は `MOV BX, 15` のような構文を解析する
@@ -14,19 +17,82 @@ type MnemonicStatement struct {
 	Bin      *object.Binary
 }
 
-func (s *MnemonicStatement) statementNode()       {}
-func (s *MnemonicStatement) TokenLiteral() string { return s.Token.Literal }
-func (s *MnemonicStatement) String() string {
+func (m *MnemonicStatement) statementNode()       {}
+func (m *MnemonicStatement) TokenLiteral() string { return m.Token.Literal }
+func (m *MnemonicStatement) String() string {
 	name := "nil"
-	if isNotNil(s) && isNotNil(s.Name) {
-		name = s.Name.String()
+	if isNotNil(m) && isNotNil(m.Name) {
+		name = m.Name.String()
 	}
 	return "{ " + token.OPCODE + ":" + name + " }"
 }
-func (s *MnemonicStatement) SetNextNode(stmt Statement) { s.NextNode = stmt }
-func (s *MnemonicStatement) SetPrevNode(stmt Statement) { s.PrevNode = stmt }
-func (s *MnemonicStatement) GetNextNode() Statement     { return s.NextNode }
-func (s *MnemonicStatement) GetPrevNode() Statement     { return s.PrevNode }
+func (m *MnemonicStatement) SetNextNode(stmt Statement) { m.NextNode = stmt }
+func (m *MnemonicStatement) SetPrevNode(stmt Statement) { m.PrevNode = stmt }
+func (m *MnemonicStatement) GetNextNode() Statement     { return m.NextNode }
+func (m *MnemonicStatement) GetPrevNode() Statement     { return m.PrevNode }
+func (m *MnemonicStatement) HasOperator() bool {
+	result := false
+	for _, tok := range m.Name.Tokens {
+		if tok.IsOperator() {
+			result = true
+			break
+		}
+	}
+	return result
+}
+func (m *MnemonicStatement) PreEval() *MnemonicStatement {
+
+
+	var start int = -1
+	var end int = -1
+
+	for idx, tok := range m.Name.Tokens {
+		if tok.IsOperator() {
+			if start == -1 {
+				start = idx -1
+			}
+			end = idx + 1
+		}
+	}
+
+
+	evalStr := ""
+	for i := start; i <= end; i++ {
+		if m.Name.Tokens[i].Type == token.REGISTER ||
+			m.Name.Tokens[i].Type == token.DOLLAR {
+			return nil
+		}
+		if m.Name.Tokens[i].Type == token.HEX_LIT {
+			hexLit := m.Name.Tokens[i].Literal
+			u64v, _ := strconv.ParseUint(hexLit[2:], 16, 64)
+			evalStr += fmt.Sprintf("%d", u64v)
+		} else {
+			evalStr += m.Name.Tokens[i].Literal
+		}
+	}
+	fmt.Println("---")
+	fmt.Printf("IN: %s\n", m.Name.Tokens)
+
+	fmt.Println(evalStr)
+	result := gostr.Evaluate(evalStr, nil)
+
+	// new token array
+	newTokens := []token.Token{}
+	newValues := []string{}
+
+	for i := 0; i < start; i++ {
+		newTokens = append(newTokens, m.Name.Tokens[i])
+		newValues = append(newValues, m.Name.Values[i])
+	}
+	newTokens = append(newTokens, token.Token{Type: token.INT, Literal: fmt.Sprintf("%s", result)})
+	newValues = append(newValues, fmt.Sprintf("%s", result))
+
+	m.Name.Tokens = newTokens
+	fmt.Printf("OUT: %s\n", m.Name.Tokens)
+	fmt.Println("---")
+
+	return nil
+}
 
 // SettingStatement は `[FORMAT "WCOFF"]` のような構文を解析する
 type SettingStatement struct {

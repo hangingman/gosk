@@ -11,6 +11,13 @@ type Token struct {
 	Literal string
 }
 
+func (tok *Token) IsOperator() bool {
+	return tok.Type == PLUS ||
+		tok.Type == MINUS ||
+		tok.Type == SLASH ||
+		tok.Type == ASTERISK
+}
+
 const (
 	ILLEGAL      = "ILLEGAL"
 	EOF          = "EOF"
