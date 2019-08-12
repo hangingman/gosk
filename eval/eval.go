@@ -83,6 +83,7 @@ func init() {
 	opcodeEvalFns["MOV"] = evalMOVStatement
 	opcodeEvalFns["NOP"] = evalSingleByteOpcode("NOP", 0x90)
 	opcodeEvalFns["ORG"] = evalORGStatement
+	opcodeEvalFns["OUT"] = evalOUTStatement
 	opcodeEvalFns["OUTSB"] = evalSingleByteOpcode("OUTSB", 0x6e)
 	opcodeEvalFns["OUTSD"] = evalSingleByteOpcode("OUTSD", 0x6f)
 	opcodeEvalFns["OUTSW"] = evalSingleByteOpcode("OUTSW", 0x6f)

@@ -79,6 +79,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("MOV", p.parseMOVStatement)
 	p.registerOpecode("NOP", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("ORG", p.parseORGStatement)
+	p.registerOpecode("OUT", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("OUTSB", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("OUTSD", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("OUTSW", p.parseOnlyOpcodeStatement)
