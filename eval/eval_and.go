@@ -31,6 +31,7 @@ func evalANDStatement(stmt *ast.MnemonicStatement) object.Object {
 		// AND EAX, imm32
 		log.Println(fmt.Sprintf("info: AND  %s imm32 (%s)", toks[1], toks[2]))
 		bin = []byte{} // 0x25 id
+		bin = append(bin, 0x66)
 		bin = append(bin, 0x25)
 		bin = append(bin, imm32ToDword(toks[2])...)
 	}
