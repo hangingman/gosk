@@ -71,6 +71,7 @@ func init() {
 	opcodeEvalFns["JNC"] = evalJumpStatement(0x73)
 	opcodeEvalFns["FWAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
 	opcodeEvalFns["HLT"] = evalSingleByteOpcode("HLT", 0xf4)
+	opcodeEvalFns["IMUL"] = evalIMULStatement
 	opcodeEvalFns["INCO"] = evalSingleByteOpcode("INCO", 0xce)
 	opcodeEvalFns["INSB"] = evalSingleByteOpcode("INSB", 0x6c)
 	opcodeEvalFns["INSD"] = evalSingleByteOpcode("INSD", 0x6d)
