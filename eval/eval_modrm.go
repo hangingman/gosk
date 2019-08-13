@@ -114,7 +114,7 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte 
 // @param dstReg   宛先のレジスタ
 // @param regField '/0', '/1' ... '/7' までの文字列
 func generateModRMSlashN(opcode byte, m Mod, dstReg string, regField string) byte {
-	log.Println(fmt.Sprintf("debug: ModR/M %s opcode=%x type=%s dst=%s", regField, opcode, m, dstReg))
+	log.Println(fmt.Sprintf("info: ModR/M %s opcode=%x type=%s dst=%s", regField, opcode, m, dstReg))
 	//
 	// Generate ModR/M byte with arguments
 	// [mod] 2bit
@@ -126,6 +126,6 @@ func generateModRMSlashN(opcode byte, m Mod, dstReg string, regField string) byt
 	modrm += getRMFromReg(dstReg)   // [r/m]
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
-	log.Println(fmt.Sprintf("debug: ModR/M => %s(%x)", modrm, i))
+	log.Println(fmt.Sprintf("info: ModR/M => %s(%x)", modrm, i))
 	return byte(i)
 }
