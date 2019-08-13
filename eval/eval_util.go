@@ -7,6 +7,7 @@ import (
 	"log"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 func IsNil(x interface{}) bool {
@@ -89,7 +90,9 @@ func imm16ToWord(tok token.Token) []byte {
 
 func imm32ToDword(tok token.Token) []byte {
 	if tok.Type == token.HEX_LIT {
-		bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
+		tmp := fmt.Sprintf("%8v", tok.Literal[2:])
+		hexStr := strings.Replace(tmp, " ", "0", -1)
+		bs, _ := hex.DecodeString(string([]rune(hexStr))[:])
 		// リトルエンディアンで格納する
 		bs[0], bs[1], bs[2], bs[3] = bs[3], bs[2], bs[1], bs[0]
 		return bs[0:4]
