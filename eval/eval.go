@@ -62,13 +62,14 @@ func init() {
 	opcodeEvalFns["DB"] = evalDBStatement
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["DW"] = evalDWStatement
-	opcodeEvalFns["JAE"] = evalJumpStatement(0x73)
-	opcodeEvalFns["JB"] = evalJumpStatement(0x72)
-	opcodeEvalFns["JBE"] = evalJumpStatement(0x76)
-	opcodeEvalFns["JC"] = evalJumpStatement(0x72)
-	opcodeEvalFns["JE"] = evalJumpStatement(0x74)
-	opcodeEvalFns["JMP"] = evalJumpStatement(0xeb)
-	opcodeEvalFns["JNC"] = evalJumpStatement(0x73)
+	opcodeEvalFns["JAE"] = evalJumpStatement([]byte{0x73})
+	opcodeEvalFns["JB"] = evalJumpStatement([]byte{0x72})
+	opcodeEvalFns["JBE"] = evalJumpStatement([]byte{0x76})
+	opcodeEvalFns["JC"] = evalJumpStatement([]byte{0x72})
+	opcodeEvalFns["JE"] = evalJumpStatement([]byte{0x74})
+	opcodeEvalFns["JMP"] = evalJumpStatement([]byte{0xeb})
+	opcodeEvalFns["JNC"] = evalJumpStatement([]byte{0x73})
+	opcodeEvalFns["JZ"] = evalJumpStatement([]byte{0x74})
 	opcodeEvalFns["FWAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
 	opcodeEvalFns["HLT"] = evalSingleByteOpcode("HLT", 0xf4)
 	opcodeEvalFns["IMUL"] = evalIMULStatement
@@ -400,7 +401,7 @@ func evalCallStatement(stmt *ast.MnemonicStatement) object.Object {
 	return stmt.Bin
 }
 
-func evalJumpStatement(b byte) func(stmt *ast.MnemonicStatement) object.Object {
+func evalJumpStatement(b []byte) func(stmt *ast.MnemonicStatement) object.Object {
 	return func(stmt *ast.MnemonicStatement) object.Object {
 		stmt.Bin = &object.Binary{Value: []byte{}}
 
@@ -410,18 +411,18 @@ func evalJumpStatement(b byte) func(stmt *ast.MnemonicStatement) object.Object {
 					// ラベルが見つかっていればバイト数を計算して設定する
 					log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
 					log.Println(fmt.Sprintf("info: %d - %d - 2 = %d", from, curByteSize, from-curByteSize-2))
-					stmt.Bin.Value = append(stmt.Bin.Value, b)
+					stmt.Bin.Value = append(stmt.Bin.Value, b...)
 					stmt.Bin.Value = append(stmt.Bin.Value, int2Byte(from-curByteSize-2)...)
 				} else {
 					// ラベルが見つかっていないならば
 					// callbackを配置し今のバイト数を設定する
 					log.Println(fmt.Sprintf("info: no label %s", tok.Literal))
-					stmt.Bin.Value = append(stmt.Bin.Value, b)
+					stmt.Bin.Value = append(stmt.Bin.Value, b...)
 					stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
 
 					labelManage.AddLabelCallback(
 						// JMP自体のバイト数を含まないので +2 しておく
-						[]byte{b}, tok.Literal, stmt.Bin, curByteSize+2, int2Byte,
+						b, tok.Literal, stmt.Bin, curByteSize+2, int2Byte,
 					)
 				}
 			} else if tok.Type == token.HEX_LIT {
