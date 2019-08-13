@@ -91,7 +91,8 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
 
 		//
-		// (3) MOV rX, m8~m32
+		// (3) MOV rX, [m8~m32]
+		//     MOV rX, [m8~m32+disp]
 		//     MOV rX, BYTE []
 		//     MOV rX, WORD []
 		//     MOV rX, DWORD []
@@ -117,6 +118,16 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, 0x8b)
 		bin.Value = append(bin.Value, generateModRMSlashN(0x8b, RegReg, disp, "/0"))
+	case IsR32(toks[1]) && toks[2].Type == token.LBRACKET && toks[4].IsOperator():
+		// MOV r32 , [imm32 + int]
+		log.Println(fmt.Sprintf("info: MOV r32 (%s), disp32 (%s) + %s", toks[1], toks[3], toks[5]))
+		disp := "[" + toks[3].Literal + "+" + toks[5].Literal + "]"
+		// 0x8b
+		bin.Value = append(bin.Value, 0x67)
+		bin.Value = append(bin.Value, 0x66)
+		bin.Value = append(bin.Value, 0x8b)
+		bin.Value = append(bin.Value, generateModRMSlashN(0x8b, RegDisp8, disp, "/0"))
+		bin.Value = append(bin.Value, imm8ToByte(toks[5])...)
 
 	case IsR8(toks[1]) && toks[2].Literal == "BYTE" && toks[3].Type == token.LBRACKET && toks[5].Type == token.RBRACKET:
 		// MOV r8 , imm8 で immが参照（ex: [SI]）、データ型指定
