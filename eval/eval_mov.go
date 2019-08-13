@@ -121,6 +121,8 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV r8 (%s), imm8(label) (%s)", toks[1], toks[2]))
 		// 0xB0+rb
 		opcode := plusRb(0xb0, toks[1].Literal)
+		bin.Value = append(bin.Value, opcode) // ダミーデータ
+		bin.Value = append(bin.Value, 0x00)   // ダミーデータ
 		labelManage.AddLabelCallback(
 			[]byte{opcode},
 			toks[2].Literal,
@@ -134,6 +136,9 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV r16 (%s), imm16(label) (%s)", toks[1], toks[2]))
 		// 0xB8+rw
 		opcode := plusRw(0xb8, toks[1].Literal)
+		bin.Value = append(bin.Value, opcode) // ダミーデータ
+		bin.Value = append(bin.Value, 0x00)   // ダミーデータ
+		bin.Value = append(bin.Value, 0x00)   // ダミーデータ
 		labelManage.AddLabelCallback(
 			[]byte{opcode},
 			toks[2].Literal,
@@ -147,6 +152,12 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV r32 (%s), imm32(label) (%s)", toks[1], toks[2]))
 		// 0xB8+rd
 		opcode := plusRd(0xb8, toks[1].Literal)
+		bin.Value = append(bin.Value, 0x66)    // ダミーデータ
+		bin.Value = append(bin.Value, opcode)  //
+		bin.Value = append(bin.Value, 0x00)    //
+		bin.Value = append(bin.Value, 0x00)    //
+		bin.Value = append(bin.Value, 0x00)    //
+		bin.Value = append(bin.Value, 0x00)    //
 		labelManage.AddLabelCallback(
 			[]byte{0x66, opcode},
 			toks[2].Literal,
