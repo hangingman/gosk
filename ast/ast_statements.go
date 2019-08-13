@@ -1,13 +1,13 @@
 package ast
 
 import (
+	"fmt"
+	"github.com/comail/colog"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
-	"fmt"
-	"strconv"
-	"github.com/comail/colog"
-	"log"
 	"github.com/pk-rawat/gostr/src"
+	"log"
+	"strconv"
 )
 
 func init() {
@@ -52,14 +52,13 @@ func (m *MnemonicStatement) HasOperator() bool {
 }
 func (m *MnemonicStatement) PreEval() *MnemonicStatement {
 
-
 	var start int = -1
 	var end int = -1
 
 	for idx, tok := range m.Name.Tokens {
 		if tok.IsOperator() {
 			if start == -1 {
-				start = idx -1
+				start = idx - 1
 			}
 			end = idx + 1
 		}

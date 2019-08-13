@@ -107,6 +107,7 @@ func init() {
 	opcodeEvalFns["STC"] = evalSingleByteOpcode("STC", 0xf9)
 	opcodeEvalFns["STD"] = evalSingleByteOpcode("STD", 0xfd)
 	opcodeEvalFns["STI"] = evalSingleByteOpcode("STI", 0xfb)
+	opcodeEvalFns["SUB"] = evalSUBStatement
 	opcodeEvalFns["UD2"] = evalSingleWordOpcode("UD2", []byte{0x0f, 0x0b})
 	opcodeEvalFns["WAIT"] = evalSingleByteOpcode("WAIT", 0x9b)
 	opcodeEvalFns["RDMSR"] = evalSingleWordOpcode("RDMSR", []byte{0x0f, 0x32})

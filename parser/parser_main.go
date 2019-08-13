@@ -102,6 +102,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("RSM", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("STD", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("STI", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("SUB", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("UD2", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("WAIT", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("RDPMC", p.parseRESBStatement)

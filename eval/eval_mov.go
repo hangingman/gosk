@@ -164,12 +164,12 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV r32 (%s), imm32(label) (%s)", toks[1], toks[2]))
 		// 0xB8+rd
 		opcode := plusRd(0xb8, toks[1].Literal)
-		bin.Value = append(bin.Value, 0x66)    // ダミーデータ
-		bin.Value = append(bin.Value, opcode)  //
-		bin.Value = append(bin.Value, 0x00)    //
-		bin.Value = append(bin.Value, 0x00)    //
-		bin.Value = append(bin.Value, 0x00)    //
-		bin.Value = append(bin.Value, 0x00)    //
+		bin.Value = append(bin.Value, 0x66)   // ダミーデータ
+		bin.Value = append(bin.Value, opcode) //
+		bin.Value = append(bin.Value, 0x00)   //
+		bin.Value = append(bin.Value, 0x00)   //
+		bin.Value = append(bin.Value, 0x00)   //
+		bin.Value = append(bin.Value, 0x00)   //
 		labelManage.AddLabelCallback(
 			[]byte{0x66, opcode},
 			toks[2].Literal,
