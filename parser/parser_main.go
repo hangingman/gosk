@@ -100,6 +100,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("RET", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("RETF", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("RSM", p.parseOnlyOpcodeStatement)
+	p.registerOpecode("SHR", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("STD", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("STI", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("SUB", p.parseGeneralOpcodeStatement)

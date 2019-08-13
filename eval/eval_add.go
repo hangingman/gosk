@@ -51,6 +51,7 @@ func evalADDStatement(stmt *ast.MnemonicStatement) object.Object {
 		// ADD r/m32, imm8
 		log.Println(fmt.Sprintf("info: ADD r/m32 (%s), imm8 (%s)", toks[1], toks[2]))
 		bin = []byte{} // 0x83 /0 ib
+		bin = append(bin, 0x66)
 		bin = append(bin, 0x83)
 		bin = append(bin, generateModRMSlashN(0x83, Reg, toks[1].Literal, "/0"))
 		bin = append(bin, imm8ToByte(toks[2])...)
@@ -65,6 +66,7 @@ func evalADDStatement(stmt *ast.MnemonicStatement) object.Object {
 		// ADD r/m32, imm32
 		log.Println(fmt.Sprintf("info: ADD r/m32 (%s), imm32 (%s)", toks[1], toks[2]))
 		bin = []byte{} // 0x81 /0 id
+		bin = append(bin, 0x66)
 		bin = append(bin, 0x81)
 		bin = append(bin, generateModRMSlashN(0x81, Reg, toks[1].Literal, "/0"))
 		bin = append(bin, imm32ToDword(toks[2])...)

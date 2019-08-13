@@ -104,6 +104,7 @@ func init() {
 	opcodeEvalFns["RETF"] = evalSingleByteOpcode("RETF", 0xcb)
 	opcodeEvalFns["RSM"] = evalSingleWordOpcode("RSM", []byte{0x0f, 0xaa})
 	opcodeEvalFns["SAHF"] = evalSingleByteOpcode("SAHF", 0x9e)
+	opcodeEvalFns["SHR"] = evalSHRStatement
 	opcodeEvalFns["STC"] = evalSingleByteOpcode("STC", 0xf9)
 	opcodeEvalFns["STD"] = evalSingleByteOpcode("STD", 0xfd)
 	opcodeEvalFns["STI"] = evalSingleByteOpcode("STI", 0xfb)
