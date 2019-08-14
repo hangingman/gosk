@@ -40,6 +40,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("AAA", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("AAS", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("ADD", p.parseGeneralOpcodeStatement)
+	p.registerOpecode("ALIGNB", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("AND", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("CALL", p.parseJMPStatement)
 	p.registerOpecode("CBW", p.parseOnlyOpcodeStatement)

@@ -44,6 +44,7 @@ func init() {
 	opcodeEvalFns["AAA"] = evalSingleByteOpcode("AAA", 0x37)
 	opcodeEvalFns["AAS"] = evalSingleByteOpcode("AAS", 0x3f)
 	opcodeEvalFns["ADD"] = evalADDStatement
+	opcodeEvalFns["ALIGNB"] = evalALIGNBStatement
 	opcodeEvalFns["AND"] = evalANDStatement
 	opcodeEvalFns["CALL"] = evalCallStatement
 	opcodeEvalFns["CBW"] = evalSingleByteOpcode("CBW", 0x98)
@@ -323,6 +324,27 @@ func evalRESBStatement(stmt *ast.MnemonicStatement) object.Object {
 				}
 				break
 			}
+		}
+		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
+	}
+
+	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
+	stmt.Bin = &object.Binary{Value: bytes}
+	return stmt.Bin
+}
+
+func evalALIGNBStatement(stmt *ast.MnemonicStatement) object.Object {
+	toks := []string{}
+	bytes := []byte{}
+
+	for _, tok := range stmt.Name.Tokens {
+		if tok.Type == token.INT {
+			unit, _ := strconv.Atoi(tok.Literal)
+			nearestSize := curByteSize / unit + 1
+			times := nearestSize * unit - curByteSize
+			bs := makeZeroFilledBytes(times)
+			bytes = append(bytes, bs...)
+			log.Println(fmt.Sprintf("info: ALIGNB stores 0x00 %d times", times))
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
