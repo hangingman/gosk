@@ -15,6 +15,21 @@ func evalSUBStatement(stmt *ast.MnemonicStatement) object.Object {
 
 	switch {
 
+	case IsR16(toks[1]) && IsImm8(toks[2]):
+		// SUB r/m16, imm8
+		log.Println(fmt.Sprintf("info: SUB r/m16 (%s), imm8 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x83 /5 ib
+		bin = append(bin, 0x83)
+		bin = append(bin, generateModRMSlashN(0x83, Reg, toks[1].Literal, "/5"))
+		bin = append(bin, imm8ToByte(toks[2])...)
+	case IsR32(toks[1]) && IsImm8(toks[2]):
+		// SUB r/m32, imm8
+		log.Println(fmt.Sprintf("info: SUB r/m32 (%s), imm8 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x83 /5 ib
+		bin = append(bin, 0x66)
+		bin = append(bin, 0x83)
+		bin = append(bin, generateModRMSlashN(0x83, Reg, toks[1].Literal, "/5"))
+		bin = append(bin, imm8ToByte(toks[2])...)
 	case IsR8(toks[1]) && IsImm8(toks[2]):
 		// SUB r/m8 , imm8
 		log.Println(fmt.Sprintf("info: SUB r/m8 (%s), imm8 (%s)", toks[1], toks[2]))
@@ -37,21 +52,6 @@ func evalSUBStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = append(bin, 0x81)
 		bin = append(bin, generateModRMSlashN(0x81, Reg, toks[1].Literal, "/5"))
 		bin = append(bin, imm32ToDword(toks[2])...)
-	case IsR16(toks[1]) && IsImm8(toks[2]):
-		// SUB r/m16, imm8
-		log.Println(fmt.Sprintf("info: SUB r/m16 (%s), imm8 (%s)", toks[1], toks[2]))
-		bin = []byte{} // 0x83 /5 ib
-		bin = append(bin, 0x83)
-		bin = append(bin, generateModRMSlashN(0x83, Reg, toks[1].Literal, "/5"))
-		bin = append(bin, imm8ToByte(toks[2])...)
-	case IsR32(toks[1]) && IsImm8(toks[2]):
-		// SUB r/m32, imm8
-		log.Println(fmt.Sprintf("info: SUB r/m32 (%s), imm8 (%s)", toks[1], toks[2]))
-		bin = []byte{} // 0x83 /5 ib
-		bin = append(bin, 0x66)
-		bin = append(bin, 0x83)
-		bin = append(bin, generateModRMSlashN(0x83, Reg, toks[1].Literal, "/5"))
-		bin = append(bin, imm8ToByte(toks[2])...)
 	}
 
 	tokStrArray := []string{}
