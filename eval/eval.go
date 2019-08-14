@@ -405,7 +405,7 @@ func evalJumpStatement(b []byte) func(stmt *ast.MnemonicStatement) object.Object
 	return func(stmt *ast.MnemonicStatement) object.Object {
 		stmt.Bin = &object.Binary{Value: []byte{}}
 
-		for _, tok := range stmt.Name.Tokens {
+		for idx, tok := range stmt.Name.Tokens {
 			if tok.Type == token.IDENT {
 				if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
 					// ラベルが見つかっていればバイト数を計算して設定する
@@ -431,6 +431,20 @@ func evalJumpStatement(b []byte) func(stmt *ast.MnemonicStatement) object.Object
 				u64v, _ := strconv.ParseUint(tok.Literal[2:], 16, 64)
 				stmt.Bin.Value = append(stmt.Bin.Value, 0xe9)
 				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(int(u64v)-dollarPosition-curByteSize-3)...)
+			} else if tok.Type == token.DATA_TYPE {
+				// JMP DWORD 2*8:0x0000001b
+				// のようにジャンプさせたい時用
+				// 0xEA cd => JMP ptr16:16
+				// 0xEA cp => JMP ptr16:32
+				// 0xFF /5 => JMP m16:16
+				// 0xFF /5 => JMP m16:32
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x66)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0xea)
+				addr := stmt.Name.Tokens[idx+3]
+				m16 := stmt.Name.Tokens[idx+1]
+				stmt.Bin.Value = append(stmt.Bin.Value, imm32ToDword(addr)...)
+				stmt.Bin.Value = append(stmt.Bin.Value, imm16ToWord(m16)...)
+				break
 			}
 			log.Println(fmt.Sprintf("info: %s", tok))
 		}

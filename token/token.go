@@ -53,6 +53,7 @@ const (
 	REGISTER     = "REGISTER"
 	SEG_REGISTER = "SEG_REGISTER"
 	CTL_REGISTER = "CTL_REGISTER"
+	DATA_TYPE    = "DATA_TYPE"
 )
 
 func LookupIdent(ident string) TokenType {
@@ -102,6 +103,9 @@ var keywords = map[string]TokenType{
 	"CR2": CTL_REGISTER,
 	"CR3": CTL_REGISTER,
 	"CR4": CTL_REGISTER,
+	"BYTE": DATA_TYPE,
+	"WORD": DATA_TYPE,
+	"DWORD": DATA_TYPE,
 	// naskで用意されている設定用命令
 	"BITS":     SETTING,
 	"INSTRSET": SETTING,
