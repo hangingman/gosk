@@ -29,6 +29,7 @@ var (
 		opcode:            map[string][]byte{},
 		labelBinaryRefMap: map[string]*object.Binary{},
 		labelBytesMap:     map[string]int{},
+		labelFromMap:      map[string][]int{},
 		genBytesFns:       map[string]func(i int) []byte{},
 	}
 )
@@ -410,9 +411,9 @@ func evalCallStatement(stmt *ast.MnemonicStatement) object.Object {
 			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
 				// ラベルが見つかっていればバイト数を計算して設定する
 				log.Println(fmt.Sprintf("info: already has label %s", tok.Literal))
-				log.Println(fmt.Sprintf("info: %d - %d - 2 = %d", from, curByteSize, from-curByteSize-2))
+				log.Println(fmt.Sprintf("info: %d - %d - 3 = %d", from, curByteSize, from-curByteSize-3))
 				stmt.Bin.Value = append(stmt.Bin.Value, 0xe8)
-				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(from-curByteSize-2)...)
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(from-curByteSize-3)...)
 			} else {
 				// ラベルが見つかっていないならば
 				// callbackを配置し今のバイト数を設定する
@@ -422,8 +423,8 @@ func evalCallStatement(stmt *ast.MnemonicStatement) object.Object {
 				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
 
 				labelManage.AddLabelCallback(
-					// CALL自体のバイト数を含まないので +2 しておく
-					[]byte{0xe8}, tok.Literal, stmt.Bin, curByteSize+2, int2Word,
+					// CALL自体のバイト数を含まないので +3 しておく
+					[]byte{0xe8}, tok.Literal, stmt.Bin, curByteSize+3, int2Word,
 				)
 			}
 		}

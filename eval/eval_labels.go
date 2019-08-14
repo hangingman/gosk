@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"encoding/hex"
 	"fmt"
 	"github.com/hangingman/gosk/object"
 	"log"
@@ -9,8 +8,9 @@ import (
 
 type LabelManagement struct {
 	labelBinaryRefMap map[string]*object.Binary // バイナリへの参照を記録し、後で更新する
-	labelBytesMap     map[string]int
-	opcode            map[string][]byte
+	labelBytesMap     map[string]int            // ラベルが見つかったバイト数を格納する
+	labelFromMap      map[string][]int          // ラベルとラベルが見つかったバイト数をリスト化
+	opcode            map[string][]byte             // 格納するべきオペコード
 	genBytesFns       map[string]func(i int) []byte // 取得した値をどうやってバイト列に戻すか
 }
 
@@ -27,10 +27,14 @@ func (l *LabelManagement) AddLabelCallback(
 	howToGenBytes func(i int) []byte) {
 
 	log.Println(fmt.Sprintf("info: add label %s from %d !!", ident, from))
-	l.opcode[ident] = opcode
-	l.labelBinaryRefMap[ident] = bin
-	l.labelBytesMap[ident] = from
-	l.genBytesFns[ident] = howToGenBytes
+
+	// ラベルとラベルが見つかったバイト数をキーにする
+	key := fmt.Sprintf("%s-%d", ident, from)
+	l.opcode[key] = opcode
+	l.labelBinaryRefMap[key] = bin
+	l.labelBytesMap[key] = from
+	l.labelFromMap[ident] = append(l.labelFromMap[ident], from)
+	l.genBytesFns[key] = howToGenBytes
 }
 
 func (l *LabelManagement) RemoveLabelCallback(ident string) {
@@ -42,18 +46,24 @@ func (l *LabelManagement) RemoveLabelCallback(ident string) {
 // @param ident 使用されるラベル
 // @param from ラベルのあった位置
 func (l *LabelManagement) Emit(ident string, to int) {
-	opcode, opcodeOk := l.opcode[ident]
-	bin, binOk := l.labelBinaryRefMap[ident]
-	from, fromOk := l.labelBytesMap[ident]
+	froms, fromOk := l.labelFromMap[ident]
 
-	if opcodeOk && binOk && fromOk {
+	if !fromOk {
+		return
+	}
+
+	for _, from := range froms {
 		log.Println(fmt.Sprintf("info: from=%d, to=%d", from, to))
 		log.Println(fmt.Sprintf("info: emit label %s to %d !!", ident, to-from))
-		log.Println(fmt.Sprintf("info: hex style => %s", hex.EncodeToString(int2Byte(to-from))))
+		key := fmt.Sprintf("%s-%d", ident, from)
+		opcode, opcodeOk := l.opcode[key]
+		bin, binOk := l.labelBinaryRefMap[key]
 
-		bin.Value = nil
-		binToAppend := l.genBytesFns[ident](to - from)
-		bin.Value = append(bin.Value, opcode...)
-		bin.Value = append(bin.Value, binToAppend...)
+		if opcodeOk && binOk {
+			bin.Value = nil
+			binToAppend := l.genBytesFns[key](to - from)
+			bin.Value = append(bin.Value, opcode...)
+			bin.Value = append(bin.Value, binToAppend...)
+		}
 	}
 }
