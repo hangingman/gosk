@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"encoding/hex"
 	"fmt"
 	"github.com/comail/colog"
 	"github.com/hangingman/gosk/ast"
@@ -144,9 +143,18 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Obj
 
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.HEX_LIT {
-			// 0xを取り除いて処理
-			bs, _ := hex.DecodeString(string([]rune(tok.Literal)[2:]))
-			bytes = append(bytes, bs...)
+
+			switch {
+			case IsImm8(tok):
+				bytes = append(bytes, imm8ToByte(tok)...)
+			case IsImm16(tok):
+				bytes = append(bytes, imm16ToWord(tok)...)
+			case IsImm32(tok):
+				bytes = append(bytes, imm32ToDword(tok)...)
+			default:
+				// do nothing
+			}
+
 		} else if tok.Type == token.STR_LIT {
 			// "を取り除いて処理
 			strLength := len(tok.Literal)
