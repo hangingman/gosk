@@ -63,7 +63,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("JBE", p.parseJMPStatement)
 	p.registerOpecode("JC", p.parseJMPStatement)
 	p.registerOpecode("JE", p.parseJMPStatement)
-	p.registerOpecode("JMP", p.parseJMPStatement)
+	p.registerOpecode("JMP", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("JNC", p.parseJMPStatement)
 	p.registerOpecode("JZ", p.parseJMPStatement)
 	p.registerOpecode("FWAIT", p.parseOnlyOpcodeStatement)

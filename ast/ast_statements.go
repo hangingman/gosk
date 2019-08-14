@@ -91,8 +91,13 @@ func (m *MnemonicStatement) PreEval() *MnemonicStatement {
 	}
 	newTokens = append(newTokens, token.Token{Type: token.INT, Literal: fmt.Sprintf("%s", result)})
 	newValues = append(newValues, fmt.Sprintf("%s", result))
+	for i := end + 1; i < len(m.Name.Tokens); i++ {
+		newTokens = append(newTokens, m.Name.Tokens[i])
+		newValues = append(newValues, m.Name.Values[i])
+	}
 
 	m.Name.Tokens = newTokens
+	m.Name.Values = newValues
 	log.Printf("info: expr %s\n", m.Name.Tokens)
 
 	return nil
