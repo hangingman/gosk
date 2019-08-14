@@ -69,6 +69,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerOpecode("FWAIT", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("HLT", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("IMUL", p.parseGeneralOpcodeStatement)
+	p.registerOpecode("IN", p.parseGeneralOpcodeStatement)
 	p.registerOpecode("INCO", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("INSB", p.parseOnlyOpcodeStatement)
 	p.registerOpecode("INSD", p.parseOnlyOpcodeStatement)
