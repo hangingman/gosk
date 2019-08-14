@@ -70,6 +70,25 @@ func evalADDStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = append(bin, 0x81)
 		bin = append(bin, generateModRMSlashN(0x81, Reg, toks[1].Literal, "/0"))
 		bin = append(bin, imm32ToDword(toks[2])...)
+	case IsR8(toks[1]) && IsR8(toks[2]):
+		// ADD r/m8 , r8
+		log.Println(fmt.Sprintf("info: ADD r/m8 (%s), r8 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x00 /r
+		bin = append(bin, 0x00)
+		bin = append(bin, generateModRMSlashR(0x80, Reg, toks[1].Literal, toks[2].Literal))
+	case IsR16(toks[1]) && IsR16(toks[2]):
+		// ADD r/m16, r16
+		log.Println(fmt.Sprintf("info: ADD r/m16 (%s), r16 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x01 /r
+		bin = append(bin, 0x01)
+		bin = append(bin, generateModRMSlashR(0x83, Reg, toks[1].Literal, toks[2].Literal))
+	case IsR32(toks[1]) && IsR32(toks[2]):
+		// ADD r/m32, r32
+		log.Println(fmt.Sprintf("info: ADD r/m32 (%s), r32 (%s)", toks[1], toks[2]))
+		bin = []byte{} // 0x01 /r
+		bin = append(bin, 0x66)
+		bin = append(bin, 0x01)
+		bin = append(bin, generateModRMSlashR(0x83, Reg, toks[1].Literal, toks[2].Literal))
 	}
 
 	tokStrArray := []string{}
