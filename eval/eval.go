@@ -345,14 +345,14 @@ func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
 			modrm := generateModRMSlashN(0x0f, RegReg, "[" + tok.Literal + "]", "/2")
 			stmt.Bin.Value = append(stmt.Bin.Value, modrm)
 
-			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
-				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(from-curByteSize-2)...)
+			if _, ok := labelManage.labelBytesMap[tok.Literal]; ok {
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(dollarPosition)...)
 			} else {
 				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
 				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
 				labelManage.AddLabelCallback(
 					// CALL自体のバイト数を含まないので +2 しておく
-					[]byte{0x0f, 0x01, modrm}, tok.Literal, stmt.Bin, curByteSize+2, int2Word,
+					[]byte{0x0f, 0x01, modrm}, tok.Literal, stmt.Bin, -dollarPosition, int2Word,
 				)
 			}
 		}
