@@ -32,6 +32,8 @@ var (
 		labelFromMap:      map[string][]int{},
 		genBytesFns:       map[string]func(i int) []byte{},
 	}
+	globalSymbolList = []string{}
+	externSymbolList = []string{}
 )
 
 func init() {
@@ -63,6 +65,7 @@ func init() {
 	opcodeEvalFns["DB"] = evalDBStatement
 	opcodeEvalFns["DD"] = evalDDStatement
 	opcodeEvalFns["DW"] = evalDWStatement
+	opcodeEvalFns["GLOBAL"] = evalGLOBALStatement
 	opcodeEvalFns["JAE"] = evalJumpStatement([]byte{0x73})
 	opcodeEvalFns["JB"] = evalJumpStatement([]byte{0x72})
 	opcodeEvalFns["JBE"] = evalJumpStatement([]byte{0x76})

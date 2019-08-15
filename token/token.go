@@ -66,7 +66,7 @@ func LookupIdent(ident string) TokenType {
 var keywords = map[string]TokenType{
 	// naskの予約語
 	"EQU":    EQU,
-	"GLOBAL": GLOBAL,
+	"GLOBAL": OPCODE,
 	// naskがサポートするレジスタ
 	"AL":    REGISTER,
 	"BL":    REGISTER,

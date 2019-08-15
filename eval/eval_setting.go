@@ -7,6 +7,7 @@ import (
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/object"
 	"log"
+	"unsafe"
 )
 
 type PIMAGE_FILE_HEADER struct {
@@ -134,8 +135,8 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 		evalFormat(bin, val)
 	case tok == "BITS":
 		evalBits(bin, val)
-	case tok == "FILE":
-		evalFile(bin, val)
+	// case tok == "FILE":
+	// 	evalFile(bin, val)
 	}
 
 	stmt.Bin = bin
@@ -143,5 +144,24 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 }
 
 func evalSectionTable() object.Object {
+	bin := &object.Binary{Value: []byte{}}
 
+	// セクションデータのサイズが確定(SizeOfRawData)
+	var offset int = curByteSize;
+	var sizeOfRawData int = offset - (unsafe.Sizeof(PIMAGE_FILE_HEADER) + unsafe.Sizeof(PIMAGE_SECTION_HEADER) * 3)
+
+	// offset + realoc * EXTERN symbols
+	// var pointerToSymbolTable int = offset + unsafe.Sizeof(COFF_RELOCATION) * len(ExternSymbolList)
+	// log.Println(fmt.Sprintf("COFF file header's PointerToSymbolTable: 0x{:02x}", pointerToSymbolTable))
+	// bin.Value = append(bin.Value, imm32ToDword(pointerToSymbolTable)...)
+
+
+	// log.Println(fmt.Sprintf("section table '.text' PointerToSymbolTable: 0x{:02x}", offset + 4))
+	//   set_dword_into_binout(offset, binout_container, false, unsafe.Sizeof(PIMAGE_FILE_HEADER) + 24);
+	// log.Println(fmt.Sprintf("section table '.text' SizeOfRawData: 0x{:02x}", offset))
+	//   set_dword_into_binout(size_of_raw_data, binout_container, false, unsafe.Sizeof(PIMAGE_FILE_HEADER) + 16);
+	// log.Println(fmt.Sprintf("section table '.text' NumberOfRelocations: 0x{:02x}", ExternSymbolList.size()))
+	//   set_word_into_binout(ExternSymbolList.size(), binout_container, false, unsafe.Sizeof(PIMAGE_FILE_HEADER) + 32);
+
+	return bin
 }
