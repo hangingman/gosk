@@ -236,7 +236,6 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, 0x0f)
 		bin.Value = append(bin.Value, 0x22)
 		bin.Value = append(bin.Value, generateModRMSlashR(0x0f, Reg, toks[1].Literal, toks[2].Literal))
-
 	case IsR32(toks[1]) && IsCtl(toks[2]):
 		// MOV r32, CR0
 		log.Println(fmt.Sprintf("info: MOV R32(%s), CR0(%s)", toks[1], toks[2]))

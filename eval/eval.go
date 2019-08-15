@@ -390,9 +390,19 @@ func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.IDENT {
 			stmt.Bin.Value = append(stmt.Bin.Value, 0x0f)
 			stmt.Bin.Value = append(stmt.Bin.Value, 0x01)
-			stmt.Bin.Value = append(stmt.Bin.Value, generateModRMSlashN(0x0f, RegReg, "[" + tok.Literal + "]", "/2"))
-			stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
-			stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
+			modrm := generateModRMSlashN(0x0f, RegReg, "[" + tok.Literal + "]", "/2")
+			stmt.Bin.Value = append(stmt.Bin.Value, modrm)
+
+			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
+				stmt.Bin.Value = append(stmt.Bin.Value, int2Word(from-curByteSize-2)...)
+			} else {
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
+				stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
+				labelManage.AddLabelCallback(
+					// CALL自体のバイト数を含まないので +2 しておく
+					[]byte{0x0f, 0x01, modrm}, tok.Literal, stmt.Bin, curByteSize+2, int2Word,
+				)
+			}
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
