@@ -32,8 +32,17 @@ type PIMAGE_SECTION_HEADER struct {
 	characteristics      uint32
 }
 
-func evalFormat(b *object.Binary) {
-	log.Println("Process for Portable Executable")
+type PIMAGE_SYMBOL struct {
+	shortName          [8]uint8
+	value              uint32
+	sectionNumber      uint16
+	symbolType         uint16
+	storageClass       uint8
+	numberOfAuxSymbols uint8
+}
+
+func evalFormat(b *object.Binary, format string) {
+	log.Println(fmt.Sprintf("Process for %s", format))
 	buf := new(bytes.Buffer)
 
 	// PE file header
@@ -48,7 +57,7 @@ func evalFormat(b *object.Binary) {
 	// PE section header
 	text := PIMAGE_SECTION_HEADER{
 		//{'.', 't', 'e', 'x', 't', 0, 0, 0 /* name */},
-		name: [8]uint8{0x2e, 0x74, 0x65, 0x78, 0x74, 0x00, 0x00, 0x00},
+		name:                 [8]uint8{0x2e, 0x74, 0x65, 0x78, 0x74, 0x00, 0x00, 0x00},
 		misc:                 0x00000000, // Misc
 		virtualAddress:       0x00000000, // VirtualAddress
 		sizeOfRawData:        0x00000002, // SizeOfRawData
@@ -61,7 +70,7 @@ func evalFormat(b *object.Binary) {
 	}
 	data := PIMAGE_SECTION_HEADER{
 		//{ '.', 'd', 'a', 't', 'a', 0, 0, 0 /* name */ },
-		name: [8]uint8{0x2e, 0x64, 0x61, 0x74, 0x61, 0x00, 0x00, 0x00},
+		name:                 [8]uint8{0x2e, 0x64, 0x61, 0x74, 0x61, 0x00, 0x00, 0x00},
 		misc:                 0x00000000, // Misc
 		virtualAddress:       0x00000000, // VirtualAddress
 		sizeOfRawData:        0x00000000, // SizeOfRawData
@@ -74,7 +83,7 @@ func evalFormat(b *object.Binary) {
 	}
 	bss := PIMAGE_SECTION_HEADER{
 		//{ '.', 'b', 's', 's', 0, 0, 0, 0 /* name */ },
-		name: [8]uint8{0x2e, 0x62, 0x73, 0x73, 0x00, 0x00, 0x00, 0x00},
+		name:                 [8]uint8{0x2e, 0x62, 0x73, 0x73, 0x00, 0x00, 0x00, 0x00},
 		misc:                 0x00000000, // Misc
 		virtualAddress:       0x00000000, // VirtualAddress
 		sizeOfRawData:        0x00000000, // SizeOfRawData
@@ -93,10 +102,25 @@ func evalFormat(b *object.Binary) {
 	log.Println("Wrote '.text', '.data', '.bss' fields for Portable Executable")
 }
 
-func evalBits(b *object.Binary) {
+func evalBits(b *object.Binary, bit string) {
+	log.Println(fmt.Sprintf("Deal with bit %s", bit))
 }
 
-func evalFile(b *object.Binary) {
+func evalFile(b *object.Binary, filename string) {
+	log.Println(fmt.Sprintf("Add %s", filename))
+
+	buf := new(bytes.Buffer)
+	file := PIMAGE_SYMBOL{
+		// { '.', 'f', 'i', 'l', 'e', 0, 0, 0 /* shortName */ },
+		shortName:          [8]uint8{0x2e, 0x66, 0x69, 0x6c, 0x65, 0x00, 0x00, 0x00},
+		value:              0x00000000,
+		sectionNumber:      0xfffe,
+		symbolType:         0x0000,
+		storageClass:       0x67,
+		numberOfAuxSymbols: 0x01,
+	}
+	binary.Write(buf, binary.LittleEndian, &file)
+	b.Value = append(b.Value, buf.Bytes()...)
 }
 
 func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
@@ -107,14 +131,17 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 
 	switch {
 	case tok == "FORMAT":
-		evalFormat(bin)
+		evalFormat(bin, val)
 	case tok == "BITS":
-		evalBits(bin)
+		evalBits(bin, val)
 	case tok == "FILE":
-		evalFile(bin)
+		evalFile(bin, val)
 	}
 
-	log.Println(fmt.Sprintf("info: [%s] name=%s, value=%s", stmt, tok, val))
 	stmt.Bin = bin
 	return stmt.Bin
+}
+
+func evalSectionTable() object.Object {
+
 }
