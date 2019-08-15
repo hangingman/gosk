@@ -110,6 +110,7 @@ type SettingStatement struct {
 	Value    string
 	NextNode Statement
 	PrevNode Statement
+	Bin      *object.Binary
 }
 
 func (s *SettingStatement) statementNode()       {}

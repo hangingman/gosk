@@ -7,9 +7,9 @@ import (
 )
 
 type LabelManagement struct {
-	labelBinaryRefMap map[string]*object.Binary // バイナリへの参照を記録し、後で更新する
-	labelBytesMap     map[string]int            // ラベルが見つかったバイト数を格納する
-	labelFromMap      map[string][]int          // ラベルとラベルが見つかったバイト数をリスト化
+	labelBinaryRefMap map[string]*object.Binary     // バイナリへの参照を記録し、後で更新する
+	labelBytesMap     map[string]int                // ラベルが見つかったバイト数を格納する
+	labelFromMap      map[string][]int              // ラベルとラベルが見つかったバイト数をリスト化
 	opcode            map[string][]byte             // 格納するべきオペコード
 	genBytesFns       map[string]func(i int) []byte // 取得した値をどうやってバイト列に戻すか
 }

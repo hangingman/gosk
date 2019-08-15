@@ -84,7 +84,7 @@ func getRMFromReg(srcReg string) string {
 	case IsSreg(token.Token{Type: token.SEG_REGISTER, Literal: srcReg}):
 		regBits = sregCodeMap[srcReg]
 	case IsCtl(token.Token{Type: token.CTL_REGISTER, Literal: srcReg}):
-		regBits = 0  // 資料がない。。。
+		regBits = 0 // 資料がない。。。
 	default:
 		// 当てはまらなければ 110 で
 		regBits = 6 // 0x0000 "110"

@@ -45,7 +45,6 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, plusRd(0xb8, toks[1].Literal))
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
 
-
 		//
 		// (2) MOV moffs8~32, Acc
 		//
@@ -94,7 +93,6 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		// FIXME: ここのmod/rmがどうしても逆になる
 		bin.Value = append(bin.Value, generateModRMSlashR(0x88, RegReg, disp, toks[4].Literal, true))
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
-
 
 		//
 		// (3) MOV rX, [m8~m32]

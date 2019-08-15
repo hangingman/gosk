@@ -199,10 +199,6 @@ func evalMnemonicStatement(stmt *ast.MnemonicStatement) object.Object {
 	return evalOpcodeFn(stmt)
 }
 
-func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
-	return nil
-}
-
 func evalLabelStatement(stmt *ast.LabelStatement) object.Object {
 	label := strings.TrimSuffix(stmt.Name, ":")
 	// ラベルが見つかったのでコールバックを起動して処理する
@@ -242,7 +238,6 @@ func evalEquStatement(stmt *ast.EquStatement) object.Object {
 
 	return nil
 }
-
 
 func makeZeroFill(bs []byte) []byte {
 	for i := range bs {
@@ -301,8 +296,8 @@ func evalALIGNBStatement(stmt *ast.MnemonicStatement) object.Object {
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.INT {
 			unit, _ := strconv.Atoi(tok.Literal)
-			nearestSize := curByteSize / unit + 1
-			times := nearestSize * unit - curByteSize
+			nearestSize := curByteSize/unit + 1
+			times := nearestSize*unit - curByteSize
 			bs := makeZeroFilledBytes(times)
 			bytes = append(bytes, bs...)
 			log.Println(fmt.Sprintf("info: ALIGNB stores 0x00 %d times", times))
@@ -342,7 +337,7 @@ func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.IDENT {
 			stmt.Bin.Value = append(stmt.Bin.Value, 0x0f)
 			stmt.Bin.Value = append(stmt.Bin.Value, 0x01)
-			modrm := generateModRMSlashN(0x0f, RegReg, "[" + tok.Literal + "]", "/2")
+			modrm := generateModRMSlashN(0x0f, RegReg, "["+tok.Literal+"]", "/2")
 			stmt.Bin.Value = append(stmt.Bin.Value, modrm)
 
 			if _, ok := labelManage.labelBytesMap[tok.Literal]; ok {

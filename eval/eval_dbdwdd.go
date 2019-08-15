@@ -5,8 +5,8 @@ import (
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/object"
 	"github.com/hangingman/gosk/token"
-	"strconv"
 	"log"
+	"strconv"
 	"strings"
 )
 
