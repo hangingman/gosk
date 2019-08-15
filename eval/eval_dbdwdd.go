@@ -53,7 +53,8 @@ func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte, usingType 
 			if from, ok := labelManage.labelBytesMap[tok.Literal]; ok {
 				// ラベルが見つかっていればバイト数を計算して設定する
 				absSize := from + dollarPosition
-				bytes = append(bytes, f(absSize)...)
+				// FIX: ここもなんかおかしい、naskはDDなのにWordでデータ入れてる
+				bytes = append(bytes, int2Word(absSize)...)
 			}
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
