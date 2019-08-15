@@ -19,7 +19,7 @@ func TestDumpHarib(t *testing.T) {
 	t.Run("harib00f", testHarib00f)
 	t.Run("harib00g", testHarib00g)
 	t.Run("harib00h", testHarib00h)
-	// t.Run("harib00i", testHarib00i)
+	t.Run("harib00i", testHarib00i)
 }
 
 // TestHelloOS3 naskソース３日目(harib00a)のテスト
