@@ -138,43 +138,6 @@ func evalSingleWordOpcode(opcode string, w []byte) func(stmt *ast.MnemonicStatem
 	}
 }
 
-func evalDStatements(stmt *ast.MnemonicStatement, f func(int) []byte) object.Object {
-	toks := []string{}
-	bytes := []byte{}
-
-	for _, tok := range stmt.Name.Tokens {
-		if tok.Type == token.HEX_LIT {
-
-			switch {
-			case IsImm8(tok):
-				bytes = append(bytes, imm8ToByte(tok)...)
-			case IsImm16(tok):
-				bytes = append(bytes, imm16ToWord(tok)...)
-			case IsImm32(tok):
-				bytes = append(bytes, imm32ToDword(tok)...)
-			default:
-				// do nothing
-			}
-
-		} else if tok.Type == token.STR_LIT {
-			// "を取り除いて処理
-			strLength := len(tok.Literal)
-			bs := []byte(tok.Literal[1 : strLength-1])
-			bytes = append(bytes, bs...)
-		} else if tok.Type == token.INT {
-			// Go言語のintは常にint64 -> uint8
-			int64Val, _ := strconv.Atoi(tok.Literal)
-			bs := f(int64Val)
-			bytes = append(bytes, bs...)
-		}
-		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
-	}
-
-	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
-	stmt.Bin = &object.Binary{Value: bytes}
-	return stmt.Bin
-}
-
 func Eval(node ast.Node) object.Object {
 	switch node := node.(type) {
 	case *ast.Program:
@@ -280,17 +243,6 @@ func evalEquStatement(stmt *ast.EquStatement) object.Object {
 	return nil
 }
 
-func evalDBStatement(stmt *ast.MnemonicStatement) object.Object {
-	return evalDStatements(stmt, int2Byte)
-}
-
-func evalDWStatement(stmt *ast.MnemonicStatement) object.Object {
-	return evalDStatements(stmt, int2Word)
-}
-
-func evalDDStatement(stmt *ast.MnemonicStatement) object.Object {
-	return evalDStatements(stmt, int2Dword)
-}
 
 func makeZeroFill(bs []byte) []byte {
 	for i := range bs {
