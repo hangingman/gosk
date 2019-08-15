@@ -20,7 +20,7 @@ func evalIMULStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: IMUL r16 (%s), imm8 (%s)", toks[1], toks[2]))
 		bin = []byte{} // 0x6b /r ib
 		bin = append(bin, 0x6b)
-		bin = append(bin, generateModRMSlashR(0x6b, Reg, toks[1].Literal, toks[1].Literal))
+		bin = append(bin, generateModRMSlashR(0x6b, Reg, toks[1].Literal, toks[1].Literal, false))
 		bin = append(bin, imm8ToByte(toks[2])...)
 	case IsR32(toks[1]) && IsImm8(toks[2]):
 		// IMUL r32, imm8
@@ -28,14 +28,14 @@ func evalIMULStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = []byte{} // 0x6b /r ib
 		bin = append(bin, 0x66)
 		bin = append(bin, 0x6b)
-		bin = append(bin, generateModRMSlashR(0x6b, Reg, toks[1].Literal, toks[1].Literal))
+		bin = append(bin, generateModRMSlashR(0x6b, Reg, toks[1].Literal, toks[1].Literal, false))
 		bin = append(bin, imm8ToByte(toks[2])...)
 	case IsR16(toks[1]) && IsImm16(toks[2]):
 		// IMUL r16, imm16
 		log.Println(fmt.Sprintf("info: IMUL r16 (%s), imm16 (%s)", toks[1], toks[2]))
 		bin = []byte{} // 0x69 /r iw
 		bin = append(bin, 0x69)
-		bin = append(bin, generateModRMSlashR(0x69, Reg, toks[1].Literal, toks[1].Literal))
+		bin = append(bin, generateModRMSlashR(0x69, Reg, toks[1].Literal, toks[1].Literal, false))
 		bin = append(bin, imm16ToWord(toks[2])...)
 	case IsR32(toks[1]) && IsImm32(toks[2]):
 		// IMUL r32, imm32
@@ -43,7 +43,7 @@ func evalIMULStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin = []byte{} // 0x69 /r id
 		bin = append(bin, 0x66)
 		bin = append(bin, 0x69)
-		bin = append(bin, generateModRMSlashR(0x69, Reg, toks[1].Literal, toks[1].Literal))
+		bin = append(bin, generateModRMSlashR(0x69, Reg, toks[1].Literal, toks[1].Literal, false))
 		bin = append(bin, imm32ToDword(toks[2])...)
 	}
 

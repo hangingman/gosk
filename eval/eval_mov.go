@@ -75,14 +75,14 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV m8 (%s), r8 (%s)", toks[2], toks[4]))
 		disp := "[" + toks[2].Literal + "]"
 		bin.Value = append(bin.Value, 0x88)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x88, RegReg, disp, toks[4].Literal))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x88, RegReg, disp, toks[4].Literal, false))
 		bin.Value = append(bin.Value, imm16ToWord(toks[2])...)
 	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && IsR16(toks[4]):
 		// MOV m16, r16
 		log.Println(fmt.Sprintf("info: MOV m16 (%s), r16 (%s)", toks[2], toks[4]))
 		disp := "[" + toks[2].Literal + "]"
 		bin.Value = append(bin.Value, 0x89)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x88, RegReg, disp, toks[4].Literal))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x88, RegReg, disp, toks[4].Literal, false))
 		bin.Value = append(bin.Value, imm16ToWord(toks[2])...)
 	case toks[1].Type == token.LBRACKET && toks[3].Type == token.RBRACKET && IsR32(toks[4]):
 		// MOV m32, r32
@@ -91,7 +91,8 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, 0x67)
 		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, 0x89)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x88, RegReg, disp, toks[4].Literal))
+		// FIXME: ここのmod/rmがどうしても逆になる
+		bin.Value = append(bin.Value, generateModRMSlashR(0x88, RegReg, disp, toks[4].Literal, true))
 		bin.Value = append(bin.Value, imm32ToDword(toks[2])...)
 
 
@@ -133,7 +134,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, 0x67)
 		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, 0x8b)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x8b, RegDisp8, toks[1].Literal, disp))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x8b, RegDisp8, toks[1].Literal, disp, false))
 		bin.Value = append(bin.Value, imm8ToByte(toks[5])...)
 
 	case IsR8(toks[1]) && toks[2].Literal == "BYTE" && toks[3].Type == token.LBRACKET && toks[5].Type == token.RBRACKET:
@@ -142,7 +143,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		disp := "[" + toks[4].Literal + "]"
 		// 0x8a
 		bin.Value = append(bin.Value, 0x8a)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x8a, RegReg, toks[1].Literal, disp))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x8a, RegReg, toks[1].Literal, disp, false))
 		bin.Value = append(bin.Value, imm16ToWord(toks[4])...)
 
 	case IsR8(toks[1]) && toks[2].Type == token.IDENT:
@@ -201,13 +202,13 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV Sreg (%s), r/m16 (%s)", toks[1], toks[2]))
 		// 0x8E /r
 		bin.Value = append(bin.Value, 0x8e)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x8e, Reg, toks[1].Literal, toks[2].Literal))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x8e, Reg, toks[1].Literal, toks[2].Literal, false))
 	case IsR16(toks[1]) && IsSreg(toks[2]):
 		// MOV r/m16, Sreg
 		log.Println(fmt.Sprintf("info: MOV r/m16 (%s), Sreg (%s)", toks[1], toks[2]))
 		// 0x8C /r
 		bin.Value = append(bin.Value, 0x8c)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x8e, Reg, toks[1].Literal, toks[2].Literal))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x8e, Reg, toks[1].Literal, toks[2].Literal, false))
 	case toks[1].Literal == "BYTE" && toks[2].Type == token.LBRACKET && toks[4].Type == token.RBRACKET:
 		// MOV r/m8, imm8
 		log.Println(fmt.Sprintf("info: MOV r/m8 (%s), Imm (%s)", toks[3], toks[5]))
@@ -236,13 +237,13 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		log.Println(fmt.Sprintf("info: MOV CR0(%s), R32(%s)", toks[1], toks[2]))
 		bin.Value = append(bin.Value, 0x0f)
 		bin.Value = append(bin.Value, 0x22)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x0f, Reg, toks[1].Literal, toks[2].Literal))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x0f, Reg, toks[1].Literal, toks[2].Literal, false))
 	case IsR32(toks[1]) && IsCtl(toks[2]):
 		// MOV r32, CR0
 		log.Println(fmt.Sprintf("info: MOV R32(%s), CR0(%s)", toks[1], toks[2]))
 		bin.Value = append(bin.Value, 0x0f)
 		bin.Value = append(bin.Value, 0x20)
-		bin.Value = append(bin.Value, generateModRMSlashR(0x0f, Reg, toks[1].Literal, toks[2].Literal))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x0f, Reg, toks[1].Literal, toks[2].Literal, false))
 
 	}
 

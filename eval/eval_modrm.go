@@ -95,9 +95,23 @@ func getRMFromReg(srcReg string) string {
 	return ans
 }
 
+func concatNoSwap(m Mod, dstReg string, srcReg string) string {
+	modrm := mod2byteMap[m]       // [mod]
+	modrm += getRMFromReg(dstReg) // [reg]
+	modrm += getRMFromReg(srcReg) // [r/m]
+	return modrm
+}
+
+func concatSwap(m Mod, dstReg string, srcReg string) string {
+	modrm := mod2byteMap[m]       // [mod]
+	modrm += getRMFromReg(srcReg) // [r/m]
+	modrm += getRMFromReg(dstReg) // [reg]
+	return modrm
+}
+
 // generateModRM オペコードと２つのレジスタについてModR/Mを作成する
 // 仕様書に '/r' の形式でModR/Mを求められる場合に使用する
-func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte {
+func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string, forceSwap bool) byte {
 	log.Println(fmt.Sprintf("info: ModR/M /r opcode=%x type=%s dst=%s src=%s", opcode, m, dstReg, srcReg))
 	//
 	// Generate ModR/M byte with arguments
@@ -112,16 +126,16 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte 
 	var srcRM string = getRMFromReg(srcReg)
 	var srcHasOperator = strings.Contains(srcReg, "+")
 	var modrm string = ""
-	if srcRM[2:3] == "0" || srcHasOperator {
-		log.Println("info: [mod][reg][r/m]")
-		modrm += mod2byteMap[m]       // [mod]
-		modrm += getRMFromReg(dstReg) // [reg]
-		modrm += getRMFromReg(srcReg) // [r/m]
+
+	if forceSwap {
+		// 無理くり逆転させたい場合使う
+		modrm = concatSwap(m, dstReg, srcReg)
 	} else {
-		log.Println("info: [mod][r/m][reg]")
-		modrm += mod2byteMap[m]       // [mod]
-		modrm += getRMFromReg(srcReg) // [r/m]
-		modrm += getRMFromReg(dstReg) // [reg]
+		if srcRM[2:3] == "0" || srcHasOperator {
+			modrm = concatNoSwap(m, dstReg, srcReg)
+		} else {
+			modrm = concatSwap(m, dstReg, srcReg)
+		}
 	}
 
 	i, _ := strconv.ParseUint(modrm, 2, 0)
