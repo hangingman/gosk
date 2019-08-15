@@ -124,6 +124,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, 0x8b)
 		bin.Value = append(bin.Value, generateModRMSlashN(0x8b, RegReg, disp, "/0"))
+
 	case IsR32(toks[1]) && toks[2].Type == token.LBRACKET && toks[4].IsOperator():
 		// MOV r32 , [imm32 + int]
 		log.Println(fmt.Sprintf("info: MOV r32 (%s), disp32 (%s) + %s", toks[1], toks[3], toks[5]))
@@ -132,7 +133,7 @@ func evalMOVStatement(stmt *ast.MnemonicStatement) object.Object {
 		bin.Value = append(bin.Value, 0x67)
 		bin.Value = append(bin.Value, 0x66)
 		bin.Value = append(bin.Value, 0x8b)
-		bin.Value = append(bin.Value, generateModRMSlashN(0x8b, RegDisp8, disp, "/0"))
+		bin.Value = append(bin.Value, generateModRMSlashR(0x8b, RegDisp8, toks[1].Literal, disp))
 		bin.Value = append(bin.Value, imm8ToByte(toks[5])...)
 
 	case IsR8(toks[1]) && toks[2].Literal == "BYTE" && toks[3].Type == token.LBRACKET && toks[5].Type == token.RBRACKET:

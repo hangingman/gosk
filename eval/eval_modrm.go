@@ -55,6 +55,14 @@ func getRMFromReg(srcReg string) string {
 	var regBits int
 
 	switch {
+	case strings.HasPrefix(srcReg, "[EAX") && strings.HasSuffix(srcReg, "]"):
+		regBits = 0 // 0x0000 "000"
+	case strings.HasPrefix(srcReg, "[ECX") && strings.HasSuffix(srcReg, "]"):
+		regBits = 1 // 0x0000 "001"
+	case strings.HasPrefix(srcReg, "[EDX") && strings.HasSuffix(srcReg, "]"):
+		regBits = 2 // 0x0000 "010"
+	case strings.HasPrefix(srcReg, "[EBX") && strings.HasSuffix(srcReg, "]"):
+		regBits = 3 // 0x0000 "011"
 	case strings.HasPrefix(srcReg, "[0x") && strings.HasSuffix(srcReg, "]"):
 		regBits = 6 // 0x0000 "110"
 	case strings.HasPrefix(srcReg, "[ESI") && strings.HasSuffix(srcReg, "]"):
@@ -102,8 +110,9 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte 
 	//          [reg] = DS(011)
 	//          [r/m] = AX(000)
 	var srcRM string = getRMFromReg(srcReg)
+	var srcHasOperator = strings.Contains(srcReg, "+")
 	var modrm string = ""
-	if srcRM[2:3] == "0" {
+	if srcRM[2:3] == "0" || srcHasOperator {
 		log.Println("info: [mod][reg][r/m]")
 		modrm += mod2byteMap[m]       // [mod]
 		modrm += getRMFromReg(dstReg) // [reg]
