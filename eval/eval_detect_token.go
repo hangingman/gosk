@@ -11,6 +11,7 @@ var r8 = regexp.MustCompile(`^AL$|^CL$|^DL$|^BL$|^AH$|^CH$|^DH$|^BH$`)
 var r16 = regexp.MustCompile(`^AX$|^CX$|^DX$|^BX$|^SP$|^BP$|^SI$|^DI$`)
 var r32 = regexp.MustCompile(`^EAX$|^ECX$|^EDX$|^EBX$|^ESP$|^EBP$|^ESI$|^EDI$`)
 var sr = regexp.MustCompile(`^ES$|^CS$|^SS$|^DS$|^FS$|^GS$`)
+var cr = regexp.MustCompile(`^CR0$|^CR1$|^CR2$|^CR3$|^CR4$`)
 
 // 8bit, 16bit, 32bitのレジスタとレジスタコードの対応
 var r8CodeMap = map[string]int{
@@ -43,11 +44,13 @@ func IsR32(tok token.Token) bool {
 }
 
 func IsSreg(tok token.Token) bool {
-	return tok.Type == token.SEG_REGISTER
+	return tok.Type == token.SEG_REGISTER &&
+		sr.MatchString(tok.Literal) // ２重チェックのため必要
 }
 
 func IsCtl(tok token.Token) bool {
-	return tok.Type == token.CTL_REGISTER
+	return tok.Type == token.CTL_REGISTER &&
+		cr.MatchString(tok.Literal) // ２重チェックのため必要
 }
 
 func IsImm8(tok token.Token) bool {

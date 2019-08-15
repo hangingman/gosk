@@ -55,7 +55,6 @@ func getRMFromReg(srcReg string) string {
 	var regBits int
 
 	switch {
-	// [<SIB>], [<SIB>+disp8], [<SIB>+disp32]
 	case strings.HasPrefix(srcReg, "[0x") && strings.HasSuffix(srcReg, "]"):
 		regBits = 6 // 0x0000 "110"
 	case strings.HasPrefix(srcReg, "[ESI") && strings.HasSuffix(srcReg, "]"):
