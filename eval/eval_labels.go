@@ -52,6 +52,7 @@ func (l *LabelManagement) Emit(ident string, to int) {
 		return
 	}
 
+	// ラベル１つに対してラベルを使ってる行は複数ありえるのでfor文
 	for _, from := range froms {
 		log.Println(fmt.Sprintf("info: from=%d, to=%d", from, to))
 		log.Println(fmt.Sprintf("info: emit label %s to %d !!", ident, to-from))
@@ -59,6 +60,7 @@ func (l *LabelManagement) Emit(ident string, to int) {
 		opcode, opcodeOk := l.opcode[key]
 		bin, binOk := l.labelBinaryRefMap[key]
 
+		// ラベルと行数の複合キーで取得できなければ処理は行わない
 		if opcodeOk && binOk {
 			bin.Value = nil
 			binToAppend := l.genBytesFns[key](to - from)

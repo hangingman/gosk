@@ -58,8 +58,16 @@ func getRMFromReg(srcReg string) string {
 	// [<SIB>], [<SIB>+disp8], [<SIB>+disp32]
 	case strings.HasPrefix(srcReg, "[0x") && strings.HasSuffix(srcReg, "]"):
 		regBits = 6 // 0x0000 "110"
-	case strings.HasPrefix(srcReg, "[") && strings.HasSuffix(srcReg, "]"):
+	case strings.HasPrefix(srcReg, "[ESI") && strings.HasSuffix(srcReg, "]"):
+		regBits = 6 // 0x0000 "110"
+	case strings.HasPrefix(srcReg, "[SI") && strings.HasSuffix(srcReg, "]"):
 		regBits = 4 // 0x00   "100"
+	case strings.HasPrefix(srcReg, "[EDI") && strings.HasSuffix(srcReg, "]"):
+		regBits = 7 // 0x00   "111"
+	case strings.HasPrefix(srcReg, "[BX") && strings.HasSuffix(srcReg, "]"):
+		regBits = 7 // 0x00   "111"
+	case strings.HasPrefix(srcReg, "[DI") && strings.HasSuffix(srcReg, "]"):
+		regBits = 5 // 0x00   "101"
 	case IsR8(token.Token{Type: token.REGISTER, Literal: srcReg}):
 		regBits = r8CodeMap[srcReg]
 	case IsR16(token.Token{Type: token.REGISTER, Literal: srcReg}):
@@ -69,6 +77,8 @@ func getRMFromReg(srcReg string) string {
 	case IsSreg(token.Token{Type: token.SEG_REGISTER, Literal: srcReg}):
 		regBits = sregCodeMap[srcReg]
 	default:
+		// 当てはまらなければ 110 で
+		regBits = 6 // 0x0000 "110"
 	}
 
 	ans := fmt.Sprintf("%03b", regBits)
@@ -79,7 +89,7 @@ func getRMFromReg(srcReg string) string {
 // generateModRM オペコードと２つのレジスタについてModR/Mを作成する
 // 仕様書に '/r' の形式でModR/Mを求められる場合に使用する
 func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte {
-	log.Println(fmt.Sprintf("debug: ModR/M /r opcode=%x type=%s dst=%s src=%s", opcode, m, dstReg, srcReg))
+	log.Println(fmt.Sprintf("info: ModR/M /r opcode=%x type=%s dst=%s src=%s", opcode, m, dstReg, srcReg))
 	//
 	// Generate ModR/M byte with arguments
 	// [mod] 2bit
@@ -93,10 +103,12 @@ func generateModRMSlashR(opcode byte, m Mod, dstReg string, srcReg string) byte 
 	var srcRM string = getRMFromReg(srcReg)
 	var modrm string = ""
 	if srcRM[2:3] == "0" {
+		log.Println("info: [mod][reg][r/m]")
 		modrm += mod2byteMap[m]       // [mod]
 		modrm += getRMFromReg(dstReg) // [reg]
 		modrm += getRMFromReg(srcReg) // [r/m]
 	} else {
+		log.Println("info: [mod][r/m][reg]")
 		modrm += mod2byteMap[m]       // [mod]
 		modrm += getRMFromReg(srcReg) // [r/m]
 		modrm += getRMFromReg(dstReg) // [reg]

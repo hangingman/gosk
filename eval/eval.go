@@ -390,7 +390,7 @@ func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
 		if tok.Type == token.IDENT {
 			bin.Value = append(bin.Value, 0x0f)
 			bin.Value = append(bin.Value, 0x01)
-			bin.Value = append(bin.Value, generateModRMSlashN(0x0f, Reg, "["+tok.Literal+"]", "/1"))
+			bin.Value = append(bin.Value, generateModRMSlashN(0x0f, RegReg, "[" + tok.Literal + "]", "/2"))
 			//bin.Value = append(bin.Value, int2Byte(v)...)
 			bin.Value = append(bin.Value, 0x00)
 			bin.Value = append(bin.Value, 0x00)
