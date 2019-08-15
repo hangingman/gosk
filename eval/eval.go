@@ -383,23 +383,21 @@ func evalORGStatement(stmt *ast.MnemonicStatement) object.Object {
 }
 
 func evalLGDTStatement(stmt *ast.MnemonicStatement) object.Object {
-	bin := &object.Binary{Value: []byte{}}
+	stmt.Bin = &object.Binary{Value: []byte{}}
 	toks := []string{}
 
 	for _, tok := range stmt.Name.Tokens {
 		if tok.Type == token.IDENT {
-			bin.Value = append(bin.Value, 0x0f)
-			bin.Value = append(bin.Value, 0x01)
-			bin.Value = append(bin.Value, generateModRMSlashN(0x0f, RegReg, "[" + tok.Literal + "]", "/2"))
-			//bin.Value = append(bin.Value, int2Byte(v)...)
-			bin.Value = append(bin.Value, 0x00)
-			bin.Value = append(bin.Value, 0x00)
+			stmt.Bin.Value = append(stmt.Bin.Value, 0x0f)
+			stmt.Bin.Value = append(stmt.Bin.Value, 0x01)
+			stmt.Bin.Value = append(stmt.Bin.Value, generateModRMSlashN(0x0f, RegReg, "[" + tok.Literal + "]", "/2"))
+			stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
+			stmt.Bin.Value = append(stmt.Bin.Value, 0x00)
 		}
 		toks = append(toks, fmt.Sprintf("%s: %s", tok.Type, tok.Literal))
 	}
 	log.Println(fmt.Sprintf("info: [%s]", strings.Join(toks, ", ")))
 
-	stmt.Bin = bin
 	return stmt.Bin
 }
 
