@@ -185,7 +185,7 @@ func evalStatements(stmts []ast.Statement) object.Object {
 	}
 
 	// セクションテーブルを最後に加える
-	results = append(results, evalSectionTable())
+	//results = append(results, evalSectionTable())
 
 	return &results
 }

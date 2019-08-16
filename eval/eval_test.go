@@ -21,7 +21,8 @@ MOV BYTE[0x0ff2],8
 MOV WORD[0x0ff4],320
 MOV WORD[0x0ff6],200
 MOV DWORD[0x0ff8],0x000a0000
-MOV [0x0ff1] AL`
+MOV [0x0ff1] AL
+`
 	tests := []struct {
 		Value []byte
 	}{
