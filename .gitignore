@@ -25,6 +25,6 @@ _testmain.go
 
 # peg & yacc
 *.peg.go
-gosk
+/gosk
 *.bin
 *.hex
