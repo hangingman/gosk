@@ -38,12 +38,13 @@ dep:
 	$(GOGET) github.com/stretchr/testify
 	$(GOGET) github.com/comail/colog
 	$(GOGET) github.com/pk-rawat/gostr
+	$(GOGET) github.com/mitchellh/go-fs
 
 emacs:
-	$(GOGET) github.com/rogpeppe/godef
+	$(GOGET) -u github.com/rogpeppe/godef
 	$(GOGET) -u github.com/nsf/gocode
 	$(GOGET) -u golang.org/x/lint/golint
-	$(GOGET) github.com/kisielk/errcheck
+	$(GOGET) -u github.com/kisielk/errcheck
 	$(GOGET) -u github.com/derekparker/delve/cmd/dlv
 
 testdata:
