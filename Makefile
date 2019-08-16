@@ -1,6 +1,7 @@
 # Go parameters
 GOCMD=go
 GOBUILD=$(GOCMD) build
+GOINSTALL=$(GOCMD) install
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
@@ -13,7 +14,11 @@ NASK=wine nask.exe
 all: dep test build
 
 build:
-	$(GOBUILD) -o ${BIN} -v
+	cd cmd/gosk && $(GOBUILD) -v
+	cd cmd/f12copy && $(GOBUILD) -v
+	cd cmd/f12format && $(GOBUILD) -v
+	cd ..
+	$(GOINSTALL) -v ./...
 
 test:
 	$(GOTEST) -v ./...
