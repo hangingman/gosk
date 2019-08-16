@@ -7,7 +7,7 @@ import (
 	"github.com/hangingman/gosk/ast"
 	"github.com/hangingman/gosk/object"
 	"log"
-	"unsafe"
+	// "unsafe"
 )
 
 type PIMAGE_FILE_HEADER struct {
@@ -147,8 +147,8 @@ func evalSectionTable() object.Object {
 	bin := &object.Binary{Value: []byte{}}
 
 	// セクションデータのサイズが確定(SizeOfRawData)
-	var offset int = curByteSize;
-	var sizeOfRawData int = offset - (unsafe.Sizeof(PIMAGE_FILE_HEADER) + unsafe.Sizeof(PIMAGE_SECTION_HEADER) * 3)
+	// var offset int = curByteSize;
+	// var sizeOfRawData int = offset - (unsafe.Sizeof(PIMAGE_FILE_HEADER) + unsafe.Sizeof(PIMAGE_SECTION_HEADER) * 3)
 
 	// offset + realoc * EXTERN symbols
 	// var pointerToSymbolTable int = offset + unsafe.Sizeof(COFF_RELOCATION) * len(ExternSymbolList)
