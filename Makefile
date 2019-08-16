@@ -14,6 +14,7 @@ NASK=wine nask.exe
 all: dep test build
 
 build:
+	ls -la
 	cd cmd/gosk && $(GOBUILD) -v
 	cd cmd/f12copy && $(GOBUILD) -v
 	cd cmd/f12format && $(GOBUILD) -v
