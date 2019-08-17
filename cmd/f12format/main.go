@@ -22,7 +22,7 @@ func main() {
 	var (
 		fatSize = flag.Int64("f", 1440, "FATのサイズを指定する")
 		volumeLabel = flag.String("l", "HARIBOTEOS", "FATのボリュームラベルを指定する")
-		//serialNumber = flag.String("N", "0xffffffff", "FATのシリアルナンバーを指定する")
+		// serialNumber = flag.String("N", "0xffffffff", "FATのシリアルナンバーを指定する")
 		// bootSector = flag.String("B", "", "FATのブートセクタを指定する")
 		outputImage = flag.String("i", "", "出力先の指定をする")
 	)
@@ -50,7 +50,7 @@ func main() {
 	formatConfig := &fat.SuperFloppyConfig{
 		FATType: fat.FAT12,
 		Label:   *volumeLabel,
-		OEMName: "test",
+		OEMName: "go-fs",
 	}
 	if fat.FormatSuperFloppy(device, formatConfig); err != nil {
 		fmt.Printf("Error creating floppy block device: %s\n", err)
