@@ -38,7 +38,7 @@ dep:
 	$(GOGET) github.com/stretchr/testify
 	$(GOGET) github.com/comail/colog
 	$(GOGET) github.com/pk-rawat/gostr
-	$(GOGET) github.com/mitchellh/go-fs
+	$(GOGET) github.com/hangingman/go-fs
 
 emacs:
 	$(GOGET) -u github.com/rogpeppe/godef

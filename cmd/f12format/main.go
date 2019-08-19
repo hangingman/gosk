@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"os"
-	"github.com/mitchellh/go-fs"
-	"github.com/mitchellh/go-fs/fat"
+	"github.com/hangingman/go-fs"
+	"github.com/hangingman/go-fs/fat"
 )
 
 // https://www.gnu.org/software/mtools/manual/mtools.html#mformat
