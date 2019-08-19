@@ -23,8 +23,10 @@ _testmain.go
 *.test
 *.prof
 
-# peg & yacc
-*.peg.go
-/gosk
+# my repo
+*/gosk
+*/f12copy
+*/f12format
 *.bin
 *.hex
+*.obj

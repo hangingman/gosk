@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"github.com/mitchellh/go-fs"
 	"github.com/mitchellh/go-fs/fat"
@@ -32,10 +31,10 @@ func main() {
 	// 読み書き可能, 新規作成, ファイル内容あっても切り詰め
 	floppyF, err := os.OpenFile(*outputImage, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
-		fmt.Printf("Error on os.OpenFile: %s\n", *outputImage, err)
+		panic(err)
 	}
 	if floppyF.Truncate(*fatSize * 1024); err != nil {
-		fmt.Printf("Error on floppy truncate: %s\n", err)
+		panic(err)
 	}
 
 	defer floppyF.Close()
@@ -43,7 +42,7 @@ func main() {
 	// ブロックデバイスを構築する
 	device, err := fs.NewFileDisk(floppyF)
 	if err != nil {
-		fmt.Printf("Error creating new disk for floppy: %s\n", err)
+		panic(err)
 	}
 
 	// ブロックデバイスをフォーマットする
@@ -53,6 +52,6 @@ func main() {
 		OEMName: "go-fs",
 	}
 	if fat.FormatSuperFloppy(device, formatConfig); err != nil {
-		fmt.Printf("Error creating floppy block device: %s\n", err)
+		panic(err)
 	}
 }
