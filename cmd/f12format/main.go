@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
-	"os"
 	"github.com/hangingman/go-fs"
 	"github.com/hangingman/go-fs/fat"
+	"io/ioutil"
+	"os"
 )
 
 // https://www.gnu.org/software/mtools/manual/mtools.html#mformat
@@ -19,24 +20,32 @@ import (
 func main() {
 
 	var (
-		fatSize = flag.Int64("f", 1440, "FATのサイズを指定する")
-		volumeLabel = flag.String("l", "HARIBOTEOS", "FATのボリュームラベルを指定する")
-		// serialNumber = flag.String("N", "0xffffffff", "FATのシリアルナンバーを指定する")
-		// bootSector = flag.String("B", "", "FATのブートセクタを指定する")
-		outputImage = flag.String("i", "", "出力先の指定をする")
+		fatSize     int64
+		volumeLabel string
+		bootSector  string
+		outputImage string
 	)
+	flag.Int64Var(&fatSize, "f", 1440, "FATのサイズを指定する")
+	flag.StringVar(&volumeLabel, "l", "HARIBOTEOS", "FATのボリュームラベルを指定する")
+	flag.StringVar(&bootSector, "B", "", "FATのブートセクタを指定する")
+	flag.StringVar(&outputImage, "i", "", "出力先の指定をする")
 
 	flag.Parse()
 
-	// 読み書き可能, 新規作成, ファイル内容あっても切り詰め
-	floppyF, err := os.OpenFile(*outputImage, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
-	if err != nil {
-		panic(err)
-	}
-	if floppyF.Truncate(*fatSize * 1024); err != nil {
+	// ブートセクタを読み取り
+	bootSectorContent, err := ioutil.ReadFile(bootSector)
+	if bootSector != "" && err != nil {
 		panic(err)
 	}
 
+	// 読み書き可能, 新規作成, ファイル内容あっても切り詰め
+	floppyF, err := os.OpenFile(outputImage, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+	if err != nil {
+		panic(err)
+	}
+	if floppyF.Truncate(fatSize * 1024); err != nil {
+		panic(err)
+	}
 	defer floppyF.Close()
 
 	// ブロックデバイスを構築する
@@ -47,9 +56,10 @@ func main() {
 
 	// ブロックデバイスをフォーマットする
 	formatConfig := &fat.SuperFloppyConfig{
-		FATType: fat.FAT12,
-		Label:   *volumeLabel,
-		OEMName: "go-fs",
+		FATType:           fat.FAT12,
+		Label:             volumeLabel,
+		OEMName:           "go-fs",
+		BootSectorContent: bootSectorContent,
 	}
 	if fat.FormatSuperFloppy(device, formatConfig); err != nil {
 		panic(err)

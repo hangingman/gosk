@@ -135,8 +135,8 @@ func evalSettingStatement(stmt *ast.SettingStatement) object.Object {
 		evalFormat(bin, val)
 	case tok == "BITS":
 		evalBits(bin, val)
-	// case tok == "FILE":
-	// 	evalFile(bin, val)
+		// case tok == "FILE":
+		// 	evalFile(bin, val)
 	}
 
 	stmt.Bin = bin
@@ -154,7 +154,6 @@ func evalSectionTable() object.Object {
 	// var pointerToSymbolTable int = offset + unsafe.Sizeof(COFF_RELOCATION) * len(ExternSymbolList)
 	// log.Println(fmt.Sprintf("COFF file header's PointerToSymbolTable: 0x{:02x}", pointerToSymbolTable))
 	// bin.Value = append(bin.Value, imm32ToDword(pointerToSymbolTable)...)
-
 
 	// log.Println(fmt.Sprintf("section table '.text' PointerToSymbolTable: 0x{:02x}", offset + 4))
 	//   set_dword_into_binout(offset, binout_container, false, unsafe.Sizeof(PIMAGE_FILE_HEADER) + 24);
